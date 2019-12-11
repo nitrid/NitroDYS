@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" ng-app="App">
+    <head>
+        <meta charset="utf-8" />
+        <title>Nitrogen Depo Yönetim Otomasyonu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="img/logo-mini.png">
+        <!-- App css -->
+        <link href="theme/vertical/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/css/icons.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/css/metismenu.min.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+       
+        <link href="theme/vertical/assets/libs/select2/select2.min.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/libs/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+
+        <script src="theme/vertical/assets/js/modernizr.min.js"></script>
+    </head>
+    <body class="account-pages" ng-controller="Login" ng-init="Init()">
+        <!-- Begin page -->
+        <div class="accountbg" style="background: url('img/img.jpg');background-size: cover;background-position: center;"></div>
+        <div class="wrapper-page account-page-full">
+            <div class="card">
+                <div class="card-block">
+                    <div class="account-box" >
+                        <div class="card-box py-2 my-0">
+                            <h2 class="text-uppercase text-center">
+                                <a href="main.html" class="text-success">
+                                    <span><img src="img/nitrogen.png" top="30" height="80"></span>
+                                </a>
+                            </h2>
+                            <br>
+                            <br>
+                            <div class="form-group row text-center">
+                                <div class="col-5 offset-7">
+                                    <button class="btn btn-block btn-custom" data-toggle="modal" data-target="#myModal">Ayarlar</button>
+                                </div>
+                            </div>
+                            <div class="form-group m-b-20 row">
+                                <div class="col-12">
+                                    <label for="emailaddress" required id="kullanıcı-secim" >Kullanıcı</label>
+                                    <input class="form-control" placeholder="Kullanıcı Giriniz." name="Kullanici" ng-model="Kullanici">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <label for="password">Şifre</label>
+                                    <input class="form-control" type="password" required="" id="password" placeholder="Şifre Giriniz." ng-model="Password">
+                                </div>
+                            </div>
+                            <div class="form-group row text-center">
+                                <div class="col-12">
+                                    <button class="btn btn-block btn-custom waves-effect waves-light" type="submit" ng-click="BtnEntry()">Giriş Yap</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="m-t-20 text-center">
+                <div class="row">
+                <p class="account-copyright">2019 - T-ONE <span class="d-none d-sm-inline-block"> - www.teknoerp.com</span></p>
+            </div>
+        </div>
+        </div>
+        <!--Modal-->
+        <div id="myModal" class="modal fade modal-center" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-center">
+                    <div class="modal-content modal-center">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title" id="myModalLabel">Ayarlar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class=".col-sm-6 .col-lg-4 my--100">
+                                <p>{{ConnectionStatus}}</p>
+                            </div>  
+                            <div class="form-group m-b-20 row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control" name="server_adress" placeholder="Sunucu Adresi" id="server_adress" ng-model="server_adress">
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" class="form-control" name="server_port" placeholder="Sunucu Port" id="server_port" ng-model="server_port">
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" class="form-control" class="form-control" name="socket_port" placeholder="Soket Port" id="socket_port" ng-model="socket_port">
+                                </div>
+                            </div>
+                            <div class="form-group row text-center">
+                                <div class="col-6">
+                                    <button class="btn btn-block btn-custom waves-effect waves-light" type="submit" href="#" ng-click="BtnTryConnect()">Bağlantı Test</button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-block btn-success waves-effect waves-light" type="submit" href="#" ng-click="HostSettingSave()" data-dismiss="modal">Kaydet</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        
+        <!--Page-->
+        <script src="../js/moment.min.js"></script>
+        <script src="../js/moment-with-locales.min.js"></script>
+        <script src="theme/vertical/alertify/alertify.js"></script>
+
+        <!-- jQuery  -->
+        <script src="theme/vertical/assets/js/jquery.min.js"></script>
+        <script src="theme/vertical/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="theme/vertical/assets/js/metisMenu.min.js"></script>
+        <script src="theme/vertical/assets/js/waves.js"></script>
+        <script src="theme/vertical/assets/js/jquery.slimscroll.js"></script>
+        <script src="theme/vertical/assets/libs/select2/select2.min.js"></script>
+        <script src="theme/vertical/assets/libs/bootstrap-select/bootstrap-select.min.js"></script>
+        <!-- App js -->
+        <script src="theme/vertical/assets/js/jquery.core.js"></script>
+        <script src="theme/vertical/assets/js/app.min.js"></script>
+
+        <!--TONE-->
+        <script src="js/angular.js"></script>
+        <script src="js/angular-route.js"></script>
+        <script src="js/socket.io.js"></script>
+
+        <script src="js/DbService.js"></script>
+        <script src="js/LocalDb.js"></script>
+        <script src="js/Directive.js"></script>
+    
+        <script src="lib/ctrl/Login.js"></script>
+        <script src="lib/ctrl/Main.js"></script>
+        <script src="lib/ctrl/RafTanimlari.js"></script>
+
+        <script src="lib/Param.js"></script>
+        <script src="lib/QuerySql.js"></script>
+        
+        <script src="lib/App.js"></script>
+        <script src="lib/Controller.js"></script>
+    </body>
+</html>
+
+

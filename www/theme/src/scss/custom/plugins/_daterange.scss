@@ -1,0 +1,38 @@
+//
+// Daterange
+//
+
+/* Daterange Picker */
+.daterangepicker td.active, .daterangepicker td.active:hover {
+    background: $primary;
+  }
+  .daterangepicker .input-mini.active {
+    border: 1px solid rgba($dark,0.3);
+  }
+  .daterangepicker {
+    .ranges {
+      margin: 4px;
+      li {
+        border-radius: 2px;
+        color: $dark;
+        font-size: 12px;
+        background-color: $light;
+        border-color: $light;
+        margin-bottom: 4px;
+      }
+    }
+  }
+  .daterangepicker select.hourselect, .daterangepicker select.minuteselect,
+  .daterangepicker select.secondselect, .daterangepicker select.ampmselect{
+    border: 1px solid rgba($dark,0.3);
+    padding: 2px;
+    width: 60px;
+  }
+  .daterangepicker .ranges li.active, .daterangepicker .ranges li:hover {
+    background: $primary;
+    color: $white;
+  }
+  .daterangepicker select.monthselect, .daterangepicker select.yearselect {
+    border-color: $text-muted;
+  }
+  

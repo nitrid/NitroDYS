@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="App">
+    <head>
+        <meta charset="utf-8" />
+        <title>Nitrogen Depo Yönetim Otomasyonu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="img/logo-mini.png">
+        <!-- App css -->
+        <link href="theme/vertical/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <link href="theme/vertical/bootstrap-datepicker/bootstrap-datepicker.css" rel="stylesheet">
+        <link href="theme/vertical/assets/libs/spinkit/spinkit.css" rel="stylesheet" type="text/css">
+        <link href="theme/vertical/jsgrid/css/jsgrid.css" rel="stylesheet">
+        <link href="theme/vertical/jsgrid/vendorCSS/jsgrid.css" rel="stylesheet">
+        <link href="theme/src/alertify.css" rel="stylesheet">
+        <link href="custom.css" rel="stylesheet">
+    </head>
+    <body ng-controller="Main" ng-init="Init()">
+        <div id="wrapper">
+            <div class="left-side-menu">
+                <div class="slimscroll-menu">
+                    <!-- Menü -->
+                    <div id="sidebar-menu" style="padding-top: 80px;">
+                        <ul class="metismenu" id="side-menu">
+                            <li class="">
+                                <a href="javascript: void(0);" aria-expanded="false">
+                                    <i class="fe-layers"></i>
+                                    <span>Tanımlar</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
+                                    <li><a href="#!RafTanimlari">Raf Tanımları</a></li>
+                                    <li><a href="apps-calendar.html">Raf Kategori Tanımları</a></li>
+                                </ul>
+                            </li>
+                            <li class="">
+                                <a href="javascript: void(0);" aria-expanded="false">
+                                    <i class="fe-file-text"></i>
+                                    <span>Evraklar</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
+                                    <li><a href="apps-calendar.html">Mal Kabul</a></li>
+                                    <li><a href="apps-calendar.html">Sevkiyat</a></li>
+                                </ul>
+                            </li>
+                            <li class="">
+                                <a href="javascript: void(0);" aria-expanded="false">
+                                    <i class="fe-bar-chart-2"></i>
+                                    <span>Raporlar</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul class="nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
+                                    <li><a href="apps-calendar.html">Durum Sorgulama</a></li>
+                                    <li><a href="apps-calendar.html">Emirler</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+            <div class="content-page">
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topnav-menu topnav-menu-left m-0">
+                            <li>
+                                <button class="button-menu-mobile disable-btn">
+                                    <i class="fe-menu"></i>
+                                </button>
+                            </li>
+                            <li>
+                                <h4 class="page-title-main" id="page-title"></h4>
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Anasayfa</a></li>
+                                    <li class="breadcrumb-item active" id="page-path"></li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="content">
+                        <div ng-view></div>
+                    </div> 
+            </div>
+        </div>
+        <!-- Scripts-->
+        <script src="theme/vertical/assets/js/vendor.min.js"></script>
+        <script src="theme/vertical/assets/libs/jquery-knob/jquery.knob.min.js"></script>
+        <script src="theme/vertical/assets/js/app.min.js"></script>
+        <script src="theme/vertical/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+        <script src="theme/vertical/bootstrap-datepicker/bootstrap-datepicker.tr.min.js"></script>
+        <script src="theme/src/alertify.js"></script>
+
+        <!-- JSGrid -->
+        <!-- <script src="theme/vertical/jsgrid/tables/jsgrid.js"></script> -->
+        <script src="theme/vertical/jsgrid/tables/jsgrid-db.js"></script>
+        <script src="theme/vertical/jsgrid/vendorJS/jsgrid.js"></script>
+
+        <script src="../js/moment.min.js"></script>
+        <script src="../js/moment-with-locales.min.js"></script>
+
+        <!-- Right bar overlay-->
+        <div class="rightbar-overlay"></div>
+        <!--TONE-->
+        <script src="js/angular.js"></script>
+        <script src="js/angular-route.js"></script>
+        <script src="js/socket.io.js"></script>
+
+        <script src="js/DbService.js"></script>
+        <script src="js/LocalDb.js"></script>
+        <script src="js/Directive.js"></script>
+
+        <script src="lib/ctrl/Login.js"></script>
+        <script src="lib/ctrl/Main.js"></script>
+        <script src="lib/ctrl/RafTanimlari.js"></script>
+
+        <script src="lib/Param.js"></script>
+        <script src="lib/QuerySql.js"></script>
+
+        <script src="lib/App.js"></script>
+        <script src="lib/Controller.js"></script> 
+        <style>
+            .jsgrid-cell
+            { 
+                overflow: hidden; 
+            }
+        </style>
+    </body>
+</html>

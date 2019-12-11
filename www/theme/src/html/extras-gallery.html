@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Highdmin - Responsive Bootstrap 4 Admin Dashboard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+        <meta content="Coderthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+        <!--venobox lightbox-->
+        <link rel="stylesheet" href="assets/libs/magnific-popup/magnific-popup.css"/>
+
+        <!-- App css -->
+        <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body>
+
+        <!-- Begin page -->
+        <div id="wrapper">
+
+          
+
+            @@include('./partials/left-sidebar.html')
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+         
+            <div class="content-page">
+
+                    @@include('./partials/topbar.html', {"title": "Gallery","subtitle": "Highdmin","item": "Extras","activeitem": "Gallery"})
+                   
+                <div class="content">
+                      
+                    
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+                        
+                         <!-- SECTION FILTER
+                        ================================================== -->
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="text-center filter-menu">
+                                    <a href="#" data-rel="all" class="filter-menu-item active">All</a>
+                                    <a href="#" data-rel="webdesign" class="filter-menu-item">Web Design</a>
+                                    <a href="#" data-rel="graphicdesign" class="filter-menu-item">Graphic Design</a>
+                                    <a href="#" data-rel="illustrator" class="filter-menu-item">Illustrator</a>
+                                    <a href="#" data-rel="photography" class="filter-menu-item">Photography</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="port filterable-content ">
+
+
+
+                                <div class="card-columns">
+                                        <div class="card filter-item all webdesign illustrator">
+                                                <a href="assets/images/small/img-1.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-1.jpg" class="thumb-img img-fluid" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Street Photography</h4>
+                                                            <p>Graphic Design</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                        </div>
+
+                                        
+                                        <div class="card filter-item all webdesign graphicdesign">
+                                                <a href="assets/images/small/img-4.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-4.jpg" class="thumb-img img-fluid" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Creative Agency</h4>
+                                                            <p>Natural</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                        </div>
+
+                                        <div class="card filter-item all illustrator photography graphicdesign">
+                                                <a href="assets/images/small/img-7.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-7.jpg" class="thumb-img" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Traditional Building</h4>
+                                                            <p>Photography</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                        </div>
+                                        
+                                        
+
+                                        <div class="card filter-item all graphicdesign illustrator photography">
+                                                <a href="assets/images/small/img-2.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-2.jpg" class="thumb-img" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Traditional Building</h4>
+                                                            <p>Photography</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                        </div>
+                                        
+                                        
+                                        <div class="card filter-item all webdesign photography">
+                                                <a href="assets/images/small/img-6.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-6.jpg" class="thumb-img img-fluid" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Creative Agency</h4>
+                                                            <p>Web Design</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                        </div>
+
+                                        <div class="card filter-item all graphicdesign photography webdesign">
+                                                <a href="assets/images/small/img-1.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-1.jpg" class="thumb-img img-fluid" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Beautiful House</h4>
+                                                            <p>Natural</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                        </div> 
+
+                                        <div class="card filter-item all webdesign illustrator">
+                                                <a href="assets/images/small/img-3.jpg" class="image-popup">
+                                                    <div class="portfolio-masonry-box">
+                                                        <div class="portfolio-masonry-img">
+                                                            <img src="assets/images/small/img-3.jpg" class="thumb-img img-fluid" alt="work-thumbnail">
+                                                        </div>
+                                                        <div class="portfolio-masonry-detail">
+                                                            <h4 class="font-18">Creative Agency</h4>
+                                                            <p>Natural</p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                      </div> 
+
+                                    <div class="card filter-item all graphicdesign photography">
+                                            <a href="assets/images/small/img-5.jpg" class="image-popup">
+                                                <div class="portfolio-masonry-box">
+                                                    <div class="portfolio-masonry-img">
+                                                        <img src="assets/images/small/img-5.jpg" class="thumb-img" alt="work-thumbnail">
+                                                    </div>
+                                                    <div class="portfolio-masonry-detail">
+                                                        <h4 class="font-18">Street Photography</h4>
+                                                        <p>Photography</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                    </div>
+
+                                    <div class="card filter-item all webdesign illustrator">
+                                            <a href="assets/images/small/img-3.jpg" class="image-popup">
+                                                <div class="portfolio-masonry-box">
+                                                    <div class="portfolio-masonry-img">
+                                                        <img src="assets/images/small/img-3.jpg" class="thumb-img img-fluid" alt="work-thumbnail">
+                                                    </div>
+                                                    <div class="portfolio-masonry-detail">
+                                                        <h4 class="font-18">Creative Agency</h4>
+                                                        <p>Natural</p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                  </div>
+
+                                        
+                        </div> <!-- End row -->
+
+                        
+                    </div> <!-- end container-fluid -->
+
+                </div> <!-- end content -->
+
+                @@include('./partials/footer.html')
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+        </div>
+        <!-- END wrapper -->
+
+        @@include('./partials/right-sidebar.html')
+
+        <!-- Vendor js -->
+        <script src="assets/js/vendor.min.js"></script>
+
+        <!--venobox lightbox-->
+        <script src="assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+        <!-- Gallery Init-->
+        <script src="assets/js/pages/gallery.init.js"></script>
+
+        <!-- App js -->
+        <script src="assets/js/app.min.js"></script>
+        
+    </body>
+</html>

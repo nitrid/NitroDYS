@@ -1,0 +1,87 @@
+<div ng-controller="RafTanimlari" ng-init="Init()">
+    <div class="card-box">
+        <div class="row">
+            <div class="col-12" style="padding-bottom: 10px;">
+                <div class="btn-group float-right">
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-24 vertical-middle"></i></button>
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnKaydet()"><i class="mdi mdi-content-save-move font-24 vertical-middle"></i></button>
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-24 vertical-middle"></i></button>
+                </div>
+            </div>
+        </div>
+        <form class="form-horizontal">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Raf Kodu :</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].KODU">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid()"><i class="fas fa-search vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Kat :</label>
+                <div class="col-md-1">
+                    <select class="form-control" ng-model="DataListe[0].KAT">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Sıra :</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="DataListe[0].SIRA">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Kategori :</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].KATEGORI">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button"><i class="fas fa-search vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">En :</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="DataListe[0].EN">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Boy :</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="DataListe[0].BOY">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Yükseklik :</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="DataListe[0].YUKSEKLIK">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade bs-example-modal-lg" id="MdlSecim" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">Seçim Ekranı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-block btn-primary waves-effect waves-light mb-1" ng-click="BtnGridSec()">Seç</button>
+                    <div id="TblSecim"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>

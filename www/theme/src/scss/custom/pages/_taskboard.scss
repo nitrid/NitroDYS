@@ -1,0 +1,34 @@
+/* =============
+   Task board
+============= */
+
+.taskList {
+  min-height: 40px;
+  margin-bottom: 0;
+
+  li {
+    background-color: $white;
+    border: 1px solid rgba($gray-700,0.2);
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+
+    &:last-of-type {
+      margin-bottom: 0;
+    }
+  }
+  a {
+    font-size: 13px;
+  }
+  .checkbox {
+    margin-left: 20px;
+    margin-top: 5px;
+  }
+}
+
+.task-placeholder {
+  border: 1px dashed rgba($light,0.9) !important;
+  background-color: rgba($light,0.2) !important;
+  padding: 20px;
+}
+

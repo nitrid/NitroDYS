@@ -1,7 +1,6 @@
-function RafTanimlari ($scope,$window,db)
+function RafKategoriTanimlari ($scope,$window,db)
 {
     let SecimSelectedRow = null;
-    let ModalTip = "";
 
     function TblSecimInit(pData)
     {
@@ -44,10 +43,10 @@ function RafTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function RafGetir(pKodu)
+    function Getir(pKodu)
     {
         $scope.DataListe = [];
-        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
+        db.GetData($scope.Firma,'RafKategoriTanimlariGetir',[pKodu],function(Data)
         {
             $scope.DataListe = Data;
         });
@@ -60,19 +59,14 @@ function RafTanimlari ($scope,$window,db)
     
         TblSecimInit([]);
 
-        document.getElementById("page-title").innerHTML = "Raf Tanımları";
-        document.getElementById("page-path").innerHTML = "Raf Tanımları";
+        document.getElementById("page-title").innerHTML = "Raf Kategori Tanımları";
+        document.getElementById("page-path").innerHTML = "Raf Kategori Tanımları";
 
         $scope.DataListe = 
         [
             {
                 KODU : "",
-                KAT : "1",
-                SIRA : 1,
-                KATEGORI : "",
-                EN : "",
-                BOY : "",
-                YUKSEKLIK : ""
+                ADI : ""
             }
         ];
 
@@ -90,15 +84,10 @@ function RafTanimlari ($scope,$window,db)
                     UserParam.Kullanici,
                     UserParam.Kullanici,
                     $scope.DataListe[0].KODU,
-                    $scope.DataListe[0].KAT,
-                    $scope.DataListe[0].SIRA,
-                    $scope.DataListe[0].EN,
-                    $scope.DataListe[0].BOY,
-                    $scope.DataListe[0].YUKSEKLIK,                    
-                    $scope.DataListe[0].KATEGORI
+                    $scope.DataListe[0].ADI
                 ];
                 
-                db.ExecuteTag($scope.Firma,'RafTanimlariKaydet',InsertData,function(InsertResult)
+                db.ExecuteTag($scope.Firma,'RafKategoriTanimlariKaydet',InsertData,function(InsertResult)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
                     {  
@@ -121,7 +110,7 @@ function RafTanimlari ($scope,$window,db)
         { 
             if($scope.DataListe[0].KODU != '')
             {
-                db.ExecuteTag($scope.Firma,'RafTanimlariSil',[$scope.DataListe[0].KODU],function(data)
+                db.ExecuteTag($scope.Firma,'RafKategoriTanimlariSil',[$scope.DataListe[0].KODU],function(data)
                 {
                     $scope.Init();
                 });
@@ -136,48 +125,20 @@ function RafTanimlari ($scope,$window,db)
     }
     $scope.BtnGridSec = function()
     {
-        if(ModalTip == "Raf")
-        {
-            RafGetir(SecimSelectedRow.Item.KODU);
-            $("#MdlSecim").modal('hide');
-        }
-        else if(ModalTip == "Kategori")
-        {
-            $scope.DataListe[0].KATEGORI = SecimSelectedRow.Item.KODU;
-            $("#MdlSecim").modal('hide');
-        }
-        
-        ModalTip = "";
+        Getir(SecimSelectedRow.Item.KODU);
+        $("#MdlSecim").modal('hide');
     }
-    $scope.BtnSecimGrid = function(pTip)
+    $scope.BtnSecimGrid = function()
     {
-        ModalTip = pTip;
-
-        if(ModalTip == "Raf")
+        let TmpQuery = 
         {
-            let TmpQuery = 
-            {
-                db : $scope.Firma,
-                query:  "SELECT KODU,KAT,SIRA FROM RAF_TANIMLARI"
-            }
-            db.GetDataQuery(TmpQuery,function(Data)
-            {
-                TblSecimInit(Data);
-                $('#MdlSecim').modal('show');
-            });
+            db : $scope.Firma,
+            query:  "SELECT KODU,ADI FROM RAF_KATEGORI_TANIMLARI"
         }
-        else if(ModalTip == "Kategori")
+        db.GetDataQuery(TmpQuery,function(Data)
         {
-            let TmpQuery = 
-            {
-                db : $scope.Firma,
-                query:  "SELECT KODU,ADI FROM RAF_KATEGORI_TANIMLARI"
-            }
-            db.GetDataQuery(TmpQuery,function(Data)
-            {
-                TblSecimInit(Data);
-                $('#MdlSecim').modal('show');
-            });
-        }
+            TblSecimInit(Data);
+            $('#MdlSecim').modal('show');
+        });
     }
 }

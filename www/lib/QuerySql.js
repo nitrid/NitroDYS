@@ -53,6 +53,45 @@ var QuerySql =
     {
         query : "DELETE FROM RAF_TANIMLARI WHERE KODU = @KODU",
         param : ['KODU:string|25']
+    },
+    RafKategoriTanimlariKaydet : 
+    {
+        query : "DECLARE @TMPCODE NVARCHAR(25) " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAF_KATEGORI_TANIMLARI WHERE KODU = @KODU),'') " +
+                "IF @TMPCODE = '' " +
+                "INSERT INTO [dbo].[RAF_KATEGORI_TANIMLARI] " + 
+                "([OKULLANICI] " + 
+                ",[DKULLANICI] " + 
+                ",[OTARIH] " + 
+                ",[DTARIH] " + 
+                ",[KODU] " + 
+                ",[ADI]) " + 
+                "VALUES " + 
+                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()		    --<OTARIH, datetime,> \n" +
+                ",GETDATE()		    --<DTARIH, datetime,> \n" +
+                ",@KODU			    --<KODU, nvarchar(25),> \n" +
+                ",@ADI			    --<ADI, nvarchar(50),> \n" +
+                ") " +
+                "ELSE " + 
+                "UPDATE [dbo].[RAF_KATEGORI_TANIMLARI] SET " +
+                "[DKULLANICI] = @DKULLANICI " +
+                ",[DTARIH] = GETDATE() " +
+                ",[ADI] = @ADI " +
+                "WHERE [KODU] = @TMPCODE",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','ADI:string|25']
+    },
+    RafKategoriTanimlariGetir : 
+    {
+        query : "SELECT KODU AS KODU,ADI AS ADI FROM RAF_KATEGORI_TANIMLARI WHERE KODU = @KODU",
+        param : ['KODU'],
+        type : ['string|25']
+    },
+    RafKategoriTanimlariSil :
+    {
+        query : "DELETE FROM RAF_KATEGORI_TANIMLARI WHERE KODU = @KODU",
+        param : ['KODU:string|25']
     }
 };
 

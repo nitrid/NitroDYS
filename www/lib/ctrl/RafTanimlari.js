@@ -158,7 +158,7 @@ function RafTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,KAT,SIRA FROM RAF_TANIMLARI"
+                query:  "SELECT KODU,KAT,SIRA FROM RAFLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -171,7 +171,7 @@ function RafTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,ADI FROM RAF_KATEGORI_TANIMLARI"
+                query:  "SELECT KODU,ADI FROM RAF_KATEGORI"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

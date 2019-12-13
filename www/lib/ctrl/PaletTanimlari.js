@@ -1,6 +1,7 @@
-function RafKategoriTanimlari ($scope,$window,db)
+function PaletTanimlari ($scope,$window,db)
 {
     let SecimSelectedRow = null;
+    let ModalTip = "";
 
     function TblSecimInit(pData)
     {
@@ -43,10 +44,14 @@ function RafKategoriTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function Getir(pKodu)
+    function PaletIdGenerate()
+    {
+        
+    }
+    function RafGetir(pKodu)
     {
         $scope.DataListe = [];
-        db.GetData($scope.Firma,'RafKategoriTanimlariGetir',[pKodu],function(Data)
+        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
             $scope.DataListe = Data;
         });
@@ -59,18 +64,35 @@ function RafKategoriTanimlari ($scope,$window,db)
     
         TblSecimInit([]);
 
-        document.getElementById("page-title").innerHTML = "Raf Kategori Tanımları";
-        document.getElementById("page-path").innerHTML = "Raf Kategori Tanımları";
+        document.getElementById("page-title").innerHTML = "Palet Tanımları";
+        document.getElementById("page-path").innerHTML = "Palet Tanımları";
 
         $scope.DataListe = 
         [
             {
-                KODU : "",
-                ADI : ""
+                PALET_KODU : "",
+                PALET_TIPI : "1",
+                STOK_KODU : "",
+                SKT : moment(new Date()).format("DD.MM.YYYY"),
+                MIKTAR : "0"
             }
         ];
+    }
+    $scope.BtnPaletGenerate = function()
+    {
+        let length = 15
+        let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ'.split('');
 
-        
+        if (! length) {
+            length = Math.floor(Math.random() * chars.length);
+        }
+
+        var str = '';
+        for (var i = 0; i < length; i++) {
+            str += chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        $scope.DataListe[0].PALET_KODU = str;
     }
     $scope.BtnKaydet = function()
     {
@@ -84,10 +106,15 @@ function RafKategoriTanimlari ($scope,$window,db)
                     UserParam.Kullanici,
                     UserParam.Kullanici,
                     $scope.DataListe[0].KODU,
-                    $scope.DataListe[0].ADI
+                    $scope.DataListe[0].KAT,
+                    $scope.DataListe[0].SIRA,
+                    $scope.DataListe[0].EN,
+                    $scope.DataListe[0].BOY,
+                    $scope.DataListe[0].YUKSEKLIK,                    
+                    $scope.DataListe[0].KATEGORI
                 ];
                 
-                db.ExecuteTag($scope.Firma,'RafKategoriTanimlariKaydet',InsertData,function(InsertResult)
+                db.ExecuteTag($scope.Firma,'RafTanimlariKaydet',InsertData,function(InsertResult)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
                     {  
@@ -110,7 +137,7 @@ function RafKategoriTanimlari ($scope,$window,db)
         { 
             if($scope.DataListe[0].KODU != '')
             {
-                db.ExecuteTag($scope.Firma,'RafKategoriTanimlariSil',[$scope.DataListe[0].KODU],function(data)
+                db.ExecuteTag($scope.Firma,'RafTanimlariSil',[$scope.DataListe[0].KODU],function(data)
                 {
                     $scope.Init();
                 });
@@ -125,20 +152,48 @@ function RafKategoriTanimlari ($scope,$window,db)
     }
     $scope.BtnGridSec = function()
     {
-        Getir(SecimSelectedRow.Item.KODU);
-        $("#MdlSecim").modal('hide');
-    }
-    $scope.BtnSecimGrid = function()
-    {
-        let TmpQuery = 
+        if(ModalTip == "Raf")
         {
-            db : $scope.Firma,
-            query:  "SELECT KODU,ADI FROM RAF_KATEGORI"
+            RafGetir(SecimSelectedRow.Item.KODU);
+            $("#MdlSecim").modal('hide');
         }
-        db.GetDataQuery(TmpQuery,function(Data)
+        else if(ModalTip == "Kategori")
         {
-            TblSecimInit(Data);
-            $('#MdlSecim').modal('show');
-        });
+            $scope.DataListe[0].KATEGORI = SecimSelectedRow.Item.KODU;
+            $("#MdlSecim").modal('hide');
+        }
+        
+        ModalTip = "";
+    }
+    $scope.BtnSecimGrid = function(pTip)
+    {
+        ModalTip = pTip;
+
+        if(ModalTip == "Raf")
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT KODU,KAT,SIRA FROM RAF_TANIMLARI"
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                TblSecimInit(Data);
+                $('#MdlSecim').modal('show');
+            });
+        }
+        else if(ModalTip == "Kategori")
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT KODU,ADI FROM RAF_KATEGORI_TANIMLARI"
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                TblSecimInit(Data);
+                $('#MdlSecim').modal('show');
+            });
+        }
     }
 }

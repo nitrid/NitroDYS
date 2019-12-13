@@ -111,7 +111,6 @@ angular.module('app.db', []).service('db',function($rootScope)
         {
             if(_Socket.connected)
             {
-                console.log(pParam.db);
                 TmpQuery = window["QuerySql"][pParam.tag];
                 TmpQuery.value = pParam.param;
                 TmpQuery.db = pParam.db;

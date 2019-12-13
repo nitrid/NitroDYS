@@ -1,0 +1,88 @@
+<div ng-controller="PaletTanimlari" ng-init="Init()">
+    <div class="card-box">
+        <div class="row">
+            <div class="col-12" style="padding-bottom: 10px;">
+                <div class="btn-group float-right">
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-24 vertical-middle"></i></button>
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnKaydet()"><i class="mdi mdi-content-save-move font-24 vertical-middle"></i></button>
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-24 vertical-middle"></i></button>
+                </div>
+            </div>
+        </div>
+        <form class="form-horizontal">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Palet Kodu :</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].PALET_KODU">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Raf')"><i class="fas fa-search vertical-middle"></i></button>
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnPaletGenerate()"><i class="fas fa-sync-alt vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="col-md-1">
+                    <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Raf')"><i class="fas fa-search vertical-middle"></i></button>
+                </div> -->
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Palet Tipi :</label>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="DataListe[0].PALET_TIPI">
+                        <option value="0">Euro</option>
+                        <option value="1">Usa</option>
+                        <option value="2">2 li Euro</option>
+                        <option value="3">2 li Usa</option>
+                        <option value="4">3 li Euro</option>
+                        <option value="5">3 li Usa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Stok Kodu :</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].STOK_KODU">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Kategori')"><i class="fas fa-search vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Son Kullanım Tarihi :</label>
+                <div class="col-md-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" data-provide='datepicker' id="Skt" ng-model="DataListe[0].SKT">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Miktar :</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control" ng-model="DataListe[0].MIKTAR">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade bs-example-modal-lg" id="MdlSecim" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">Seçim Ekranı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-block btn-primary waves-effect waves-light mb-1" ng-click="BtnGridSec()">Seç</button>
+                    <div id="TblSecim"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+<script>$('#Skt').datepicker({language: 'tr'});</script>

@@ -19,5 +19,9 @@ app.config(function($routeProvider)
     .when("/RafKategoriTanimlari", 
     {
         templateUrl : "html/RafKategoriTanimlari.html"
+    })    
+    .when("/EtiketBasim", 
+    {
+        templateUrl : "html/EtiketBasim.html"
     })
 });

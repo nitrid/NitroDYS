@@ -1,0 +1,26 @@
+<service>
+	<id>nitrogenpda.exe</id>
+	<name>NitroGen PDA</name>
+	<description>NitroGen PDA Server.</description>
+	<executable>C:\Program Files\nodejs\node.exe</executable>
+	<logmode>rotate</logmode>
+	<argument>--harmony</argument>
+	<argument>C:\Projeler\NitroDYS\node_modules\node-windows\lib\wrapper.js</argument>
+	<argument>--file</argument>
+	<argument>C:\Projeler\NitroDYS\server.js</argument>
+	<argument>--log</argument>
+	<argument>NitroGen PDA wrapper</argument>
+	<argument>--grow</argument>
+	<argument>0.25</argument>
+	<argument>--wait</argument>
+	<argument>1</argument>
+	<argument>--maxrestarts</argument>
+	<argument>3</argument>
+	<argument>--abortonerror</argument>
+	<argument>n</argument>
+	<argument>--stopparentfirst</argument>
+	<argument>undefined</argument>
+	<stoptimeout>30sec</stoptimeout>
+	<env name="APP_DIR_PATH" value="C:\Projeler\NitroDYS\kurulum"/>
+	<workingdirectory>C:\Projeler\NitroDYS\kurulum</workingdirectory>
+</service>

@@ -44,14 +44,10 @@ function PaletTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function PaletIdGenerate()
-    {
-        
-    }
-    function RafGetir(pKodu)
+    function PaletGetir(pKodu)
     {
         $scope.DataListe = [];
-        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
+        db.GetData($scope.Firma,'PaletTanimlariGetir',[pKodu],function(Data)
         {
             $scope.DataListe = Data;
         });
@@ -70,29 +66,52 @@ function PaletTanimlari ($scope,$window,db)
         $scope.DataListe = 
         [
             {
-                PALET_KODU : "",
-                PALET_TIPI : "1",
-                STOK_KODU : "",
+                KODU : "",
+                TIP : "0",
+                STOK : "",
                 SKT : moment(new Date()).format("DD.MM.YYYY"),
                 MIKTAR : "0"
             }
         ];
     }
     $scope.BtnPaletGenerate = function()
-    {
-        let length = 15
-        let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ'.split('');
+    {        
+        let KulStr = "";
+        let TarihStr = "";
+        let AutoStr = "";
 
-        if (! length) {
-            length = Math.floor(Math.random() * chars.length);
-        }
+        UserParam.Sistem.PaletFormat.toString().split("|").forEach(function(item)
+        {
+            if(item.toString().indexOf("K") > -1)
+            {
+                KulStr = $scope.DataListe[0].KODU.toString().substring(0,item.toString().length);
+            }
+            else if(item.toString().indexOf("YYYYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYYYMMDD");
+            }
+            else if(item.toString().indexOf("YYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYMMDD");
+            }
+            else if(item.toString().indexOf("O") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+        });
 
-        var str = '';
-        for (var i = 0; i < length; i++) {
-            str += chars[Math.floor(Math.random() * chars.length)];
-        }
-
-        $scope.DataListe[0].PALET_KODU = str;
+        $scope.DataListe[0].KODU = KulStr + TarihStr + AutoStr;
     }
     $scope.BtnKaydet = function()
     {
@@ -106,15 +125,13 @@ function PaletTanimlari ($scope,$window,db)
                     UserParam.Kullanici,
                     UserParam.Kullanici,
                     $scope.DataListe[0].KODU,
-                    $scope.DataListe[0].KAT,
-                    $scope.DataListe[0].SIRA,
-                    $scope.DataListe[0].EN,
-                    $scope.DataListe[0].BOY,
-                    $scope.DataListe[0].YUKSEKLIK,                    
-                    $scope.DataListe[0].KATEGORI
+                    $scope.DataListe[0].STOK,
+                    $scope.DataListe[0].TIP,
+                    $scope.DataListe[0].SKT,
+                    $scope.DataListe[0].MIKTAR
                 ];
                 
-                db.ExecuteTag($scope.Firma,'RafTanimlariKaydet',InsertData,function(InsertResult)
+                db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
                     {  
@@ -137,7 +154,7 @@ function PaletTanimlari ($scope,$window,db)
         { 
             if($scope.DataListe[0].KODU != '')
             {
-                db.ExecuteTag($scope.Firma,'RafTanimlariSil',[$scope.DataListe[0].KODU],function(data)
+                db.ExecuteTag($scope.Firma,'PaletTanimlariSil',[$scope.DataListe[0].KODU],function(data)
                 {
                     $scope.Init();
                 });
@@ -152,14 +169,14 @@ function PaletTanimlari ($scope,$window,db)
     }
     $scope.BtnGridSec = function()
     {
-        if(ModalTip == "Raf")
+        if(ModalTip == "Palet")
         {
-            RafGetir(SecimSelectedRow.Item.KODU);
+            PaletGetir(SecimSelectedRow.Item.KODU);
             $("#MdlSecim").modal('hide');
         }
-        else if(ModalTip == "Kategori")
+        else if(ModalTip == "Stok")
         {
-            $scope.DataListe[0].KATEGORI = SecimSelectedRow.Item.KODU;
+            $scope.DataListe[0].STOK = SecimSelectedRow.Item.KODU;
             $("#MdlSecim").modal('hide');
         }
         
@@ -169,12 +186,12 @@ function PaletTanimlari ($scope,$window,db)
     {
         ModalTip = pTip;
 
-        if(ModalTip == "Raf")
+        if(ModalTip == "Palet")
         {
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,KAT,SIRA FROM RAF_TANIMLARI"
+                query:  "SELECT KODU,STOK,SKT FROM PALETLER"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -182,12 +199,12 @@ function PaletTanimlari ($scope,$window,db)
                 $('#MdlSecim').modal('show');
             });
         }
-        else if(ModalTip == "Kategori")
+        else if(ModalTip == "Stok")
         {
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,ADI FROM RAF_KATEGORI_TANIMLARI"
+                query:  "SELECT KODU,ADI FROM STOKLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

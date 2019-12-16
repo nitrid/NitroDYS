@@ -3,9 +3,9 @@ var QuerySql =
     RafTanimlariKaydet : 
     {
         query : "DECLARE @TMPCODE NVARCHAR(25) " +
-                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAF_TANIMLARI WHERE KODU = @KODU),'') " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAFLAR WHERE KODU = @KODU),'') " +
                 "IF @TMPCODE = '' " +
-                "INSERT INTO [dbo].[RAF_TANIMLARI] " + 
+                "INSERT INTO [dbo].[RAFLAR] " + 
                 "([OKULLANICI] " + 
                 ",[DKULLANICI] " + 
                 ",[OTARIH] " + 
@@ -31,7 +31,7 @@ var QuerySql =
                 ",@KATEGORI		    --<KATEGORI, nvarchar(25),> \n" +
                 ") " +
                 "ELSE " + 
-                "UPDATE [dbo].[RAF_TANIMLARI] SET " +
+                "UPDATE [dbo].[RAFLAR] SET " +
                 "[DKULLANICI] = @DKULLANICI " +
                 ",[DTARIH] = GETDATE() " +
                 ",[KAT] = @KAT " +
@@ -45,21 +45,21 @@ var QuerySql =
     },
     RafTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,CONVERT(NVARCHAR(10),KAT) AS KAT,SIRA AS SIRA,EN AS EN,BOY AS BOY,YUKSEKLIK AS YUKSEKLIK,KATEGORI AS KATEGORI FROM RAF_TANIMLARI WHERE KODU = @KODU",
+        query : "SELECT KODU AS KODU,CONVERT(NVARCHAR(10),KAT) AS KAT,SIRA AS SIRA,EN AS EN,BOY AS BOY,YUKSEKLIK AS YUKSEKLIK,KATEGORI AS KATEGORI FROM RAFLAR WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
     },
     RafTanimlariSil :
     {
-        query : "DELETE FROM RAF_TANIMLARI WHERE KODU = @KODU",
+        query : "DELETE FROM RAFLAR WHERE KODU = @KODU",
         param : ['KODU:string|25']
     },
     RafKategoriTanimlariKaydet : 
     {
         query : "DECLARE @TMPCODE NVARCHAR(25) " +
-                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAF_KATEGORI_TANIMLARI WHERE KODU = @KODU),'') " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAF_KATEGORI WHERE KODU = @KODU),'') " +
                 "IF @TMPCODE = '' " +
-                "INSERT INTO [dbo].[RAF_KATEGORI_TANIMLARI] " + 
+                "INSERT INTO [dbo].[RAF_KATEGORI] " + 
                 "([OKULLANICI] " + 
                 ",[DKULLANICI] " + 
                 ",[OTARIH] " + 
@@ -75,7 +75,7 @@ var QuerySql =
                 ",@ADI			    --<ADI, nvarchar(50),> \n" +
                 ") " +
                 "ELSE " + 
-                "UPDATE [dbo].[RAF_KATEGORI_TANIMLARI] SET " +
+                "UPDATE [dbo].[RAF_KATEGORI] SET " +
                 "[DKULLANICI] = @DKULLANICI " +
                 ",[DTARIH] = GETDATE() " +
                 ",[ADI] = @ADI " +
@@ -84,13 +84,13 @@ var QuerySql =
     },
     RafKategoriTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,ADI AS ADI FROM RAF_KATEGORI_TANIMLARI WHERE KODU = @KODU",
+        query : "SELECT KODU AS KODU,ADI AS ADI FROM RAF_KATEGORI WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
     },
     RafKategoriTanimlariSil :
     {
-        query : "DELETE FROM RAF_KATEGORI_TANIMLARI WHERE KODU = @KODU",
+        query : "DELETE FROM RAF_KATEGORI WHERE KODU = @KODU",
         param : ['KODU:string|25']
     }
 };

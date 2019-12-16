@@ -24,4 +24,8 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/EtiketBasim.html"
     })
+    .when("/PaletTanimlari", 
+    {
+        templateUrl : "html/PaletTanimlari.html"
+    })
 });

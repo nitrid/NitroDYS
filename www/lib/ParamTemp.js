@@ -5,12 +5,8 @@ var ParamTemp =
 		"MikroId" : {"Title" : "Mikro Id","DefaultValue" : "1"},
 		"Sistem" : 
 		{
-		},
-		"Menu" :
-		{
-			"Sales Report" : {"Title" : "Sales Report","DefaultValue" : "1"},
-			"Buying Sales Report" : {"Title" : "Buying Sales Report","DefaultValue" : "1"},
-			"Mağaza Rapor" : {"Title" : "Mağaza Rapor","DefaultValue" : "1"},
-			"Marj Rapor" : {"Title" : "Marj Rapor","DefaultValue" : "1"}
+			"FirmaNo" : {"Title" : "Firma No","DefaultValue" : "0"},
+			"SubeNo" : {"Title" : "Şube No","DefaultValue" : "0"},
+			"PaletFormat" : {"Title" : "Palet Format","DefaultValue" : "###YYYYMMGG"}
 		}
 	}

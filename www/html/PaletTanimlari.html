@@ -14,9 +14,9 @@
                 <label class="col-md-2 col-form-label">Palet Kodu :</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="DataListe[0].PALET_KODU">
+                        <input type="text" class="form-control" ng-model="DataListe[0].KODU">
                         <div class="input-group-append">
-                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Raf')"><i class="fas fa-search vertical-middle"></i></button>
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Palet')"><i class="fas fa-search vertical-middle"></i></button>
                             <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnPaletGenerate()"><i class="fas fa-sync-alt vertical-middle"></i></button>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label">Palet Tipi :</label>
                 <div class="col-md-2">
-                    <select class="form-control" ng-model="DataListe[0].PALET_TIPI">
+                    <select class="form-control" ng-model="DataListe[0].TIP">
                         <option value="0">Euro</option>
                         <option value="1">Usa</option>
                         <option value="2">2 li Euro</option>
@@ -42,9 +42,9 @@
                 <label class="col-md-2 col-form-label">Stok Kodu :</label>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="DataListe[0].STOK_KODU">
+                        <input type="text" class="form-control" ng-model="DataListe[0].STOK">
                         <div class="input-group-append">
-                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Kategori')"><i class="fas fa-search vertical-middle"></i></button>
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Stok')"><i class="fas fa-search vertical-middle"></i></button>
                         </div>
                     </div>
                 </div>

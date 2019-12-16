@@ -92,6 +92,54 @@ var QuerySql =
     {
         query : "DELETE FROM RAF_KATEGORI WHERE KODU = @KODU",
         param : ['KODU:string|25']
+    },
+    PaletTanimlariKaydet : 
+    {
+        query : "DECLARE @TMPCODE NVARCHAR(25) " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM PALETLER WHERE KODU = @KODU),'') " +
+                "IF @TMPCODE = '' " +
+                "INSERT INTO [dbo].[PALETLER] " + 
+                "([OKULLANICI] " + 
+                ",[DKULLANICI] " + 
+                ",[OTARIH] " + 
+                ",[DTARIH] " + 
+                ",[KODU] " + 
+                ",[STOK] " + 
+                ",[TIP] " + 
+                ",[SKT] " + 
+                ",[MIKTAR]) " + 
+                "VALUES " + 
+                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()		    --<OTARIH, datetime,> \n" +
+                ",GETDATE()		    --<DTARIH, datetime,> \n" +
+                ",@KODU			    --<KODU, nvarchar(15),> \n" +
+                ",@STOK			    --<STOK, nvarchar(15),> \n" +
+                ",@TIP			    --<TIP, int,> \n" +
+                ",@SKT				--<SKT, datetime,> \n" +
+                ",@MIKTAR			--<MIKTAR, float,> \n" +
+                ") " +
+                "ELSE " + 
+                "UPDATE [dbo].[PALETLER] SET " +
+                "[DKULLANICI] = @DKULLANICI " +
+                ",[DTARIH] = GETDATE() " +
+                ",[STOK] = @STOK " +
+                ",[TIP] = @TIP " +
+                ",[SKT] = @SKT " +
+                ",[MIKTAR] = @MIKTAR " +
+                "WHERE [KODU] = @TMPCODE",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|15','STOK:string|25','TIP:int','SKT:date','MIKTAR:float']
+    },
+    PaletTanimlariSil :
+    {
+        query : "DELETE FROM PALETLER WHERE KODU = @KODU",
+        param : ['KODU:string|25']
+    },
+    PaletTanimlariGetir : 
+    {
+        query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,SKT AS SKT,MIKTAR AS MIKTAR FROM PALETLER WHERE KODU = @KODU",
+        param : ['KODU'],
+        type : ['string|25']
     }
 };
 

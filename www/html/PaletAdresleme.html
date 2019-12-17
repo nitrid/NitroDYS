@@ -1,0 +1,39 @@
+<div ng-controller="PaletAdresle" ng-init="Init()">
+    <div class="card-box">
+        <div class="row pb-20">
+            <div class="col-4 px-1">
+                    <select class="form-control form-control" ng-model="CmbEvrakTip">
+                        <option value="0">Giriş</option>
+                        <option value="1">Çıkış</option>
+                    </select>
+            </div>
+        </div>
+        <div class="form-group row">
+                <label class="col-md-2 col-form-label">Palet Kodu :</label>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].KODU">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Palet')"><i class="fas fa-search vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Raf Kodu :</label>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="DataListe[0].KODU">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('RAF')"><i class="fas fa-search vertical-middle"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        <div class="row">
+            <div class="col-4 px-10">
+                <button type="button" class="btn btn-primary waves-light waves-effect">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>

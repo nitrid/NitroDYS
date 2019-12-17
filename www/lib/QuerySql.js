@@ -140,6 +140,43 @@ var QuerySql =
         query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,SKT AS SKT,MIKTAR AS MIKTAR FROM PALETLER WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
+    },
+    EtiketKaydet : 
+    {
+        query : "INSERT INTO [dbo].[ETIKET] " + 
+                "([OKULLANICI] " + 
+                ",[DKULLANICI] " + 
+                ",[OTARIH] " + 
+                ",[DTARIH] " + 
+                ",[SERI] " + 
+                ",[SIRA] " + 
+                ",[PALET] " + 
+                ",[STOK] " + 
+                ",[BARKOD] " + 
+                ",[BIRIM] " + 
+                ",[BAS_MIKTAR] " + 
+                ",[DURUM]) " + 
+                "VALUES " + 
+                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()		    --<OTARIH, datetime,> \n" +
+                ",GETDATE()		    --<DTARIH, datetime,> \n" +
+                ",@SERI			    --<SERI, nvarchar(10),> \n" +
+                ",@SIRA			    --<SIRA, int,> \n" +
+                ",@PALET			--<PALET, nvarchar(15),> \n" +
+                ",@STOK				--<STOK, nvarchar(25),> \n" +
+                ",@BARKOD			--<BARKOD, nvarchar(25),> \n" +
+                ",@BIRIM			--<BIRIM, nvarchar(10),> \n" +
+                ",@BAS_MIKTAR		--<BAS_MIKTAR, float,> \n" +
+                ",@DURUM			--<DURUM, smallint,> \n" +
+                ") ",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','PALET:string|15','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
+    },
+    EtiketGetir : 
+    {
+        query : "SELECT SERI AS SERI,SIRA AS SIRA,PALET AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PALETLER WHERE KODU = PALET),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
+        param : ['SERI','SIRA'],
+        type : ['string|10','int']
     }
 };
 

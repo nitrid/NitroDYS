@@ -1,6 +1,7 @@
 function PaletTanimlari ($scope,$window,db)
 {
     let SecimSelectedRow = null;
+    let EtiketSelectedRow = null;
     let ModalTip = "";
 
     function TblSecimInit(pData)
@@ -35,6 +36,50 @@ function PaletTanimlari ($scope,$window,db)
             }
         });
     }
+    function TblEtiketInit(pData)
+    {                
+        $("#TblEtiket").jsGrid
+        ({
+            width: "100%",
+            updateOnResize: true,
+            heading: true,
+            selecting: true,
+            data : pData,
+            paging : true,
+            pageSize: 5,
+            pageButtonCount: 3,
+            pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
+            fields: 
+            [
+                {
+                    name: "PALET",
+                    title: "PALET",
+                    type: "text",
+                    align: "center",
+                    width: 150
+                }, 
+                {
+                    name: "STOK",
+                    title: "STOK",
+                    type: "text",
+                    align: "center",
+                    width: 200
+                },
+                {
+                    name: "MIKTAR",
+                    title: "MIKTAR",
+                    type: "text",
+                    align: "center",
+                    width: 100
+                }
+            ],
+            rowClick: function(args)
+            {
+                EtiketListeRowClick(args.itemIndex,args.item,this);
+                $scope.$apply();
+            }
+        });
+    }
     function SecimListeRowClick(pIndex,pItem,pObj)
     {    
         if ( SecimSelectedRow ) { SecimSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
@@ -44,12 +89,30 @@ function PaletTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
+    function EtiketListeRowClick(pIndex,pItem,pObj)
+    {    
+        if ( EtiketSelectedRow ) { EtiketSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
+        var $row = pObj.rowByItem(pItem);
+        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
+        EtiketSelectedRow = $row;
+        EtiketSelectedRow.Item = pItem
+        EtiketSelectedRow.Index = pIndex
+    }
     function PaletGetir(pKodu)
     {
         $scope.DataListe = [];
         db.GetData($scope.Firma,'PaletTanimlariGetir',[pKodu],function(Data)
         {
             $scope.DataListe = Data;
+        });
+    }
+    function EtiketGetir()
+    {
+        $scope.EtiketListe = [];
+        db.GetData($scope.Firma,'EtiketGetir',[$scope.EtiketSeri,$scope.EtiketSira],function(Data)
+        {
+            $scope.EtiketListe = Data;
+            TblEtiketInit(Data);
         });
     }
     $scope.Init = function()
@@ -59,9 +122,38 @@ function PaletTanimlari ($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
     
         TblSecimInit([]);
+        TblEtiketInit([]);
 
         document.getElementById("page-title").innerHTML = "Palet Tanımları";
         document.getElementById("page-path").innerHTML = "Palet Tanımları";
+
+        $scope.DataListe = 
+        [
+            {
+                KODU : "",
+                TIP : "0",
+                STOK : "",
+                SKT : moment(new Date()).format("DD.MM.YYYY"),
+                MIKTAR : "0"
+            }
+        ];
+
+        $scope.EtiketListe =
+        [
+            {
+                SERI : "",
+                SIRA : 1,
+                PALET : "",
+                STOK : "",
+                MIKTAR : ""
+            }
+        ]
+
+        $scope.EtiketSeri = UserParam.Etiket.Seri;
+    }
+    $scope.Yenile = function()
+    {
+        TblSecimInit([]);
 
         $scope.DataListe = 
         [
@@ -134,8 +226,32 @@ function PaletTanimlari ($scope,$window,db)
                 db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
-                    {  
-                        $scope.Init();
+                    {                          
+                        alertify.confirm('Dikkat !','Etiket olarak eklemek istermisiniz ?', function()
+                        {
+                            let InsertData =
+                            [
+                                UserParam.Kullanici,
+                                UserParam.Kullanici,
+                                $scope.EtiketSeri,
+                                $scope.EtiketSira,
+                                $scope.DataListe[0].KODU,
+                                $scope.DataListe[0].STOK,
+                                "",
+                                "",
+                                1,
+                                1
+                            ];
+                            db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertData,function(Result)
+                            { 
+                                EtiketGetir();
+                                $scope.Yenile();
+                            });
+                        },
+                        function()
+                        {
+                            $scope.Yenile();
+                        });
                     }
                 });                
             }

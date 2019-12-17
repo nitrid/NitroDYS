@@ -8,5 +8,9 @@ var ParamTemp =
 			"FirmaNo" : {"Title" : "Firma No","DefaultValue" : "0"},
 			"SubeNo" : {"Title" : "Şube No","DefaultValue" : "0"},
 			"PaletFormat" : {"Title" : "Palet Format","DefaultValue" : "###YYYYMMGG"}
+		},
+		"Etiket" : 
+		{
+			"Seri" : {"Title" : "Seri","DefaultValue" : ""}
 		}
 	}

@@ -8,6 +8,10 @@ var Param = [
 			"FirmaNo": "1",
 			"SubeNo": "0",
 			"PaletFormat" : "KKK|YYYYMMDD|OOOO"
-		}		
+		},	
+		"Etiket" :	
+		{
+			"Seri" : "A"
+		}
 	}
 ]

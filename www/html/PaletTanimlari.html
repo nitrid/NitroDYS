@@ -67,6 +67,48 @@
                 </div>
             </div>
         </form>
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a data-toggle="tab" aria-expanded="false" class="nav-link active">
+                        <i class="mdi mdi-segment"></i><span class="d-none d-sm-inline-block ml-2">Etiket Listesi</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home">
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Seri :</label>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control" ng-model="EtiketSeri">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-form-label">Sira :</label>
+                            <div class="col-md-2">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" ng-model="EtiketSira">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Stok')"><i class="fas fa-search vertical-middle"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="TblEtiket"></div>
+                            </div>
+                        </div>
+                        <div class="button-list">
+                            <button type="button" class="btn btn-primary waves-light waves-effect">Seçili Etiketleri Bas</button>
+                            <button type="button" class="btn btn-primary waves-light waves-effect">Tüm Etiketleri Bas</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
     <div class="modal fade bs-example-modal-lg" id="MdlSecim" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">

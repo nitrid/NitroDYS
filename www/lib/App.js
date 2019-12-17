@@ -20,9 +20,9 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/RafKategoriTanimlari.html"
     })    
-    .when("/EtiketBasim", 
+    .when("/PaletAdresleme", 
     {
-        templateUrl : "html/EtiketBasim.html"
+        templateUrl : "html/PaletAdresleme.html"
     })
     .when("/PaletTanimlari", 
     {

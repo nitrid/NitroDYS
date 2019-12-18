@@ -137,7 +137,7 @@ var QuerySql =
     },
     PaletTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,SKT AS SKT,MIKTAR AS MIKTAR FROM PALETLER WHERE KODU = @KODU",
+        query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM PALETLER WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
     },
@@ -150,6 +150,7 @@ var QuerySql =
                 ",[DTARIH] " + 
                 ",[SERI] " + 
                 ",[SIRA] " + 
+                ",[TARIH] " + 
                 ",[PALET] " + 
                 ",[STOK] " + 
                 ",[BARKOD] " + 
@@ -163,6 +164,7 @@ var QuerySql =
                 ",GETDATE()		    --<DTARIH, datetime,> \n" +
                 ",@SERI			    --<SERI, nvarchar(10),> \n" +
                 ",@SIRA			    --<SIRA, int,> \n" +
+                ",@TARIH		    --<TARIH, datetime,> \n" +
                 ",@PALET			--<PALET, nvarchar(15),> \n" +
                 ",@STOK				--<STOK, nvarchar(25),> \n" +
                 ",@BARKOD			--<BARKOD, nvarchar(25),> \n" +
@@ -170,11 +172,11 @@ var QuerySql =
                 ",@BAS_MIKTAR		--<BAS_MIKTAR, float,> \n" +
                 ",@DURUM			--<DURUM, smallint,> \n" +
                 ") ",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','PALET:string|15','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','TARIH:date','PALET:string|15','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
     },
     EtiketGetir : 
     {
-        query : "SELECT SERI AS SERI,SIRA AS SIRA,PALET AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PALETLER WHERE KODU = PALET),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
+        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PALET AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PALETLER WHERE KODU = PALET),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
         param : ['SERI','SIRA'],
         type : ['string|10','int']
     }

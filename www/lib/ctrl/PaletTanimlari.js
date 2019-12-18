@@ -52,6 +52,13 @@ function PaletTanimlari ($scope,$window,db)
             fields: 
             [
                 {
+                    name: "TARIH",
+                    title: "TARIH",
+                    type: "text",
+                    align: "center",
+                    width: 100
+                },
+                {
                     name: "PALET",
                     title: "PALET",
                     type: "text",
@@ -115,6 +122,61 @@ function PaletTanimlari ($scope,$window,db)
             TblEtiketInit(Data);
         });
     }
+    function MaxEtiketSira()
+    {
+        let TmpQuery = 
+        {
+            db : $scope.Firma,
+            query:  "SELECT ISNULL(MAX(SIRA),0) + 1 AS SIRA FROM ETIKET WHERE SERI = @SERI",
+            param : ['SERI'],
+            type : ['string|10'],
+            value : [$scope.EtiketSeri]
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        {
+            $scope.EtiketSira = Data[0].SIRA;
+        });
+    }
+    function Kaydet(pCallback)
+    {
+        let InsertData =
+        [
+            UserParam.Kullanici,
+            UserParam.Kullanici,
+            $scope.DataListe[0].KODU,
+            $scope.DataListe[0].STOK,
+            $scope.DataListe[0].TIP,
+            $scope.DataListe[0].SKT,
+            $scope.DataListe[0].MIKTAR
+        ];
+        
+        db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
+        { 
+            if(typeof(InsertResult.result.err) == 'undefined')
+            {                          
+                
+            }
+        });   
+        
+        let InsertEtiket =
+        [
+            UserParam.Kullanici,
+            UserParam.Kullanici,
+            $scope.EtiketSeri,
+            $scope.EtiketSira,
+            moment(new Date()).format("DD.MM.YYYY"),
+            $scope.DataListe[0].KODU,
+            $scope.DataListe[0].STOK,
+            "",
+            "",
+            1,
+            0
+        ];
+        db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
+        { 
+            pCallback(true);
+        });
+    }
     $scope.Init = function()
     {
         $scope.Firma = "NTGDB";
@@ -141,8 +203,7 @@ function PaletTanimlari ($scope,$window,db)
         $scope.EtiketListe =
         [
             {
-                SERI : "",
-                SIRA : 1,
+                TARIH : moment(new Date()).format("DD.MM.YYYY"),
                 PALET : "",
                 STOK : "",
                 MIKTAR : ""
@@ -150,6 +211,9 @@ function PaletTanimlari ($scope,$window,db)
         ]
 
         $scope.EtiketSeri = UserParam.Etiket.Seri;
+        $scope.OtoPaletAdet = 1;
+
+        MaxEtiketSira();
     }
     $scope.Yenile = function()
     {
@@ -212,48 +276,14 @@ function PaletTanimlari ($scope,$window,db)
         { 
             if($scope.DataListe[0].KODU != '')
             {
-                let InsertData =
-                [
-                    UserParam.Kullanici,
-                    UserParam.Kullanici,
-                    $scope.DataListe[0].KODU,
-                    $scope.DataListe[0].STOK,
-                    $scope.DataListe[0].TIP,
-                    $scope.DataListe[0].SKT,
-                    $scope.DataListe[0].MIKTAR
-                ];
-                
-                db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
-                { 
-                    if(typeof(InsertResult.result.err) == 'undefined')
-                    {                          
-                        alertify.confirm('Dikkat !','Etiket olarak eklemek istermisiniz ?', function()
-                        {
-                            let InsertData =
-                            [
-                                UserParam.Kullanici,
-                                UserParam.Kullanici,
-                                $scope.EtiketSeri,
-                                $scope.EtiketSira,
-                                $scope.DataListe[0].KODU,
-                                $scope.DataListe[0].STOK,
-                                "",
-                                "",
-                                1,
-                                1
-                            ];
-                            db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertData,function(Result)
-                            { 
-                                EtiketGetir();
-                                $scope.Yenile();
-                            });
-                        },
-                        function()
-                        {
-                            $scope.Yenile();
-                        });
+                Kaydet(function(pStatus)
+                {
+                    if(pStatus)
+                    {
+                        EtiketGetir();
+                        $scope.Yenile();
                     }
-                });                
+                });
             }
             else
             {
@@ -295,6 +325,15 @@ function PaletTanimlari ($scope,$window,db)
             $scope.DataListe[0].STOK = SecimSelectedRow.Item.KODU;
             $("#MdlSecim").modal('hide');
         }
+        else if(ModalTip == "Etiket")
+        {
+            $scope.EtiketSeri = SecimSelectedRow.Item.SERI;
+            $scope.EtiketSira = SecimSelectedRow.Item.SIRA;
+
+            EtiketGetir();
+
+            $("#MdlSecim").modal('hide');
+        }
         
         ModalTip = "";
     }
@@ -328,5 +367,82 @@ function PaletTanimlari ($scope,$window,db)
                 $('#MdlSecim').modal('show');
             });
         }
+        else if(ModalTip == "Etiket")
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,SERI,SIRA FROM ETIKET GROUP BY SERI,SIRA,TARIH"
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                TblSecimInit(Data);
+                $('#MdlSecim').modal('show');
+            });
+        }
+    }
+    $scope.BtnSeciliEtiket = function()
+    {
+        alertify.confirm('Dikkat !','Seçili etiketi yazdırmak istediğinize eminmisiniz ?', function()
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PALET",
+                param : ['PALET'],
+                type : ['string|15'],
+                value : [EtiketSelectedRow.Item.PALET]
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+            });
+        },
+        function(){});
+    }
+    $scope.BtnTumEtiket = function()
+    {
+        alertify.confirm('Dikkat !','Tüm etiket listesini yazdırmak istediğinize eminmisiniz ?', function()
+        {
+            $scope.EtiketListe.forEach(item => 
+            {
+                let TmpQuery = 
+                {
+                    db : $scope.Firma,
+                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PALET",
+                    param : ['PALET'],
+                    type : ['string|15'],
+                    value : [item.PALET]
+                }
+                db.GetDataQuery(TmpQuery,function(Data)
+                {
+                });
+            });
+            
+        },
+        function(){});
+    }
+    $scope.BtnAuto = function()
+    {
+        let TmpKodu = $scope.DataListe[0].KODU;
+
+        alertify.confirm('Dikkat !','Toplu palet oluşturmak istediğinize eminmisiniz ?', function()
+        {
+            for(let i = 0;i < $scope.OtoPaletAdet;i++)
+            {
+                $scope.DataListe[0].KODU = TmpKodu;
+                $scope.BtnPaletGenerate();
+
+                Kaydet(function(pStatus)
+                {
+                    if(pStatus)
+                    {
+                        EtiketGetir();
+                        $scope.Yenile();
+                    }
+                });
+            }
+            $("#MdlOtoPalet").modal('hide');
+        },
+        function(){});
     }
 }

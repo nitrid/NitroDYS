@@ -1,5 +1,6 @@
 function PaletAdresleme ($scope,$window,db)
 {
+    let SecimSelectedRow = null;
     function TblSecimInit(pData)
     {
         
@@ -62,8 +63,8 @@ function PaletAdresleme ($scope,$window,db)
                     width: 150
                 },
                 {
-                    name: "STOK",
-                    title: "STOK",
+                    name: "TIP",
+                    title: "TIP",
                     type: "text",
                     align: "center",
                     width: 200
@@ -83,6 +84,15 @@ function PaletAdresleme ($scope,$window,db)
             }
         });
     }
+    function SecimListeRowClick(pIndex,pItem,pObj)
+    {    
+        if ( SecimSelectedRow ) { SecimSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
+        var $row = pObj.rowByItem(pItem);
+        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
+        SecimSelectedRow = $row;
+        SecimSelectedRow.Item = pItem
+        SecimSelectedRow.Index = pIndex
+    }
     function AdresListeRowClick(pIndex,pItem,pObj)
     {    
         if ( AdresSelectedRow ) { AdresSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
@@ -92,24 +102,59 @@ function PaletAdresleme ($scope,$window,db)
         AdresSelectedRow.Item = pItem
         AdresSelectedRow.Index = pIndex
     }
-    function AdresGetir(pKodu)
+    function AdresGetir()
     {
-        $scope.DataListe = [];
-        db.GetData($scope.Firma,'',[pKodu],function(Data)
+        $scope.TopAdresListe = [];
+        db.GetData($scope.Firma,'TopAdresGetir','0',function(Data)
         {
-            $scope.DataListe = Data;
+            $scope.TopAdresListe = Data;
+            TblArdesGrid(Data);
+
         });
+    }
+    function PaletGetir(pKodu)
+    {
+        $scope.PaletListe = [];
+        db.GetData($scope.Firma,'PaletTanimlariGetir',[pKodu],function(Data)
+        {
+            $scope.PaletListe = Data;
+        });
+    }
+    function RafGetir(pKodu)
+    {
+        $scope.RafListe = [];
+        db.GetData($scope.Firma,'RafTanimGetir',[pKodu],function(Data)
+        {
+            $scope.RafListe = Data;
+        });  
     }
     $scope.Init = function()
     {
+        $scope.Seri = ''
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
+        $scope.CmbEvrakTip = '0';
     
         
         TblArdesGrid();
+        AdresGetir();
 
-        $scope.AdresSeri = UserParam.Adres.Seri;
+        $scope.AdresSeri = ''
+    }
+    $scope.BtnGridSec = function()
+    {
+        if(ModalTip == "Palet")
+        {
+            PaletGetir(SecimSelectedRow.Item.KODU);
+            $("#MdlSecim").modal('hide');
+        }
+        if(ModalTip == "RAF")
+        {
+            RafGetir(SecimSelectedRow.Item.KODU);
+            $("#MdlSecim").modal('hide');
+        }
+        ModalTip = "";
     }
     $scope.BtnSecimGrid = function(pTip)
     {
@@ -133,7 +178,7 @@ function PaletAdresleme ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,ADI FROM RAFLAR"
+                query:  "SELECT KODU,KAT,SIRA FROM RAFLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -141,6 +186,26 @@ function PaletAdresleme ($scope,$window,db)
                 $('#MdlSecim').modal('show');
             });
         }
+    }
+    $scope.Insert = function()
+    {
+        let InsertData =
+        [
+            UserParam.Kullanici,
+            $scope.RafListe[0].KODU,
+            $scope.CmbEvrakTip,
+            $scope.PaletListe[0].KODU,
+            $scope.PaletListe[0].MIKTAR,
+        ];
+        
+        db.ExecuteTag($scope.Firma,'PaletHarInsert',InsertData,function(InsertResult)
+        { 
+            if(typeof(InsertResult.result.err) == 'undefined')
+            {                          
+              console.log('CREATED BY RECEP KARACA ;)')   
+            }
+            AdresGetir();
+        });   
     }
 
 }

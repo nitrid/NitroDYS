@@ -141,6 +141,42 @@ var QuerySql =
         param : ['KODU'],
         type : ['string|25']
     },
+    RafTanimGetir :
+    {
+        query : "SELECT KODU AS KODU,KAT AS KAT,SIRA AS SIRA FROM RAFLAR WHERE KODU = @KODU",
+        param : ['KODU'],
+        type : ['string|25']
+    },
+    PaletHarInsert :
+    {
+        query : "INSERT INTO [dbo].[PALET_HAR] " +
+                "([UID] " +
+                ",[OKULLANICI]  " +
+                ",[OTARIH]  " +
+                ",[TARIH] " +
+                ",[RAF] " +
+                ",[TIP] " +
+                ",[PALET] " +
+                ",[MIKTAR]) " +
+                "VALUES " +
+                "( NEWID() " +
+                ",@OKULLANICI               -- <OKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()                 --<OTARIH, datetime,> \n" +
+                ",GETDATE()                 --<TARIH, datetime,> \n" +
+                ",@RAF                      --<RAF, nvarchar(10),> \n" +
+                ",@TIP                      --<TIP, int,> \n" +
+                ",@PALET                    --<PALET, nvarchar(15),> \n" +
+                ",@MIKTAR                   --<MIKTAR, float,> \n" +
+                " )",
+        param :  ['OKULLANICI:string|10','RAF:string|10','TIP:int','PALET:string|15','MIKTAR:float']
+    },
+    TopAdresGetir:
+    {
+        query : "Select TOP(10) PALET AS PALET, RAF AS RAF, " +
+        " CASE  WHEN TIP = 0 THEN 'GİRİŞ' " +
+        " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from PALET_HAR WHERE MIKTAR > @MIKTAR ORDER BY OTARIH DESC" ,
+        param : ['MIKTAR:float']
+    },
     EtiketKaydet : 
     {
         query : "INSERT INTO [dbo].[ETIKET] " + 

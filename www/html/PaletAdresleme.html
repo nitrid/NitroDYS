@@ -12,7 +12,7 @@
                 <label class="col-md-2 col-form-label">Palet Kodu :</label>
                 <div class="col-md-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="DataListe[0].KODU">
+                        <input type="text" class="form-control" ng-model="PaletListe[0].KODU">
                         <div class="input-group-append">
                             <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Palet')"><i class="fas fa-search vertical-middle"></i></button>
                         </div>
@@ -23,7 +23,7 @@
                     <label class="col-md-2 col-form-label">Raf Kodu :</label>
                     <div class="col-md-4">
                         <div class="input-group">
-                            <input type="text" class="form-control" ng-model="DataListe[0].KODU">
+                            <input type="text" class="form-control" ng-model="RafListe[0].KODU">
                             <div class="input-group-append">
                                 <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('RAF')"><i class="fas fa-search vertical-middle"></i></button>
                             </div>
@@ -32,8 +32,11 @@
                 </div>
         <div class="row">
             <div class="col-4 px-10">
-                <button type="button" class="btn btn-primary waves-light waves-effect">Kaydet</button>
+                <button type="button" class="btn btn-primary waves-light waves-effect" ng-click="Insert()">Kaydet</button>
             </div>
+        </div>
+        <div class="row">
+            <label class="col-12 col-form-label">SON 10 PALET HAREKETİ:</label>
         </div>
         <div class="row">
             <div class="col-12">
@@ -41,8 +44,7 @@
             </div>
         </div>
     </div>
-</div>
- <!-- SEÇİM MODAL -->
+     <!-- SEÇİM MODAL -->
  <div class="modal fade bs-example-modal-lg" id="MdlSecim" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -58,4 +60,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

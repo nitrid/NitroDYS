@@ -77,11 +77,7 @@ function PaletAdresleme ($scope,$window,db)
                     width: 100
                 }
             ],
-            rowClick: function(args)
-            {
-                AdresListeRowClick(args.itemIndex,args.item,this);
-                $scope.$apply();
-            }
+
         });
     }
     function SecimListeRowClick(pIndex,pItem,pObj)
@@ -93,15 +89,7 @@ function PaletAdresleme ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function AdresListeRowClick(pIndex,pItem,pObj)
-    {    
-        if ( AdresSelectedRow ) { AdresSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
-        var $row = pObj.rowByItem(pItem);
-        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
-        AdresSelectedRow = $row;
-        AdresSelectedRow.Item = pItem
-        AdresSelectedRow.Index = pIndex
-    }
+
     function AdresGetir()
     {
         $scope.TopAdresListe = [];
@@ -118,6 +106,8 @@ function PaletAdresleme ($scope,$window,db)
         db.GetData($scope.Firma,'PaletTanimlariGetir',[pKodu],function(Data)
         {
             $scope.PaletListe = Data;
+            $scope.PaletKodu = $scope.PaletListe[0].KODU;
+            $scope.MIKTAR = $scope.PaletListe[0].MIKTAR
         });
     }
     function RafGetir(pKodu)
@@ -126,7 +116,16 @@ function PaletAdresleme ($scope,$window,db)
         db.GetData($scope.Firma,'RafTanimGetir',[pKodu],function(Data)
         {
             $scope.RafListe = Data;
+            $scope.RafKodu = $scope.RafListe[0].KODU;
         });  
+    }
+    function InsertAfterRefresh()
+    {
+        $scope.PaletKodu = '';
+        $scope.RafKodu = '';
+        $scope.Init()
+
+
     }
     $scope.Init = function()
     {
@@ -135,6 +134,8 @@ function PaletAdresleme ($scope,$window,db)
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.CmbEvrakTip = '0';
+        $scope.MIKTAR = 0;
+        $scope.PaletKodu = '';
     
         
         TblArdesGrid();
@@ -187,25 +188,45 @@ function PaletAdresleme ($scope,$window,db)
             });
         }
     }
+    $scope.PaletKoduGetir = function(keyEvent)
+    {
+        if(keyEvent.which === 13)
+        {
+            PaletGetir($scope.PaletKodu)
+            $window.document.getElementById("RafKodu").focus();
+            $window.document.getElementById("RafKodu").select();
+        }
+    }
     $scope.Insert = function()
     {
-        let InsertData =
-        [
-            UserParam.Kullanici,
-            $scope.RafListe[0].KODU,
-            $scope.CmbEvrakTip,
-            $scope.PaletListe[0].KODU,
-            $scope.PaletListe[0].MIKTAR,
-        ];
+        console.log($scope.MIKTAR)
+        if($scope.MIKTAR < 1)
+        {
+            alertify.alert("Palet Kodunuz Hatalı veya Palet Boş..");
+            InsertAfterRefresh();
+        }
+        else
+        {
+            let InsertData =
+            [
+                UserParam.Kullanici,
+                $scope.RafKodu,
+                $scope.CmbEvrakTip,
+                $scope.PaletListe[0].KODU,
+                $scope.MIKTAR,
+            ];
+            
+            db.ExecuteTag($scope.Firma,'PaletHarInsert',InsertData,function(InsertResult)
+            { 
+                if(typeof(InsertResult.result.err) == 'undefined')
+                {                          
+                  console.log('CREATED BY RECEP KARACA ;)')   
+                }
+                AdresGetir();
+                InsertAfterRefresh();
+            });   
+        }
         
-        db.ExecuteTag($scope.Firma,'PaletHarInsert',InsertData,function(InsertResult)
-        { 
-            if(typeof(InsertResult.result.err) == 'undefined')
-            {                          
-              console.log('CREATED BY RECEP KARACA ;)')   
-            }
-            AdresGetir();
-        });   
     }
 
 }

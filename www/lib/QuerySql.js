@@ -154,7 +154,7 @@ var QuerySql =
     },
     PaletHarInsert :
     {
-        query : "INSERT INTO [dbo].[PALET_HAR] " +
+        query : "INSERT INTO [dbo].[PALET_HAREKETLERI] " +
                 "([UID] " +
                 ",[OKULLANICI]  " +
                 ",[OTARIH]  " +
@@ -179,7 +179,7 @@ var QuerySql =
     {
         query : "Select TOP(10) PALET AS PALET, RAF AS RAF, " +
         " CASE  WHEN TIP = 0 THEN 'GİRİŞ' " +
-        " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from PALET_HAR WHERE MIKTAR > @MIKTAR ORDER BY OTARIH DESC" ,
+        " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from PALET_HAREKETLERI WHERE MIKTAR > @MIKTAR ORDER BY OTARIH DESC" ,
         param : ['MIKTAR:float']
     },
     EtiketKaydet : 

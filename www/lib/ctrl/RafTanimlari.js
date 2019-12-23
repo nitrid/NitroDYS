@@ -24,7 +24,7 @@ function RafTanimlari ($scope,$window,db)
             selecting: true,
             data : pData,
             paging : true,
-            pageSize: 5,
+            pageSize: 10,
             pageButtonCount: 3,
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: TmpColumns,
@@ -44,10 +44,10 @@ function RafTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function RafGetir(pKodu)
+    function RafGetir(pKodu,pKat)
     {
         $scope.DataListe = [];
-        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
+        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu,pKat],function(Data)
         {
             $scope.DataListe = Data;
         });
@@ -67,7 +67,9 @@ function RafTanimlari ($scope,$window,db)
         [
             {
                 KODU : "",
-                KAT : "1",
+                TIP : "0",
+                STOK : "",
+                KAT : "0",
                 SIRA : 1,
                 KATEGORI : "",
                 EN : "",
@@ -90,6 +92,8 @@ function RafTanimlari ($scope,$window,db)
                     UserParam.Kullanici,
                     UserParam.Kullanici,
                     $scope.DataListe[0].KODU,
+                    $scope.DataListe[0].TIP,
+                    $scope.DataListe[0].STOK,
                     $scope.DataListe[0].KAT,
                     $scope.DataListe[0].SIRA,
                     $scope.DataListe[0].EN,
@@ -121,7 +125,7 @@ function RafTanimlari ($scope,$window,db)
         { 
             if($scope.DataListe[0].KODU != '')
             {
-                db.ExecuteTag($scope.Firma,'RafTanimlariSil',[$scope.DataListe[0].KODU],function(data)
+                db.ExecuteTag($scope.Firma,'RafTanimlariSil',[$scope.DataListe[0].KODU,$scope.DataListe[0].KAT],function(data)
                 {
                     $scope.Init();
                 });
@@ -138,7 +142,7 @@ function RafTanimlari ($scope,$window,db)
     {
         if(ModalTip == "Raf")
         {
-            RafGetir(SecimSelectedRow.Item.KODU);
+            RafGetir(SecimSelectedRow.Item.KODU,SecimSelectedRow.Item.KAT);
             $("#MdlSecim").modal('hide');
         }
         else if(ModalTip == "Kategori")
@@ -146,7 +150,12 @@ function RafTanimlari ($scope,$window,db)
             $scope.DataListe[0].KATEGORI = SecimSelectedRow.Item.KODU;
             $("#MdlSecim").modal('hide');
         }
-        
+        else if(ModalTip == "Stok")
+        {
+            $scope.DataListe[0].STOK = SecimSelectedRow.Item.KODU;
+            $("#MdlSecim").modal('hide');
+        }
+
         ModalTip = "";
     }
     $scope.BtnSecimGrid = function(pTip)
@@ -158,7 +167,7 @@ function RafTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,KAT,SIRA FROM RAFLAR"
+                query:  "SELECT KODU,STOK,KAT,SIRA FROM RAFLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -172,6 +181,19 @@ function RafTanimlari ($scope,$window,db)
             {
                 db : $scope.Firma,
                 query:  "SELECT KODU,ADI FROM RAF_KATEGORI"
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                TblSecimInit(Data);
+                $('#MdlSecim').modal('show');
+            });
+        }
+        else if(ModalTip == "Stok")
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT KODU,ADI FROM STOKLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

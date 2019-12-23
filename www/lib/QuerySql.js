@@ -3,7 +3,7 @@ var QuerySql =
     RafTanimlariKaydet : 
     {
         query : "DECLARE @TMPCODE NVARCHAR(25) " +
-                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAFLAR WHERE KODU = @KODU),'') " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM RAFLAR WHERE KODU = @KODU AND KAT = @KAT),'') " +
                 "IF @TMPCODE = '' " +
                 "INSERT INTO [dbo].[RAFLAR] " + 
                 "([OKULLANICI] " + 
@@ -11,6 +11,8 @@ var QuerySql =
                 ",[OTARIH] " + 
                 ",[DTARIH] " + 
                 ",[KODU] " + 
+                ",[TIP] " + 
+                ",[STOK] " + 
                 ",[KAT] " + 
                 ",[SIRA] " + 
                 ",[EN] " + 
@@ -23,6 +25,8 @@ var QuerySql =
                 ",GETDATE()		    --<OTARIH, datetime,> \n" +
                 ",GETDATE()		    --<DTARIH, datetime,> \n" +
                 ",@KODU			    --<KODU, nvarchar(25),> \n" +
+                ",@TIP			    --<TIP, smallint,> \n" +
+                ",@STOK			    --<STOK, nvarchar(25),> \n" +
                 ",@KAT			    --<KAT, smallint,> \n" +
                 ",@SIRA			    --<SIRA, int,> \n" +
                 ",@EN				--<EN, int,> \n" +
@@ -34,25 +38,26 @@ var QuerySql =
                 "UPDATE [dbo].[RAFLAR] SET " +
                 "[DKULLANICI] = @DKULLANICI " +
                 ",[DTARIH] = GETDATE() " +
-                ",[KAT] = @KAT " +
+                ",[TIP] = @TIP " +
+                ",[STOK] = @STOK " +
                 ",[SIRA] = @SIRA " +
                 ",[EN] = @EN " +
                 ",[BOY] = @BOY " +
                 ",[YUKSEKLIK] = @YUKSEKLIK " +
                 ",[KATEGORI] = @KATEGORI " +
-                "WHERE [KODU] = @TMPCODE",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25']
+                "WHERE [KODU] = @TMPCODE AND [KAT] = @KAT",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','STOK:string|25','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25']
     },
     RafTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,CONVERT(NVARCHAR(10),KAT) AS KAT,SIRA AS SIRA,EN AS EN,BOY AS BOY,YUKSEKLIK AS YUKSEKLIK,KATEGORI AS KATEGORI FROM RAFLAR WHERE KODU = @KODU",
-        param : ['KODU'],
-        type : ['string|25']
+        query : "SELECT KODU AS KODU,CONVERT(NVARCHAR(10),TIP) AS TIP,STOK AS STOK,CONVERT(NVARCHAR(10),KAT) AS KAT,SIRA AS SIRA,EN AS EN,BOY AS BOY,YUKSEKLIK AS YUKSEKLIK,KATEGORI AS KATEGORI FROM RAFLAR WHERE KODU = @KODU AND KAT = @KAT",
+        param : ['KODU','KAT'],
+        type : ['string|25','int']
     },
     RafTanimlariSil :
     {
-        query : "DELETE FROM RAFLAR WHERE KODU = @KODU",
-        param : ['KODU:string|25']
+        query : "DELETE FROM RAFLAR WHERE KODU = @KODU AND KAT = @KAT",
+        param : ['KODU:string|25','KAT:int']
     },
     RafKategoriTanimlariKaydet : 
     {

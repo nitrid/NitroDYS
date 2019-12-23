@@ -22,12 +22,33 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-md-2 col-form-label">Tip :</label>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="DataListe[0].TIP">
+                        <option value="0">Saklama</option>
+                        <option value="1">Toplama</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label">Bağlı Stok :</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].STOK">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Stok')"><i class="fas fa-search vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-md-2 col-form-label">Kat :</label>
                 <div class="col-md-1">
                     <select class="form-control" ng-model="DataListe[0].KAT">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
+                        <option value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
                     </select>
                 </div>
             </div>

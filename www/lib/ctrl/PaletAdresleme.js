@@ -77,11 +77,7 @@ function PaletAdresleme ($scope,$window,db)
                     width: 100
                 }
             ],
-            rowClick: function(args)
-            {
-                AdresListeRowClick(args.itemIndex,args.item,this);
-                $scope.$apply();
-            }
+
         });
     }
     function SecimListeRowClick(pIndex,pItem,pObj)
@@ -93,15 +89,7 @@ function PaletAdresleme ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function AdresListeRowClick(pIndex,pItem,pObj)
-    {    
-        if ( AdresSelectedRow ) { AdresSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
-        var $row = pObj.rowByItem(pItem);
-        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
-        AdresSelectedRow = $row;
-        AdresSelectedRow.Item = pItem
-        AdresSelectedRow.Index = pIndex
-    }
+
     function AdresGetir()
     {
         $scope.TopAdresListe = [];

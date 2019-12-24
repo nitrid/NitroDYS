@@ -107,7 +107,7 @@ function PaletAdresleme ($scope,$window,db)
         {
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
-            $scope.MIKTAR = $scope.PaletListe[0].MIKTAR
+            $scope.Miktar = $scope.PaletListe[0].MIKTAR
         });
     }
     function RafGetir(pKodu)
@@ -134,7 +134,7 @@ function PaletAdresleme ($scope,$window,db)
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.CmbEvrakTip = '0';
-        $scope.MIKTAR = 0;
+        $scope.Miktar = 0;
         $scope.PaletKodu = '';
 
         document.getElementById("page-title").innerHTML = "Palet Adresleme";
@@ -203,8 +203,7 @@ function PaletAdresleme ($scope,$window,db)
     }
     $scope.Insert = function()
     {
-        console.log($scope.MIKTAR)
-        if($scope.MIKTAR < 1)
+        if($scope.Miktar < 1)
         {
             alertify.alert("Palet Kodunuz Hatalı veya Palet Boş..");
             InsertAfterRefresh();
@@ -214,13 +213,23 @@ function PaletAdresleme ($scope,$window,db)
             let InsertData =
             [
                 UserParam.Kullanici,
-                $scope.RafKodu,
                 $scope.CmbEvrakTip,
-                $scope.PaletListe[0].KODU,
-                $scope.MIKTAR,
+                0,
+                '',
+                0,
+                0,
+                $scope.PaletKodu,
+                $scope.RafKodu,
+                $scope.RafKodu,
+                $scope.Miktar,
+                0,
+                0,
+                0,
+                0,
+                ''
             ];
             
-            db.ExecuteTag($scope.Firma,'PaletHarInsert',InsertData,function(InsertResult)
+            db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
             { 
                 if(typeof(InsertResult.result.err) == 'undefined')
                 {                          

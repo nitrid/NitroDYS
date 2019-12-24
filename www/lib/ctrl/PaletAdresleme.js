@@ -136,6 +136,10 @@ function PaletAdresleme ($scope,$window,db)
         $scope.CmbEvrakTip = '0';
         $scope.MIKTAR = 0;
         $scope.PaletKodu = '';
+
+        document.getElementById("page-title").innerHTML = "Palet Adresleme";
+        document.getElementById("page-path").innerHTML = "Palet Adresleme";
+
     
         
         TblArdesGrid();

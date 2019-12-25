@@ -19,15 +19,19 @@ app.config(function($routeProvider)
     .when("/RafKategoriTanimlari", 
     {
         templateUrl : "html/RafKategoriTanimlari.html"
-    })    
-    .when("/PaletAdresleme", 
-    {
-        templateUrl : "html/PaletAdresleme.html"
     })
     .when("/PaletTanimlari", 
     {
         templateUrl : "html/PaletTanimlari.html"
     })
+    .when("/StokTanimlari", 
+    {
+        templateUrl : "html/StokTanimlari.html"
+    })
+    .when("/PaletAdresleme", 
+    {
+        templateUrl : "html/PaletAdresleme.html"
+    })    
     .when("/SubeEmirKapama", 
     {
         templateUrl : "html/SubeEmirKapama.html"

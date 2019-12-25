@@ -146,12 +146,46 @@ var QuerySql =
         param : ['KODU'],
         type : ['string|25']
     },
+    StokTanimlariKaydet : 
+    {
+        query : "DECLARE @TMPCODE NVARCHAR(25) " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM STOKLAR WHERE KODU = @KODU),'') " +
+                "IF @TMPCODE = '' " +
+                "INSERT INTO [dbo].[STOKLAR] " + 
+                "([OKULLANICI] " + 
+                ",[DKULLANICI] " + 
+                ",[OTARIH] " + 
+                ",[DTARIH] " + 
+                ",[KODU] " + 
+                ",[ADI]) " + 
+                "VALUES " + 
+                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()		    --<OTARIH, datetime,> \n" +
+                ",GETDATE()		    --<DTARIH, datetime,> \n" +
+                ",@KODU			    --<KODU, nvarchar(25),> \n" +
+                ",@ADI			    --<ADI, nvarchar(150),> \n" +
+                ") " +
+                "ELSE " + 
+                "UPDATE [dbo].[STOKLAR] SET " +
+                "[DKULLANICI] = @DKULLANICI " +
+                ",[DTARIH] = GETDATE() " +
+                ",[ADI] = @ADI " +
+                "WHERE [KODU] = @TMPCODE",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','ADI:string|150']
+    },
+    StokTanimlariSil :
+    {
+        query : "DELETE FROM STOKLAR WHERE KODU = @KODU",
+        param : ['KODU:string|25']
+    },
+    //RECEP E SORULACAK BU NEDİR ?
     RafTanimGetir :
     {
         query : "SELECT KODU AS KODU,KAT AS KAT,SIRA AS SIRA FROM RAFLAR WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
-    },
+    },    
     PaletHarInsert :
     {
         query : "INSERT INTO [dbo].[PALET_HAREKETLERI] " +

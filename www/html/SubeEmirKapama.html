@@ -9,6 +9,42 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12">
+                <label class="col-6 col-form-label"> Evrak Seri-Sıra :</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8 px-1">
+                <div class="input-group input-group-icon">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <span class="icon wb-calendar" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" type="text" id="BTarih" ng-model="BelgeTarih" data-provide="datepicker" ng-disabled="EvrakLock">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-4 col-form-label"> Şube :</label>
+        </div>
+        <div class="row">
+            <div class="col-6 px-1">
+                <button type="submit" data-target="#" data-toggle="modal" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
+            </div>
+        </div>
+        <div class="row">
+            <label class="col-4 col-form-label"> Raf :</label>
+        </div>
+        <div class="row">
+            <label class="col-4 col-form-label"> Ürün :</label>
+        </div>
     </div>
      <!-- MODALS -->
 </div>
+<script>
+    $("#BTarih").datepicker({
+    language: "tr"
+    });
+</script>

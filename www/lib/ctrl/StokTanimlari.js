@@ -221,7 +221,7 @@ function StokTanimlari ($scope,$window,db)
         if(ModalTip == "Stok")
         {
             let TmpQuery = 
-            {
+            { 
                 db : $scope.Firma,
                 query:  "SELECT KODU,ADI FROM STOKLAR"
             }

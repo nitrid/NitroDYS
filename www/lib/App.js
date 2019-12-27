@@ -28,8 +28,8 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/PaletTanimlari.html"
     })
-    .when("/SubeEmirKapama", 
+    .when("/SubeEmirKapatma", 
     {
-        templateUrl : "html/SubeEmirKapama.html"
+        templateUrl : "html/SubeEmirKapatma.html"
     })
 });

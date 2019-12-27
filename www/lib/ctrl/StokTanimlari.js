@@ -1,6 +1,8 @@
-function RafTanimlari ($scope,$window,db)
+function StokTanimlari ($scope,$window,db)
 {
     let SecimSelectedRow = null;
+    let BirimSelectedRow = null;
+    let BarkodSelectedRow = null;
     let ModalTip = "";
 
     function TblSecimInit(pData)
@@ -35,6 +37,46 @@ function RafTanimlari ($scope,$window,db)
             }
         });
     }
+    function TblBirimInit(pData)
+    {
+        $("#TblBirim").jsGrid
+        ({
+            width: "100%",
+            updateOnResize: true,
+            heading: true,
+            selecting: true,
+            data : pData,
+            paging : true,
+            pageSize: 10,
+            pageButtonCount: 3,
+            pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
+            rowClick: function(args)
+            {
+                BirimListeRowClick(args.itemIndex,args.item,this);
+                $scope.$apply();
+            }
+        });
+    }
+    function TblBarkodInit(pData)
+    {
+        $("#TblBarkod").jsGrid
+        ({
+            width: "100%",
+            updateOnResize: true,
+            heading: true,
+            selecting: true,
+            data : pData,
+            paging : true,
+            pageSize: 10,
+            pageButtonCount: 3,
+            pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
+            rowClick: function(args)
+            {
+                BarkodListeRowClick(args.itemIndex,args.item,this);
+                $scope.$apply();
+            }
+        });
+    }
     function SecimListeRowClick(pIndex,pItem,pObj)
     {    
         if ( SecimSelectedRow ) { SecimSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
@@ -44,12 +86,37 @@ function RafTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function RafGetir(pKodu,pKat)
+    function BirimListeRowClick(pIndex,pItem,pObj)
+    {    
+        if ( BirimSelectedRow ) { BirimSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
+        var $row = pObj.rowByItem(pItem);
+        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
+        BirimSelectedRow = $row;
+        BirimSelectedRow.Item = pItem
+        BirimSelectedRow.Index = pIndex
+    }
+    function BarkodListeRowClick(pIndex,pItem,pObj)
+    {    
+        if ( BarkodSelectedRow ) { BarkodSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
+        var $row = pObj.rowByItem(pItem);
+        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
+        BarkodSelectedRow = $row;
+        BarkodSelectedRow.Item = pItem
+        BarkodSelectedRow.Index = pIndex
+    }
+    function StokGetir(pKodu)
     {
-        $scope.DataListe = [];
-        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu,pKat],function(Data)
+        $scope.StokListe = [];
+        let TmpQuery = 
         {
-            $scope.DataListe = Data;
+            db : $scope.Firma,
+            query:  "SELECT KODU,ADI FROM STOKLAR WHERE KODU = @KODU",
+            param: ['KODU:string|25'],
+            value: [pKodu]
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        {
+            $scope.StokListe = Data;
         });
     }
     $scope.Init = function()
@@ -58,51 +125,50 @@ function RafTanimlari ($scope,$window,db)
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
     
+        $scope.StokListe = [];
+        $scope.BirimListe = [];
+        $scope.BarkodListe = [];
+
         TblSecimInit([]);
+        TblBirimInit([]);
+        TblBarkodInit([]);
 
-        document.getElementById("page-title").innerHTML = "Raf Tanımları";
-        document.getElementById("page-path").innerHTML = "Raf Tanımları";
+        document.getElementById("page-title").innerHTML = "Stok Tanımları";
+        document.getElementById("page-path").innerHTML = "Stok Tanımları";
 
-        $scope.DataListe = 
+        $scope.StokListe = 
         [
             {
                 KODU : "",
-                TIP : "0",
-                STOK : "",
-                KAT : "0",
-                SIRA : 1,
-                KATEGORI : "",
-                EN : "",
-                BOY : "",
-                YUKSEKLIK : ""
+                ADI : ""
             }
         ];
 
-        
+        $scope.BirimModal = {};
+        $scope.BirimModal.Tip = "0";
+        $scope.BirimModal.Kodu = "";
+        $scope.BirimModal.Adi = "";
+
+        $scope.BarkodModal = {};
+        $scope.BarkodModal.Birim = "";
+        $scope.BarkodModal.Barkod = "";
     }
     $scope.BtnKaydet = function()
     {
         alertify.confirm('Dikkat !','Kayıt etmek istediğinize eminmisiniz ?', 
         function()
         { 
-            if($scope.DataListe[0].KODU != '')
+            if($scope.StokListe[0].KODU != '')
             {
                 let InsertData =
                 [
                     UserParam.Kullanici,
                     UserParam.Kullanici,
-                    $scope.DataListe[0].KODU,
-                    $scope.DataListe[0].TIP,
-                    $scope.DataListe[0].STOK,
-                    $scope.DataListe[0].KAT,
-                    $scope.DataListe[0].SIRA,
-                    $scope.DataListe[0].EN,
-                    $scope.DataListe[0].BOY,
-                    $scope.DataListe[0].YUKSEKLIK,                    
-                    $scope.DataListe[0].KATEGORI
+                    $scope.StokListe[0].KODU,
+                    $scope.StokListe[0].ADI
                 ];
                 
-                db.ExecuteTag($scope.Firma,'RafTanimlariKaydet',InsertData,function(InsertResult)
+                db.ExecuteTag($scope.Firma,'StokTanimlariKaydet',InsertData,function(InsertResult)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
                     {  
@@ -123,9 +189,9 @@ function RafTanimlari ($scope,$window,db)
         alertify.confirm('Dikkat !','Silmek istediğinize eminmisiniz ?', 
         function()
         { 
-            if($scope.DataListe[0].KODU != '')
+            if($scope.StokListe[0].KODU != '')
             {
-                db.ExecuteTag($scope.Firma,'RafTanimlariSil',[$scope.DataListe[0].KODU,$scope.DataListe[0].KAT],function(data)
+                db.ExecuteTag($scope.Firma,'StokTanimlariSil',[$scope.StokListe[0].KODU],function(data)
                 {
                     $scope.Init();
                 });
@@ -140,19 +206,9 @@ function RafTanimlari ($scope,$window,db)
     }
     $scope.BtnGridSec = function()
     {
-        if(ModalTip == "Raf")
+        if(ModalTip == "Stok")
         {
-            RafGetir(SecimSelectedRow.Item.KODU,SecimSelectedRow.Item.KAT);
-            $("#MdlSecim").modal('hide');
-        }
-        else if(ModalTip == "Kategori")
-        {
-            $scope.DataListe[0].KATEGORI = SecimSelectedRow.Item.KODU;
-            $("#MdlSecim").modal('hide');
-        }
-        else if(ModalTip == "Stok")
-        {
-            $scope.DataListe[0].STOK = SecimSelectedRow.Item.KODU;
+            StokGetir(SecimSelectedRow.Item.KODU,SecimSelectedRow.Item.KAT);
             $("#MdlSecim").modal('hide');
         }
 
@@ -162,33 +218,7 @@ function RafTanimlari ($scope,$window,db)
     {
         ModalTip = pTip;
 
-        if(ModalTip == "Raf")
-        {
-            let TmpQuery = 
-            {
-                db : $scope.Firma,
-                query:  "SELECT KODU,STOK,KAT,SIRA FROM RAFLAR"
-            }
-            db.GetDataQuery(TmpQuery,function(Data)
-            {
-                TblSecimInit(Data);
-                $('#MdlSecim').modal('show');
-            });
-        }
-        else if(ModalTip == "Kategori")
-        {
-            let TmpQuery = 
-            {
-                db : $scope.Firma,
-                query:  "SELECT KODU,ADI FROM RAF_KATEGORI"
-            }
-            db.GetDataQuery(TmpQuery,function(Data)
-            {
-                TblSecimInit(Data);
-                $('#MdlSecim').modal('show');
-            });
-        }
-        else if(ModalTip == "Stok")
+        if(ModalTip == "Stok")
         {
             let TmpQuery = 
             {
@@ -201,5 +231,23 @@ function RafTanimlari ($scope,$window,db)
                 $('#MdlSecim').modal('show');
             });
         }
+    }
+    $scope.BtnTabBirim = function()
+    {
+        $("#TabBirim").addClass('active');
+        $("#TabBarkod").removeClass('active');
+    }
+    $scope.BtnTabBarkod = function()
+    {
+        $("#TabBarkod").addClass('active');
+        $("#TabBirim").removeClass('active');
+    }
+    $scope.BtnYeniBirim = function()
+    {
+        $('#MdlBirim').modal('show');
+    }
+    $scope.BtnYeniBarkod = function()
+    {
+        $('#MdlBarkod').modal('show');
     }
 }

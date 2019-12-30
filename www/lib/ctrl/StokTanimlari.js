@@ -224,7 +224,7 @@ function StokTanimlari ($scope,$window,db)
             {
                 db : $scope.Firma,
                 query:  "SELECT KODU,ADI FROM STOKLAR"
-            }
+            } 
             db.GetDataQuery(TmpQuery,function(Data)
             {
                 TblSecimInit(Data);

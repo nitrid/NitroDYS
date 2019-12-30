@@ -110,15 +110,6 @@ function PaletAdresleme ($scope,$window,db)
             $scope.Miktar = $scope.PaletListe[0].MIKTAR
         });
     }
-    // function RafGetir(pKodu)
-    // {
-    //     $scope.RafListe = [];
-    //     db.GetData($scope.Firma,'RafTanimGetir',[pKodu],function(Data)
-    //     {
-    //         $scope.RafListe = Data;
-    //         $scope.RafKodu = $scope.RafListe[0].KODU;
-    //     });  
-    // }
     function InsertAfterRefresh()
     {
         $scope.PaletKodu = '';
@@ -156,7 +147,7 @@ function PaletAdresleme ($scope,$window,db)
         }
         if(ModalTip == "Raf")
         {
-            RafGetir(SecimSelectedRow.Item.KODU);
+            $scope.RafKodu = SecimSelectedRow.Item.KODU + "-" + SecimSelectedRow.Item.KAT;
             $("#MdlSecim").modal('hide');
         }
         ModalTip = "";

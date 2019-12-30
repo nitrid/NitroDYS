@@ -179,13 +179,6 @@ var QuerySql =
         query : "DELETE FROM STOKLAR WHERE KODU = @KODU",
         param : ['KODU:string|25']
     },
-    //RECEP E SORULACAK BU NEDİR ?
-    RafTanimGetir :
-    {
-        query : "SELECT KODU AS KODU,KAT AS KAT,SIRA AS SIRA FROM RAFLAR WHERE KODU = @KODU",
-        param : ['KODU'],
-        type : ['string|25']
-    },    
     PaletHarInsert :
     {
         query : "INSERT INTO [dbo].[PALET_HAREKETLERI] " +

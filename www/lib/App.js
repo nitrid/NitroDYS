@@ -34,6 +34,6 @@ app.config(function($routeProvider)
     })    
     .when("/SubeEmirKapama", 
     {
-        templateUrl : "html/SubeEmirKapama.html"
+        templateUrl : "html/SubeEmirKapatma.html"
     })
 });

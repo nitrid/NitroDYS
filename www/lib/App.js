@@ -24,9 +24,6 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/PaletTanimlari.html"
     })
-<<<<<<< HEAD
-    .when("/SubeEmirKapatma", 
-=======
     .when("/StokTanimlari", 
     {
         templateUrl : "html/StokTanimlari.html"
@@ -36,7 +33,6 @@ app.config(function($routeProvider)
         templateUrl : "html/PaletAdresleme.html"
     })    
     .when("/SubeEmirKapama", 
->>>>>>> ef44978a3bf3edeb3d77004e36783195b42d32a5
     {
         templateUrl : "html/SubeEmirKapatma.html"
     })

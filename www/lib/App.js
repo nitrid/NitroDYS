@@ -32,7 +32,7 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/PaletAdresleme.html"
     })    
-    .when("/SubeEmirKapama", 
+    .when("/SubeEmirKapatma", 
     {
         templateUrl : "html/SubeEmirKapatma.html"
     })

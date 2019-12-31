@@ -17,36 +17,48 @@ function SubeEmirKapatma ($scope,$window,db)
             fields: 
             [
                 {
-                    name: "PALET",
-                    title: "PALET",
+                    name: "SERI",
+                    title: "SERI",
                     type: "text",
                     align: "center",
                     width: 150
                 },
                 {
-                    name: "RAF",
-                    title: "RAF",
+                    name: "SIRA",
+                    title: "SIRA",
                     type: "text",
                     align: "center",
                     width: 150
                 },
                 {
-                    name: "TIP",
-                    title: "TIP",
+                    name: "SUBE",
+                    title: "SUBE",
                     type: "text",
                     align: "center",
-                    width: 200
+                    width: 150
                 },
-                {
-                    name: "MIKTAR",
-                    title: "MIKTAR",
-                    type: "text",
-                    align: "center",
-                    width: 100
-                }
             ],
 
         });
+    }
+    function SiparisListele()
+    {
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND TARIH >= @ILKTARIH AND TARIH <= @SONTARIH",
+                param: ['ILKTARIH','SONTARIH'],
+                type: ['date','date'],
+                value:[$scope.SipTarih,$scope.SipTarih2]
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                TblSiparisSecimGrid(Data);
+                $('#MdlSecim').modal('show');
+            });
+        }
+        console.log($scope.SipTarih)
     }
     $scope.Init = function()
     {
@@ -55,19 +67,13 @@ function SubeEmirKapatma ($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.Seri = ''
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
-        $scope.SipTarih = moment(new Date()).format("DD.MM.YYYY");
-        $scope.SipTarih2 = moment(new Date()).format("DD.MM.YYYY");
+        $scope.SipTarih =   new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+        $scope.SipTarih2 =  new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
         $scope.MainClick();
-        TblSiparisSecimGrid()
-        let TmpQuery = 
-        {
-            db : $scope.Firma,
-            query:  "SELECT KODU,KAT,SIRA FROM RAFLAR"
-        }
-        db.GetDataQuery(TmpQuery,function(Data)
-        {
 
-        });
+
+        SiparisListele()
+        TblSiparisSecimGrid()
     }
     $scope.Insert = function()
     {
@@ -79,7 +85,10 @@ function SubeEmirKapatma ($scope,$window,db)
         $("#TbBelgeBilgisi").addClass('active');
         $("#TbMain").removeClass('active');
     }
-
+    $scope.BtnSipListele = function()
+    {
+        SiparisListele()
+    }
 
 
 }

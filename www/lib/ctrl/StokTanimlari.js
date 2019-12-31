@@ -39,6 +39,7 @@ function StokTanimlari ($scope,$window,db)
     }
     function TblBirimInit(pData)
     {
+        console.log(pData);
         $("#TblBirim").jsGrid
         ({
             width: "100%",
@@ -46,6 +47,37 @@ function StokTanimlari ($scope,$window,db)
             heading: true,
             selecting: true,
             data : pData,
+            fields:
+            [
+                {
+                    name: "TIP",
+                    title : "TIP",
+                    type : "text",
+                    align: "center",
+                    width: 100                    
+                },
+                {
+                    name: "KODU",
+                    title : "KODU",
+                    type : "text",
+                    align: "center",
+                    width: 100                    
+                },
+                {
+                    name: "ADI",
+                    title : "ADI",
+                    type : "text",
+                    align: "center",
+                    width: 100                    
+                },
+                {
+                    name: "KATSAYI",
+                    title : "KATSAYI",
+                    type : "text",
+                    align: "center",
+                    width: 100                    
+                }
+            ],
             paging : true,
             pageSize: 10,
             pageButtonCount: 3,
@@ -66,6 +98,23 @@ function StokTanimlari ($scope,$window,db)
             heading: true,
             selecting: true,
             data : pData,
+            fields:
+            [
+                {
+                    name: "BARKOD",
+                    title : "BARKOD",
+                    type : "text",
+                    align: "center",
+                    width: 100                    
+                },
+                {
+                    name: "BIRIM",
+                    title : "BIRIM",
+                    type : "text",
+                    align: "center",
+                    width: 100                    
+                }
+            ],
             paging : true,
             pageSize: 10,
             pageButtonCount: 3,
@@ -114,9 +163,37 @@ function StokTanimlari ($scope,$window,db)
             param: ['KODU:string|25'],
             value: [pKodu]
         }
+
         db.GetDataQuery(TmpQuery,function(Data)
         {
             $scope.StokListe = Data;
+            //BİRİM LİSTESİ GETİR
+            TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT CASE WHEN TIP = 0 THEN 'Ana Birim' ELSE 'Alt Birim' END AS TIP,KODU,ADI,KATSAYI FROM BIRIMLER WHERE STOK = @STOK",
+                param: ['STOK:string|25'],
+                value: [pKodu]
+            } 
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                $scope.BirimListe = Data;
+                TblBirimInit($scope.BirimListe);
+            });
+            //BARKOD LİSTESİ GETİR
+            TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT KODU AS BARKOD, ISNULL((SELECT ADI FROM BIRIMLER WHERE BIRIMLER.STOK = BARKODLAR.STOK AND BIRIMLER.KODU = BARKODLAR.BIRIM),'') AS BIRIM FROM BARKODLAR WHERE STOK = @STOK",
+                param: ['STOK:string|25'],
+                value: [pKodu]
+            } 
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                $scope.BarkodListe = Data;
+                TblBarkodInit($scope.BarkodListe);
+            });
+
         });
     }
     $scope.Init = function()
@@ -148,6 +225,7 @@ function StokTanimlari ($scope,$window,db)
         $scope.BirimModal.Tip = "0";
         $scope.BirimModal.Kodu = "";
         $scope.BirimModal.Adi = "";
+        $scope.BirimModal.Katsayi = 0;
 
         $scope.BarkodModal = {};
         $scope.BarkodModal.Birim = "";
@@ -249,5 +327,97 @@ function StokTanimlari ($scope,$window,db)
     $scope.BtnYeniBarkod = function()
     {
         $('#MdlBarkod').modal('show');
+    }
+    $scope.BtnBirimKaydet = function()
+    {
+        alertify.confirm('Dikkat !','Kayıt etmek istediğinize eminmisiniz ?', 
+        function()
+        { 
+            if($scope.StokListe[0].KODU != '')
+            {
+                let InsertData =
+                [
+                    UserParam.Kullanici,
+                    UserParam.Kullanici,
+                    $scope.BirimModal.Tip,
+                    $scope.StokListe[0].KODU,
+                    $scope.BirimModal.Kodu,
+                    $scope.BirimModal.Adi,
+                    $scope.BirimModal.Katsayi
+                ];
+                
+                db.ExecuteTag($scope.Firma,'BirimTanimlariKaydet',InsertData,function(InsertResult)
+                { 
+                    if(typeof(InsertResult.result.err) == 'undefined')
+                    {  
+                        let TmpQuery = 
+                        {
+                            db : $scope.Firma,
+                            query:  "SELECT CASE WHEN TIP = 0 THEN 'Ana Birim' ELSE 'Alt Birim' END AS TIP,KODU,ADI,KATSAYI FROM BIRIMLER WHERE STOK = @STOK",
+                            param: ['STOK:string|25'],
+                            value: [$scope.StokListe[0].KODU]
+                        } 
+                        db.GetDataQuery(TmpQuery,function(Data)
+                        {
+                            $scope.BirimListe = Data;
+                            TblBirimInit($scope.BirimListe);
+                        });
+                    }
+
+                    $('#MdlBirim').modal('hide');
+                });                
+            }
+            else
+            {
+                alertify.okBtn("Tamam");
+                alertify.alert("Kodu bölümünü boş geçemezsiniz !");
+            }
+        }
+        ,function(){}).set('labels',{ok: 'Evet',cancel: 'Hayır'});
+    }
+    $scope.BtnBarkodKaydet = function()
+    {
+        alertify.confirm('Dikkat !','Kayıt etmek istediğinize eminmisiniz ?', 
+        function()
+        { 
+            if($scope.StokListe[0].KODU != '')
+            {
+                let InsertData =
+                [
+                    UserParam.Kullanici,
+                    UserParam.Kullanici,
+                    $scope.BarkodModal.Barkod,
+                    $scope.StokListe[0].KODU,
+                    $scope.BarkodModal.Birim
+                ];
+                
+                db.ExecuteTag($scope.Firma,'BarkodTanimlariKaydet',InsertData,function(InsertResult)
+                { 
+                    if(typeof(InsertResult.result.err) == 'undefined')
+                    {  
+                        let TmpQuery = 
+                        {
+                            db : $scope.Firma,
+                            query:  "SELECT KODU AS BARKOD, ISNULL((SELECT ADI FROM BIRIMLER WHERE BIRIMLER.STOK = BARKODLAR.STOK AND BIRIMLER.KODU = BARKODLAR.BIRIM),'') AS BIRIM FROM BARKODLAR WHERE STOK = @STOK",
+                            param: ['STOK:string|25'],
+                            value: [$scope.StokListe[0].KODU]
+                        } 
+                        db.GetDataQuery(TmpQuery,function(Data)
+                        {
+                            $scope.BarkodListe = Data;
+                            TblBarkodInit($scope.BarkodListe);
+                        });
+                    }
+
+                    $('#MdlBarkod').modal('hide');
+                });                
+            }
+            else
+            {
+                alertify.okBtn("Tamam");
+                alertify.alert("Kodu bölümünü boş geçemezsiniz !");
+            }
+        }
+        ,function(){}).set('labels',{ok: 'Evet',cancel: 'Hayır'});
     }
 }

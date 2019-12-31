@@ -179,6 +179,74 @@ var QuerySql =
         query : "DELETE FROM STOKLAR WHERE KODU = @KODU",
         param : ['KODU:string|25']
     },
+    BirimTanimlariKaydet :
+    {
+        query : "DECLARE @TMPCODE NVARCHAR(25) " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM BIRIMLER WHERE KODU = @KODU AND STOK = @STOK),'') " +
+                "IF @TMPCODE = '' " +
+                "INSERT INTO [dbo].[BIRIMLER] " + 
+                "([OKULLANICI] " + 
+                ",[DKULLANICI] " + 
+                ",[OTARIH] " + 
+                ",[DTARIH] " + 
+                ",[TIP] " +
+                ",[STOK] " + 
+                ",[KODU] " + 
+                ",[ADI] " + 
+                ",[KATSAYI]) " + 
+                "VALUES " + 
+                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()		    --<OTARIH, datetime,> \n" +
+                ",GETDATE()		    --<DTARIH, datetime,> \n" +
+                ",@TIP			    --<TIP, int,> \n" +
+                ",@STOK			    --<STOK, nvarchar(25),> \n" +
+                ",@KODU			    --<KODU, nvarchar(25),> \n" +
+                ",@ADI			    --<ADI, nvarchar(150),> \n" +
+                ",@KATSAYI		    --<KATSAYI, float,> \n" +
+                ") " +
+                "ELSE " + 
+                "UPDATE [dbo].[BIRIMLER] SET " +
+                "[DKULLANICI] = @DKULLANICI " +
+                ",[DTARIH] = GETDATE() " +
+                ",[TIP] = @TIP " +
+                ",[ADI] = @ADI " +
+                ",[KATSAYI] = @KATSAYI " +
+                "WHERE [KODU] = @KODU AND STOK = @STOK",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','STOK:string|25','KODU:string|25','ADI:string|150','KATSAYI:float']
+    },
+    BarkodTanimlariKaydet :
+    {
+        query : "DECLARE @TMPCODE NVARCHAR(25) " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM BARKODLAR WHERE KODU = @KODU AND STOK = @STOK),'') " +
+                "IF @TMPCODE = '' " +
+                "INSERT INTO [dbo].[BARKODLAR] " + 
+                "([OKULLANICI] " + 
+                ",[DKULLANICI] " + 
+                ",[OTARIH] " + 
+                ",[DTARIH] " + 
+                ",[KODU] " + 
+                ",[STOK] " + 
+                ",[BIRIM]) " + 
+                "VALUES " + 
+                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()		    --<OTARIH, datetime,> \n" +
+                ",GETDATE()		    --<DTARIH, datetime,> \n" +
+                ",@KODU			    --<KODU, nvarchar(25),> \n" +
+                ",@STOK			    --<STOK, nvarchar(25),> \n" +                
+                ",@BIRIM		    --<BIRIM, nvarchar(10),> \n" +
+                ") " +
+                "ELSE " + 
+                "UPDATE [dbo].[BARKODLAR] SET " +
+                "[DKULLANICI] = @DKULLANICI " +
+                ",[DTARIH] = GETDATE() " +
+                ",[KODU] = @KODU " +
+                ",[STOK] = @STOK " +
+                ",[BIRIM] = @BIRIM " +
+                "WHERE [KODU] = @KODU AND STOK = @STOK",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','STOK:string|25','BIRIM:string|10']
+    },
     PaletHarInsert :
     {
         query : "INSERT INTO [dbo].[PALET_HAREKETLERI] " +

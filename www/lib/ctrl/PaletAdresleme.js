@@ -93,11 +93,20 @@ function PaletAdresleme ($scope,$window,db)
     function AdresGetir()
     {
         $scope.TopAdresListe = [];
-        db.GetData($scope.Firma,'TopAdresGetir','0',function(Data)
+
+        TmpQuery = 
+        {
+            db : $scope.Firma,
+            query : "Select TOP(10) KODU AS PALET, GIRIS AS RAF, " +
+            " CASE  WHEN TIP = 0 THEN 'GİRİŞ' " +
+            " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from EMIR_HAREKETLERI WHERE MIKTAR > @MIKTAR AND CINS = 0 ORDER BY OTARIH DESC" ,
+            param : ['MIKTAR:float'],
+            value: [0]
+        } 
+        db.GetDataQuery(TmpQuery,function(Data)
         {
             $scope.TopAdresListe = Data;
             TblArdesGrid(Data);
-
         });
     }
     function PaletGetir(pKodu)

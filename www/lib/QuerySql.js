@@ -313,13 +313,6 @@ var QuerySql =
                     " ) ",
     param :  ['OKULLANICI:string|10','TIP:int','CINS:int','SERI:string|10','SIRA:int','SATIR:int','KODU:string|25','GIRIS:string|25','CIKIS:string|25','MIKTAR:float','FIYAT:float',"TUTAR:float",'ISKONTO:float','KDV:float','OZEL:string|50']
     },
-    TopAdresGetir:
-    {
-        query : "Select TOP(10) KODU AS PALET, GIRIS AS RAF, " +
-        " CASE  WHEN TIP = 0 THEN 'GİRİŞ' " +
-        " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from EMIR_HAREKETLERI WHERE MIKTAR > @MIKTAR AND CINS = 0 ORDER BY OTARIH DESC" ,
-        param : ['MIKTAR:float']
-    },
     EtiketKaydet : 
     {
         query : "INSERT INTO [dbo].[ETIKET] " + 

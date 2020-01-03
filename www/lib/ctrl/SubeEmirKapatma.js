@@ -53,7 +53,7 @@ function SubeEmirKapatma ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH",
+                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 0 AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,CIKIS,TIP,CINS",
                 param: ['ILKTARIH','SONTARIH'],
                 type: ['date','date'],
                 value:[$scope.SipTarih,$scope.SipTarih2]
@@ -64,7 +64,6 @@ function SubeEmirKapatma ($scope,$window,db)
                 $('#MdlSecim').modal('show');
             });
         }
-        console.log($scope.SipTarih)
     }
     function SiparisListeRowClick(pIndex,pItem,pObj)
     {    
@@ -75,17 +74,48 @@ function SubeEmirKapatma ($scope,$window,db)
         SiparisSelectedRow.Item = pItem
         SiparisSelectedRow.Index = pIndex
     }
+    function StokBarkodGetir(pBarkod)
+    {
+        db.StokBarkodGetir($scope.Firma,pBarkod,$scope.CDepo,async function(BarkodData)
+        {  
+            $scope.BarkodData = BarkodData
+            console.log($scope.BarkodData)
+            $scope.StokAdi = $scope.BarkodData[0].STOKADI 
+            $scope.Katsayi = $scope.BarkodData[0].KATSAYI
+            $scope.Stokkodu = $scope.BarkodData[0].STOK
+            $scope.Miktar = 1;
+            $scope.BirimAdi = $scope.BarkodData[0].BIRIMADI
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT (MIKTAR - TESLIM_MIKTAR) AS BEKLEYEN FROM EMIRLER WHERE UID = @UID",
+                param: ['UID'],
+                type: ['string|50'],
+                value:[$scope.SipStokUid]
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                $scope.BekleyenMiktar = Data[0].BEKLEYEN 
+            });
+
+        });
+    }
 
     $scope.Init = function()
     {
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
-        $scope.Seri = ''
+        $scope.Seri = 'B'
+        $scope.Urun = ''
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
         $scope.SipTarih =   new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
         $scope.SipTarih2 =  new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
         $scope.MainClick();
+        db.MaxSira($scope.Firma,'EmirlerMaxSira',[$scope.Seri,1],function(data)
+        {
+            $scope.Sira = data
+        });
 
 
         SiparisListele()
@@ -93,18 +123,39 @@ function SubeEmirKapatma ($scope,$window,db)
     }
     $scope.Insert = function()
     {
-        $("#TbBelgeBilgisi").addClass('active');
-        $("#TbMain").removeClass('active');
+
     }
     $scope.MainClick = function() 
     {
-        $("#TbBelgeBilgisi").addClass('active');
-        $("#TbMain").removeClass('active');
+        $("#TbSiparisSecim").addClass('active');
+        $("#TbSiparisGiris").removeClass('active');
     }
     $scope.BtnSipListele = function()
     {
         SiparisListele()
     }
+    $scope.BtnSipSec = function()
+    {
+        $scope.SipSeri = SiparisSelectedRow.Item.SERI;
+        $scope.SipSira = SiparisSelectedRow.Item.SIRA;
+        db.GetData($scope.Firma,'SubeEmriGetir',[$scope.SipSeri,$scope.SipSira,1,0],function(data)
+        {
+            $scope.SiparisStok = data;
+            $scope.Urun = $scope.SiparisStok[0].STOKADI;
+            $scope.Raf = $scope.SiparisStok[0].RAFKODU;
+            $scope.Kat = $scope.SiparisStok[0].RAFKATI;
+            $scope.Sube = $scope.SiparisStok[0].SUBEADI;
+            $scope.SipStokUid = $scope.SiparisStok[0].UID
 
-
+            $("#TbSiparisGiris").addClass('active');
+            $("#TbSiparisSecim").removeClass('active');
+        });
+    }
+    $scope.BtnStokBarkodGetir = function(keyEvent)
+    {
+        if(keyEvent.which === 13)
+        {
+            StokBarkodGetir($scope.Barkod);    
+        }
+    }
 }

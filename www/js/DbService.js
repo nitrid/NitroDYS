@@ -477,7 +477,7 @@ angular.module('app.db', []).service('db',function($rootScope)
     {
         var m = 
         {
-            db : '{M}.' + pFirma,
+            db :  pFirma,
             tag : pQueryTag,
             param : pQueryParam
         }
@@ -527,7 +527,7 @@ angular.module('app.db', []).service('db',function($rootScope)
     {
         let m = 
         {
-            db : '{M}.' + pFirma,
+            db :  pFirma,
             tag : 'BarkodGetir',
             param : [pBarkod,pDepoNo]
         }

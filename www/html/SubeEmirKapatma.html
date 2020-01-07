@@ -7,7 +7,6 @@
                         <div class="btn-group float-right">
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-24 vertical-middle"></i></button>                    
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Kapat()"><i class="mdi mdi-content-save-move font-24 vertical-middle"></i></button>
-                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-24 vertical-middle"></i></button>
                         </div>
                     </div>
                 </div>
@@ -33,7 +32,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12 px-1">
-                        <button type="submit" data-target="#" data-toggle="modal" ng-click="SipListesi()" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
+                        <button type="submit" data-target="#MdlStokGetir" data-target="#" data-toggle="modal" ng-click="SipListesi()" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
                     </div>
                 </div>
                 <div class="row">
@@ -84,7 +83,7 @@
                         <div class="col-form-label text-center py-1">X</div>
                     </div>
                     <div class="col-4 px-1">
-                        <input type="text" class="form-control form-control-sm" ng-model="Miktar" ng-disabled="MiktarLock" ng-change="MiktarFiyatValid()" id="Miktar" ng-keydown="MiktarPress($event)">
+                        <input type="text" class="form-control form-control-sm" ng-model="Miktar" ng-keypress = "BtnEkleKey($event)" ng-change="MiktarFiyatValid()" id="Miktar" ng-keydown="MiktarPress($event)">
                     </div>
                 </div>
                 <div class="row">
@@ -145,6 +144,24 @@
         </div>
     </div>
      <!-- MODALS -->
+     <div class="modal fade" id="MdlStokGetir" aria-hidden="true" aria-labelledby="examplePositionCenter" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-simple modal-center modal-primary">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close"  data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                    <h4 class="modal-title">Sipariş Listesi</h4>
+                </div>
+                <div class="modal-body px-1 py-1">
+                    <div class="col-1 offset-5" ng-show="Loading">
+                        <div class="loader vertical-align-middle loader-circle"></div>
+                    </div>
+                    <div id="TblListe" class="pt-5"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
     $("#Tarih").datepicker({

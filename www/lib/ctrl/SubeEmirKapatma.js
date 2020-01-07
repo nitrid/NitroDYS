@@ -100,7 +100,7 @@ function SubeEmirKapatma ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 0 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,CIKIS,TIP,CINS",
+                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,CIKIS,TIP,CINS",
                 param: ['ILKTARIH','SONTARIH'],
                 type: ['date','date'],
                 value:[$scope.SipTarih,$scope.SipTarih2]
@@ -166,7 +166,7 @@ function SubeEmirKapatma ($scope,$window,db)
     {
         let InsertData = 
         [
-            $scope.User,
+            UserParam.Kullanici,
             1,
             1,
             $scope.Seri,
@@ -249,7 +249,7 @@ function SubeEmirKapatma ($scope,$window,db)
     $scope.BtnSipSec = function()
     {
 
-        db.GetData($scope.Firma,'SubeEmriGetir',[$scope.SipSeri,$scope.SipSira,1,0],function(data)
+        db.GetData($scope.Firma,'SubeEmriGetir',[$scope.SipSeri,$scope.SipSira,1,1],function(data)
         {
             $scope.SiparisStok = data;
             if($scope.SiparisStok == '')

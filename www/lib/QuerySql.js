@@ -247,29 +247,6 @@ var QuerySql =
                 "WHERE [KODU] = @KODU AND STOK = @STOK",
         param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','STOK:string|25','BIRIM:string|10']
     },
-    PaletHarInsert :
-    {
-        query : "INSERT INTO [dbo].[PALET_HAREKETLERI] " +
-                "([UID] " +
-                ",[OKULLANICI]  " +
-                ",[OTARIH]  " +
-                ",[TARIH] " +
-                ",[RAF] " +
-                ",[TIP] " +
-                ",[PALET] " +
-                ",[MIKTAR]) " +
-                "VALUES " +
-                "( NEWID() " +
-                ",@OKULLANICI               -- <OKULLANICI, nvarchar(10),> \n" +
-                ",GETDATE()                 --<OTARIH, datetime,> \n" +
-                ",GETDATE()                 --<TARIH, datetime,> \n" +
-                ",@RAF                      --<RAF, nvarchar(10),> \n" +
-                ",@TIP                      --<TIP, int,> \n" +
-                ",@PALET                    --<PALET, nvarchar(15),> \n" +
-                ",@MIKTAR                   --<MIKTAR, float,> \n" +
-                " )",
-        param :  ['OKULLANICI:string|10','RAF:string|10','TIP:int','PALET:string|15','MIKTAR:float']
-    },
     EmirHarInsert :
     {
         query : "INSERT INTO [dbo].[EMIR_HAREKETLERI] " +

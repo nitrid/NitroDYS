@@ -217,16 +217,13 @@ function PaletAdresleme ($scope,$window,db)
                 0,
                 '',
                 0,
-                0,
                 $scope.PaletKodu,
                 $scope.RafKodu,
                 $scope.RafKodu,
+                1,
                 $scope.Miktar,
-                0,
-                0,
-                0,
-                0,
-                ''
+                '',
+                '',
             ];
             
             db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)

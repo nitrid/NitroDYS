@@ -285,12 +285,10 @@ var QuerySql =
                 ",[KODU] " +
                 ",[GIRIS] " +
                 ",[CIKIS] " +
+                ",[BIRIM]" +
                 ",[MIKTAR] " +
-                ",[FIYAT] " +
-                ",[TUTAR] " +
-                ",[ISKONTO] " +
-                ",[KDV] " +
-                ",[OZEL]) " +
+                ",[OZEL] " +
+                ",[EMIRID]) " +
                 "VALUES " +
                 "(  NEWID()             --<UID, uniqueidentifier,>  \n" +
                     ",@OKULLANICI       --<OKULLANICI, nvarchar(10),>  \n" +
@@ -300,18 +298,16 @@ var QuerySql =
                     ",GETDATE()         --<TARIH, datetime,>  \n" +
                     ",@SERI             --<SERI, nvarchar(10),>  \n" +
                     ",@SIRA             --<SIRA, int,>  \n" +
-                    ",@SATIR            --<SATIRNO, int,>  \n" +
+                    ",(SELECT ISNULL(MAX(SATIRNO),-1) + 1 AS SATIRNO FROM EMIR_HAREKETLERI WHERE SERI = @SERI AND SIRA = @SIRA AND CINS = @CINS)            --<SATIRNO, int,>  \n" +
                     ",@KODU             --<KODU, nvarchar(25),>  \n" +
                     ",@GIRIS            --<GIRIS, nvarchar(25),>  \n" +
                     ",@CIKIS            --<CIKIS, nvarchar(25),>  \n" +
+                    ",@BIRIM           --<BIRIM, nvarchar(10),>  \n" +
                     ",@MIKTAR           --<MIKTAR, float,>  \n" +
-                    ",@FIYAT            --<FIYAT, float,>  \n" +
-                    ",@TUTAR            --<TUTAR, float,>  \n" +
-                    ",@ISKONTO          --<ISKONTO, float,>  \n" +
-                    ",@KDV              --<KDV, float,>  \n" +
-                    ",@OZEL             --<OZEL, nvarchar(50),>  \n" +
+                    ",@OZEL                --<OZEL, nvarchar(50),>  \n" +
+                    ",@EMIRID             --<EMIRID, nvarchar(50),>  \n" +
                     " ) ",
-    param :  ['OKULLANICI:string|10','TIP:int','CINS:int','SERI:string|10','SIRA:int','SATIR:int','KODU:string|25','GIRIS:string|25','CIKIS:string|25','MIKTAR:float','FIYAT:float',"TUTAR:float",'ISKONTO:float','KDV:float','OZEL:string|50']
+    param :  ['OKULLANICI:string|10','TIP:int','CINS:int','SERI:string|10','SIRA:int','KODU:string|25','GIRIS:string|25','CIKIS:string|25','BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
     },
     EtiketKaydet : 
     {
@@ -361,9 +357,11 @@ var QuerySql =
     },
     SubeEmriGetir :
     {
-        query: "SELECT(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI,RAFLAR.KODU AS RAFKODU ,RAFLAR.KAT AS RAFKATI,EMIRLER.KODU AS EMIRKODU,(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBEADI, * FROM EMIRLER " +
+        query: "SELECT EMIRLER.KODU AS STOKKOD,(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI,RAFLAR.KODU AS RAFKODU,EMIRLER.UID AS EMIRUID ," +
+                "RAFLAR.KAT AS RAFKATI,EMIRLER.KODU AS EMIRKODU,(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI ,"+
+                " (SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS KATSAYI,(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBEADI, * FROM EMIRLER " +
                 "INNER JOIN RAFLAR " +
-                "ON EMIRLER.KODU = RAFLAR.STOK  WHERE EMIRLER.SERI = @SERI AND EMIRLER.SIRA = @SIRA AND EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR ORDER BY RAFLAR.SIRA " ,
+                "ON EMIRLER.KODU = RAFLAR.STOK  WHERE EMIRLER.SERI = @SERI AND EMIRLER.SIRA = @SIRA AND EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 ORDER BY RAFLAR.SIRA " ,
         param: ['SERI','SIRA','TIP','CINS'],
         type : ['string|10','int','int','int']
     },

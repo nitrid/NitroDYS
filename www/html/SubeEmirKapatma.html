@@ -6,7 +6,7 @@
                     <div class="col-12" style="padding-bottom: 10px;">
                         <div class="btn-group float-right">
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-24 vertical-middle"></i></button>                    
-                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Insert()"><i class="mdi mdi-content-save-move font-24 vertical-middle"></i></button>
+                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Kapat()"><i class="mdi mdi-content-save-move font-24 vertical-middle"></i></button>
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-24 vertical-middle"></i></button>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12 px-1">
-                        <button type="submit" data-target="#" data-toggle="modal" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
+                        <button type="submit" data-target="#" data-toggle="modal" ng-click="SipListesi()" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
                     </div>
                 </div>
                 <div class="row">
@@ -89,7 +89,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12 px-1">
-                        <button type="submit" class="btn btn-primary btn-block btn-block h-40">Ekle</button>        
+                        <button type="submit"  class="btn btn-primary btn-block btn-block h-40" ng-click="BtnEkle()">Ekle</button>        
                     </div>
                 </div>
             </div>

@@ -49,7 +49,7 @@ function SubeEmirKapatma ($scope,$window,db)
     }
     function SipListeGrid(pData)
     {                
-        $("#MdlListe").jsGrid
+        $("#TblListe").jsGrid
         ({
             width: "100%",
             updateOnResize: true,
@@ -67,29 +67,29 @@ function SubeEmirKapatma ($scope,$window,db)
                     title: "KODU",
                     type: "text",
                     align: "center",
-                    width: 150
+                    width: 125
                 },
                 {
                     name: "ADI",
                     title: "ADI",
                     type: "text",
                     align: "center",
-                    width: 150
+                    width: 125
                 },
                 {
                     name: "MIKTAR",
                     title: "MIKTAR",
                     type: "text",
                     align: "center",
-                    width: 200
+                    width: 75
                 },
                 {
                     name: "TESLIM",
                     title: "TESLIM",
                     type: "text",
                     align: "center",
-                    width: 100
-                }
+                    width: 75
+                },
             ],
 
         });
@@ -100,7 +100,7 @@ function SubeEmirKapatma ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 0 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,CIKIS,TIP,CINS",
+                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,CIKIS,TIP,CINS",
                 param: ['ILKTARIH','SONTARIH'],
                 type: ['date','date'],
                 value:[$scope.SipTarih,$scope.SipTarih2]
@@ -148,6 +148,8 @@ function SubeEmirKapatma ($scope,$window,db)
                     {
                         $scope.BekleyenMiktar = Data[0].BEKLEYEN 
                     });
+                    $window.document.getElementById("Miktar").focus();
+                    $window.document.getElementById("Miktar").select();
                 }
                 else
                 {
@@ -166,7 +168,7 @@ function SubeEmirKapatma ($scope,$window,db)
     {
         let InsertData = 
         [
-            $scope.User,
+            UserParam.Kullanici,
             1,
             1,
             $scope.Seri,
@@ -249,13 +251,14 @@ function SubeEmirKapatma ($scope,$window,db)
     $scope.BtnSipSec = function()
     {
 
-        db.GetData($scope.Firma,'SubeEmriGetir',[$scope.SipSeri,$scope.SipSira,1,0],function(data)
+        db.GetData($scope.Firma,'SubeEmriGetir',[$scope.SipSeri,$scope.SipSira,1,1],function(data)
         {
             $scope.SiparisStok = data;
             if($scope.SiparisStok == '')
             {
                 alertify.alert("<a style='color:#3e8ef7''>" + "Şube Emir Kapanmıştır !" + "</a>" );          
                 console.log("Stok Bulunamamıştır.");
+                $scope.SipListesi();
             }
             else
             {
@@ -270,6 +273,8 @@ function SubeEmirKapatma ($scope,$window,db)
                 $scope.Birim = $scope.SiparisStok[0].BIRIM
                 $scope.BirimAdi = $scope.SiparisStok[0].BIRIMADI
                 $scope.Katsayi = $scope.SiparisStok[0].KATSAYI
+
+                $scope.SipListesi();
     
                 $("#TbSiparisGiris").addClass('active');
                 $("#TbSiparisSecim").removeClass('active');
@@ -284,39 +289,54 @@ function SubeEmirKapatma ($scope,$window,db)
             StokBarkodGetir($scope.Barkod);    
         }
     }
+    $scope.BtnEkleKey = function(keyEvent)
+    {
+        if(keyEvent.which === 13)
+        {
+            $scope.BtnEkle()
+        }
+    }
     $scope.BtnEkle = function()
     {
-        Insert()
+        if($scope.Miktar <= $scope.BekleyenMiktar)
+        {
+            Insert()
+        }
+        else
+        {
+            alertify.alert("<a style='color:#3e8ef7''>" + "Miktar Bekleyen Miktardan Büyük Olamaz !" + "</a>" );          
+        }
+        
     }
     $scope.Kapat = function()
     {
         let TmpQuery = 
-                {
-                    db : $scope.Firma,
-                    query:  "UPDATE EMIRLER SET KAPALI = 1 WHERE UID = @UID",
-                    param : ['UID'],
-                    type : ['string|50'],
-                    value : [$scope.SipStokUid]
-                }
-                db.GetDataQuery(TmpQuery,function(Data)
-                {
-                    InsertAfterRefesh()
-                });
+        {
+            db : $scope.Firma,
+            query:  "UPDATE EMIRLER SET KAPALI = 1 WHERE UID = @UID",
+            param : ['UID'],
+            type : ['string|50'],
+            value : [$scope.SipStokUid]
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        {
+            InsertAfterRefesh()
+        });
     }
     $scope.SipListesi = function()
     {
         let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,MIKTAR,TESLIM_MIKTAR AS TESLIM,(SELECT ADI FROM STOKLAR WHERE EMIRLER.KODU = KODU) AS ADI FROM EMIRLER WHERE SERI =@SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 0 ",
+                query:  "SELECT KODU,MIKTAR,TESLIM_MIKTAR AS TESLIM,(SELECT ADI FROM STOKLAR WHERE EMIRLER.KODU = KODU) AS ADI FROM EMIRLER WHERE SERI =@SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 1  ",
                 param : ['SERI','SIRA'],
                 type : ['string|25','int'],
                 value : [$scope.SipSeri,$scope.SipSira]
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
+                console.log(Data)
                 SipListeGrid(Data)
-                $("#MdlListe").modal('show');
             });
     }
 }

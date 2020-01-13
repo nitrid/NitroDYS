@@ -18,7 +18,8 @@ var QuerySql =
                 ",[EN] " + 
                 ",[BOY] " + 
                 ",[YUKSEKLIK] " + 
-                ",[KATEGORI]) " + 
+                ",[KATEGORI] " + 
+                ",[MIKTAR]) " + 
                 "VALUES " + 
                 "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
                 ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
@@ -33,6 +34,7 @@ var QuerySql =
                 ",@BOY			    --<BOY, int,> \n" +
                 ",@YUKSEKLIK		--<YUKSEKLIK, int,> \n" +
                 ",@KATEGORI		    --<KATEGORI, nvarchar(25),> \n" +
+                ",@MIKTAR		    --<MIKTAR, flota,> \n" +
                 ") " +
                 "ELSE " + 
                 "UPDATE [dbo].[RAFLAR] SET " +
@@ -45,8 +47,9 @@ var QuerySql =
                 ",[BOY] = @BOY " +
                 ",[YUKSEKLIK] = @YUKSEKLIK " +
                 ",[KATEGORI] = @KATEGORI " +
+                ",[MIKTAR] = @MIKTAR " +
                 "WHERE [KODU] = @TMPCODE AND [KAT] = @KAT",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','STOK:string|25','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','STOK:string|25','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25','MIKTAR:float']
     },
     RafTanimlariGetir : 
     {

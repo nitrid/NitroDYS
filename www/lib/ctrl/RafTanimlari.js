@@ -99,7 +99,8 @@ function RafTanimlari ($scope,$window,db)
                     $scope.DataListe[0].EN,
                     $scope.DataListe[0].BOY,
                     $scope.DataListe[0].YUKSEKLIK,                    
-                    $scope.DataListe[0].KATEGORI
+                    $scope.DataListe[0].KATEGORI,
+                    0
                 ];
                 
                 db.ExecuteTag($scope.Firma,'RafTanimlariKaydet',InsertData,function(InsertResult)

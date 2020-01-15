@@ -124,10 +124,16 @@ function PaletAdresleme ($scope,$window,db)
         $scope.RafListe = [];
         db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
+
             $scope.RafListe = Data
             $scope.RafMiktar = $scope.RafListe[0].MIKTAR
             $scope.RafTip = $scope.RafListe[0].TIP
-            console.log($scope.RafListe)
+            $scope.RafStok = $scope.RafListe[0].STOK
+
+            if($scope.RafMiktar >= 1 && $scope.RafTip == 0)
+            {
+                alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
+            }
         });
 
         if($scope.RafMiktar >= 1)

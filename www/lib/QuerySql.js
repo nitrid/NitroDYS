@@ -351,6 +351,12 @@ var QuerySql =
         " * FROM BARKODLAR WHERE KODU = @KODU",
         param: ['KODU'],
         type:  ['string|25']
+    },
+    PaletEksiltme : 
+    {
+        query: " UPDATE PALETLER SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
+        param: ['MIKTAR','KODU'],
+        type: ['float','string|25']
     }
 };
 

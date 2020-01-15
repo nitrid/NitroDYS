@@ -118,6 +118,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
             $scope.Miktar = $scope.PaletListe[0].MIKTAR
+            $scope.PaletStok = $scope.PaletListe[0].STOK
         });
     }
     function RafGetir(pKodu)
@@ -128,13 +129,13 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             $scope.RafListe = Data
             $scope.RafMiktar = $scope.RafListe[0].MIKTAR
             $scope.RafTip = $scope.RafListe[0].TIP
-            console.log($scope.RafListe)
-        });
+            $scope.RafStok = $scope.RafListe[0].STOK
 
-        if($scope.RafMiktar >= 1)
-        {
-            alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
-        }
+            if($scope.RafMiktar >= 1 && $scope.RafTip == 0)
+            {
+                alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
+            }
+        });
       
     }
     function InsertAfterRefresh()
@@ -154,6 +155,8 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         $scope.CmbEvrakTip = '0';
         $scope.Miktar = 0;
         $scope.PaletKodu = '';
+        $scope.RafKodu = '';
+        $scope.RafMiktar = 0;
 
         document.getElementById("page-title").innerHTML = "Palet Adresleme";
         document.getElementById("page-path").innerHTML = "Palet Adresleme";
@@ -236,68 +239,89 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             alertify.alert("Seçtiğini Raf Toplama Rafıdır... Kayıt Yapılmadı!!");
         }
         else
-        {
-            if($scope.Miktar < 1)
+        {   
+            if( $scope.CmbEvrakTip == 0 && $scope.RafStok != $scope.PaletStok)  
             {
-                alertify.alert("Palet Kodunuz Hatalı veya Palet Boş..");
-                InsertAfterRefresh();
+                alertify.alert("Paletinizdeki Ürün Stoğu Bu Rafa Ait Değil!!");
             }
             else
             {
-                let InsertData =
-                [
-                    UserParam.Kullanici,
-                    $scope.CmbEvrakTip,
-                    0,
-                    '',
-                    0,
-                    $scope.PaletKodu,
-                    $scope.RafKodu,
-                    $scope.RafKodu,
-                    1,
-                    $scope.Miktar,
-                    '',
-                    '',
-                ];
-                
-                db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
-                { 
-                    if(typeof(InsertResult.result.err) == 'undefined')
-                    {                          
-                       if( $scope.CmbEvrakTip == 0)
-                       {
-                        let TmpQuery = 
-                        {
-                            db : $scope.Firma,
-                            query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
-                            param : ['MIKTAR','KODU'],
-                            type : ['float','string|50'],
-                            value : [$scope.Miktar,$scope.RafKodu]
-                        }
-                        db.GetDataQuery(TmpQuery,function(Data)
-                        {
-                            console.log('CREATED BY RECEP KARACA ;)')   
-                        });
-                       }
-                       else
-                       {
-                        let TmpQuery = 
-                        {
-                            db : $scope.Firma,
-                            query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
-                            param : ['MIKTAR','KODU'],
-                            type : ['float','string|50'],
-                            value : [$scope.Miktar,$scope.RafKodu]
-                        }
-                        db.GetDataQuery(TmpQuery,function(Data)
-                        {
-                            console.log('CREATED BY RECEP KARACA ;)')   
-                        });
-                       }
-                    }
-                    AdresGetir();
+                if($scope.Miktar < 1)
+                {
+                    alertify.alert("Palet Kodunuz Hatalı veya Palet Boş..");
                     InsertAfterRefresh();
-                });   
+                }
+                else
+                {
+                    let InsertData =
+                    [
+                        UserParam.Kullanici,
+                        $scope.CmbEvrakTip,
+                        0,
+                        '',
+                        0,
+                        $scope.PaletKodu,
+                        $scope.RafKodu,
+                        $scope.RafKodu,
+                        1,
+                        $scope.Miktar,
+                        '',
+                        '',
+                    ];
+                    
+                    db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
+                    { 
+                        if(typeof(InsertResult.result.err) == 'undefined')
+                        {                          
+                            if( $scope.CmbEvrakTip == 0)
+                            {
+                                let TmpQuery = 
+                                {
+                                    db : $scope.Firma,
+                                    query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
+                                    param : ['MIKTAR','KODU'],
+                                    type : ['float','string|50'],
+                                    value : [$scope.Miktar,$scope.RafKodu]
+                                }
+                                db.GetDataQuery(TmpQuery,function(Data)
+                                {
+                                    console.log('CREATED BY RECEP KARACA ;)')   
+                                });
+                            }
+                            else
+                            {
+                                let TmpQuery = 
+                                {
+                                    db : $scope.Firma,
+                                    query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
+                                    param : ['MIKTAR','KODU'],
+                                    type : ['float','string|50'],
+                                    value : [$scope.Miktar,$scope.RafKodu]
+                                }
+                                db.GetDataQuery(TmpQuery,function(Data)
+                                {
+                                    console.log('CREATED BY RECEP KARACA ;)')   
+                                });
+
+                                let Data =
+                                [
+                                    $scope.Miktar,
+                                    $scope.PaletKodu,
+                                ];
+                                
+                                db.ExecuteTag($scope.Firma,'PaletEksiltme',Data,function(InsertResult)
+                                { 
+                                    if(typeof(InsertResult.result.err) == 'undefined')
+                                    {  
+                                       console.log('başarılı')
+                                    }
+                                });               
+                            }
+                        }
+                        AdresGetir();
+                        InsertAfterRefresh();
+                    });   
+                }    
             }
         }
     }

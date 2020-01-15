@@ -57,7 +57,8 @@ function RafTanimlari ($scope,$window,db)
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
-    
+
+
         TblSecimInit([]);
 
         document.getElementById("page-title").innerHTML = "Raf Tanımları";
@@ -96,9 +97,9 @@ function RafTanimlari ($scope,$window,db)
                     $scope.DataListe[0].STOK,
                     $scope.DataListe[0].KAT,
                     $scope.DataListe[0].SIRA,
-                    $scope.DataListe[0].EN,
-                    $scope.DataListe[0].BOY,
-                    $scope.DataListe[0].YUKSEKLIK,                    
+                    0,
+                    0,
+                    0,                    
                     $scope.DataListe[0].KATEGORI,
                     0
                 ];

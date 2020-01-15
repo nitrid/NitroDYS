@@ -36,4 +36,8 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/SubeEmirKapatma.html"
     })
+    .when("/ToplamaAlaniTransfer", 
+    {
+        templateUrl : "html/ToplamaAlaniTransfer.html"
+    })
 });

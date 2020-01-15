@@ -1,4 +1,4 @@
-function PaletAdresleme ($scope,$window,db)
+function ToplamaAlaniTransfer ($scope,$window,db)
 {
     let SecimSelectedRow = null;
     function TblSecimInit(pData)
@@ -114,6 +114,7 @@ function PaletAdresleme ($scope,$window,db)
         $scope.PaletListe = [];
         db.GetData($scope.Firma,'PaletTanimlariGetir',[pKodu],function(Data)
         {
+            console.log(Data)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
             $scope.Miktar = $scope.PaletListe[0].MIKTAR
@@ -176,6 +177,7 @@ function PaletAdresleme ($scope,$window,db)
         {
             $scope.RafKodu = SecimSelectedRow.Item.KODU
             RafGetir($scope.RafKodu)
+
             $("#MdlSecim").modal('hide');
         }
         ModalTip = "";
@@ -229,7 +231,11 @@ function PaletAdresleme ($scope,$window,db)
     }
     $scope.Insert = function()
     {
-        if($scope.RafTip == 0)
+        if($scope.RafTip == 0 && $scope.CmbEvrakTip == 0)
+        {
+            alertify.alert("Seçtiğini Raf Toplama Rafıdır... Kayıt Yapılmadı!!");
+        }
+        else
         {
             if($scope.Miktar < 1)
             {
@@ -263,7 +269,7 @@ function PaletAdresleme ($scope,$window,db)
                         let TmpQuery = 
                         {
                             db : $scope.Firma,
-                            query:  "UPDATE RAFLAR SET MIKTAR = @MIKTAR WHERE KODU = @KODU",
+                            query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
                             param : ['MIKTAR','KODU'],
                             type : ['float','string|50'],
                             value : [$scope.Miktar,$scope.RafKodu]
@@ -293,10 +299,6 @@ function PaletAdresleme ($scope,$window,db)
                     InsertAfterRefresh();
                 });   
             }
-        }
-        else
-        {
-            alertify.alert("Seçtiğini Raf Saklama Rafıdır... Kayıt Yapılmadı!!");
         }
     }
 

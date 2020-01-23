@@ -11,10 +11,21 @@ function RafKategoriTanimlari ($scope,$window,db)
         {
             Object.keys(pData[0]).forEach(function(item)
             {
-                TmpColumns.push({name : item});
+                TmpColumns.push({name : item,type: "text"});
             });    
         }
         
+        let db = {
+            loadData: function(filter) 
+            {
+                return $.grep(pData, function(client) 
+                { 
+                    return (!filter.KODU || client.KODU.indexOf(filter.KODU) > -1)
+                        && (!filter.ADI || client.ADI.indexOf(filter.ADI) > -1)
+                });
+            }
+        };
+
         $("#TblSecim").jsGrid
         ({
             width: "100%",
@@ -23,6 +34,7 @@ function RafKategoriTanimlari ($scope,$window,db)
             selecting: true,
             data : pData,
             paging : true,
+            filtering: true,
             pageSize: 5,
             pageButtonCount: 3,
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
@@ -31,8 +43,11 @@ function RafKategoriTanimlari ($scope,$window,db)
             {
                 SecimListeRowClick(args.itemIndex,args.item,this);
                 $scope.$apply();
-            }
+            },
+
+            controller:db,
         });
+        $("#TblSecim").jsGrid("search");
     }
     function SecimListeRowClick(pIndex,pItem,pObj)
     {    

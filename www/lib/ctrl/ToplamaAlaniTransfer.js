@@ -10,10 +10,20 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         {
             Object.keys(pData[0]).forEach(function(item)
             {
-                TmpColumns.push({name : item});
+                TmpColumns.push({name : item,type: "text"});
             });    
         }
         
+        let db = {
+            loadData: function(filter) 
+            {
+                return $.grep(pData, function(client) 
+                { 
+                    return (!filter.KODU || client.KODU.indexOf(filter.KODU) > -1)
+                        && (!filter.STOK || client.STOK.indexOf(filter.STOK) > -1)
+                });
+            }
+        };
         $("#TblSecim").jsGrid
         ({
             width: "100%",
@@ -22,6 +32,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             selecting: true,
             data : pData,
             paging : true,
+            filtering : true,
             pageSize: 5,
             pageButtonCount: 3,
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
@@ -30,8 +41,10 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             {
                 SecimListeRowClick(args.itemIndex,args.item,this);
                 $scope.$apply();
-            }
+            },
+            controller:db
         });
+        $("#TblSecim").jsGrid("search");
     }
     function TblArdesGrid(pData)
     {                
@@ -117,8 +130,26 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             console.log(Data)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
-            $scope.Miktar = $scope.PaletListe[0].MIKTAR
-            $scope.PaletStok = $scope.PaletListe[0].STOK
+            $scope.PaletStok = $scope.PaletListe[0].STOK;
+            if($scope.CmbEvrakTip == 1)
+            {
+                $scope.Miktar = $scope.PaletListe[0].MIKTAR
+            }
+            else
+            {
+                TmpQuery = 
+                {
+                    db : $scope.Firma,
+                    query : "SELECT TOP(1) MIKTAR FROM EMIR_HAREKETLERI WHERE KODU = @KODU AND CINS = 0 AND TIP = 1 ORDER BY TARIH  DESC " ,
+                    param : ['KODU:string|25'],
+                    value : [$scope.PaletKodu]
+                } 
+                db.GetDataQuery(TmpQuery,function(Data)
+                {
+                    console.log(Data[0].MIKTAR)
+                    $scope.Miktar = Data[0].MIKTAR
+                });
+            }
         });
     }
     function RafGetir(pKodu)
@@ -131,7 +162,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             $scope.RafTip = $scope.RafListe[0].TIP
             $scope.RafStok = $scope.RafListe[0].STOK
 
-            if($scope.RafMiktar >= 1 && $scope.RafTip == 0)
+            if($scope.RafMiktar >= 1 && $scope.RafTip == 0 && $scope.CmbEvrakTip == 0)
             {
                 alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
             }
@@ -286,6 +317,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                                 db.GetDataQuery(TmpQuery,function(Data)
                                 {
                                     console.log('CREATED BY RECEP KARACA ;)')   
+                                    InsertAfterRefresh();
                                 });
                             }
                             else
@@ -300,26 +332,25 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                                 }
                                 db.GetDataQuery(TmpQuery,function(Data)
                                 {
-                                    console.log('CREATED BY RECEP KARACA ;)')   
+                                    let Param =
+                                    [
+                                        $scope.Miktar,
+                                        $scope.PaletKodu,
+                                    ];
+                                    
+                                    db.ExecuteTag($scope.Firma,'PaletEksiltme',Param,function(InsertResult)
+                                    { 
+                                        if(typeof(InsertResult.result.err) == 'undefined')
+                                        {  
+                                           console.log('başarılı')
+                                           InsertAfterRefresh();
+                                           
+                                        }
+                                    });             
                                 });
-
-                                let Data =
-                                [
-                                    $scope.Miktar,
-                                    $scope.PaletKodu,
-                                ];
-                                
-                                db.ExecuteTag($scope.Firma,'PaletEksiltme',Data,function(InsertResult)
-                                { 
-                                    if(typeof(InsertResult.result.err) == 'undefined')
-                                    {  
-                                       console.log('başarılı')
-                                    }
-                                });               
+  
                             }
                         }
-                        AdresGetir();
-                        InsertAfterRefresh();
                     });   
                 }    
             }

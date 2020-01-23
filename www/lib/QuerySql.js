@@ -330,10 +330,10 @@ var QuerySql =
     },
     EmirlerMaxSira : 
     {
-        query: "SELECT ISNULL(MAX(SIRA),0) + 1 AS MAXEVRSIRA FROM EMIRLER " +
-                "WHERE SERI = @SERI AND TIP = @TIP " ,
-        param : ['SERI','TIP'],
-        type : ['string|10','int']
+        query: "SELECT ISNULL(MAX(SIRA),0) + 1 AS MAXEVRSIRA FROM EMIR_HAREKETLERI " +
+                "WHERE SERI = @SERI AND TIP = @TIP AND CINS = @CINS " ,
+        param : ['SERI','TIP','CINS'],
+        type : ['string|10','int','int']
     },
     SubeEmriGetir :
     {

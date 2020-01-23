@@ -12,28 +12,50 @@ function RafTanimlari ($scope,$window,db)
         {
             Object.keys(pData[0]).forEach(function(item)
             {
-                TmpColumns.push({name : item});
+                TmpColumns.push({name : item,type: "text"});
             });    
         }
         
+        let db = {
+            loadData: function(filter) 
+            {
+                return $.grep(pData, function(client) 
+                { 
+                    return (!filter.KODU || client.KODU.indexOf(filter.KODU) > -1)
+                        && (!filter.STOK || client.STOK.indexOf(filter.STOK) > -1)
+                        && (!filter.ADI || client.ADI.indexOf(filter.ADI) > -1)
+                        && (!filter.KAT || client.KAT === filter.KAT)
+                        && (filter.Married === undefined || client.Married === filter.Married);
+                });
+            }
+        };
+
         $("#TblSecim").jsGrid
         ({
+           
             width: "100%",
             updateOnResize: true,
             heading: true,
-            selecting: true,
+            filtering: true,
+            editing: true,
+            sorting: true,
+            paging: true,
+            autoload: true,
             data : pData,
-            paging : true,
             pageSize: 10,
             pageButtonCount: 3,
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: TmpColumns,
+
+            controller:db,
+
             rowClick: function(args)
             {
                 SecimListeRowClick(args.itemIndex,args.item,this);
                 $scope.$apply();
             }
         });
+        $("#TblSecim").jsGrid("search");
     }
     function SecimListeRowClick(pIndex,pItem,pObj)
     {    
@@ -44,10 +66,10 @@ function RafTanimlari ($scope,$window,db)
         SecimSelectedRow.Item = pItem
         SecimSelectedRow.Index = pIndex
     }
-    function RafGetir(pKodu,pKat)
+    function RafGetir(pKodu)
     {
         $scope.DataListe = [];
-        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu,pKat],function(Data)
+        db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
             $scope.DataListe = Data;
         });
@@ -202,6 +224,13 @@ function RafTanimlari ($scope,$window,db)
                 TblSecimInit(Data);
                 $('#MdlSecim').modal('show');
             });
+        }
+    }
+    $scope.RafTanimGetir = function(keyEvent)
+    {
+        if(keyEvent.which === 13)
+        {
+            RafGetir($scope.DataListe[0].KODU);
         }
     }
 }

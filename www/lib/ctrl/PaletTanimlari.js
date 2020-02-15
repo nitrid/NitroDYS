@@ -361,7 +361,7 @@ function PaletTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,STOK,SKT FROM PALETLER"
+                query:  "SELECT KODU,STOK,SKT FROM PARTILER"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

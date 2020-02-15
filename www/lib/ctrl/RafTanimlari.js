@@ -68,10 +68,15 @@ function RafTanimlari ($scope,$window,db)
     }
     function RafGetir(pKodu)
     {
-        $scope.DataListe = [];
+        
         db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
-            $scope.DataListe = Data;
+            if(Data.length > 0)
+            {
+                $scope.DataListe = [];
+                $scope.DataListe = Data;
+            }
+           
         });
     }
     $scope.Init = function()
@@ -191,7 +196,7 @@ function RafTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,STOK,KAT,SIRA FROM RAFLAR"
+                query:  "SELECT KODU,KAT,SIRA FROM RAFLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

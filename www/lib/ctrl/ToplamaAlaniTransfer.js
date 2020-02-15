@@ -110,9 +110,9 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         TmpQuery = 
         {
             db : $scope.Firma,
-            query : "SELECT TOP(10) KODU AS PALET, GIRIS AS RAF, " +
+            query : "SELECT TOP(10) PARTI AS PALET, GIRIS AS RAF, " +
                     " CASE  WHEN TIP = 0 THEN 'GİRİŞ' " +
-                    " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from EMIR_HAREKETLERI WHERE MIKTAR > @MIKTAR AND CINS = 0 ORDER BY OTARIH DESC" ,
+                    " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from EMIR_HAREKETLERI WHERE MIKTAR > @MIKTAR AND CINS = 1 ORDER BY OTARIH DESC" ,
             param : ['MIKTAR:float'],
             value : [0]
         } 
@@ -130,7 +130,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             console.log(Data)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
-            $scope.PaletStok = $scope.PaletListe[0].STOK;
+            $scope.Stok = $scope.PaletListe[0].STOK;
             if($scope.CmbEvrakTip == 1)
             {
                 $scope.Miktar = $scope.PaletListe[0].MIKTAR
@@ -140,7 +140,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                 TmpQuery = 
                 {
                     db : $scope.Firma,
-                    query : "SELECT TOP(1) MIKTAR FROM EMIR_HAREKETLERI WHERE KODU = @KODU AND CINS = 0 AND TIP = 1 ORDER BY TARIH  DESC " ,
+                    query : "SELECT TOP(1) MIKTAR FROM EMIR_HAREKETLERI WHERE PARTI = @KODU AND CINS = 1 AND TIP = 1 ORDER BY TARIH  DESC " ,
                     param : ['KODU:string|25'],
                     value : [$scope.PaletKodu]
                 } 
@@ -158,14 +158,8 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
             $scope.RafListe = Data
-            $scope.RafMiktar = $scope.RafListe[0].MIKTAR
             $scope.RafTip = $scope.RafListe[0].TIP
             $scope.RafStok = $scope.RafListe[0].STOK
-
-            if($scope.RafMiktar >= 1 && $scope.RafTip == 0 && $scope.CmbEvrakTip == 0)
-            {
-                alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
-            }
         });
       
     }
@@ -225,7 +219,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,STOK,SKT FROM PALETLER"
+                query:  "SELECT KODU,STOK,SKT FROM PARTILER"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -264,96 +258,62 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         }
     }
     $scope.Insert = function()
-    {
+    {console.log(1)
         if($scope.RafTip == 0 && $scope.CmbEvrakTip == 0)
         {
             alertify.alert("Seçtiğini Raf Toplama Rafıdır... Kayıt Yapılmadı!!");
         }
         else
         {   
-            if( $scope.CmbEvrakTip == 0 && $scope.RafStok != $scope.PaletStok)  
+            if($scope.Miktar < 1)
             {
-                alertify.alert("Paletinizdeki Ürün Stoğu Bu Rafa Ait Değil!!");
+                alertify.alert("Palet Kodunuz Hatalı veya Palet Boş..");
+                InsertAfterRefresh();
             }
             else
-            {
-                if($scope.Miktar < 1)
-                {
-                    alertify.alert("Palet Kodunuz Hatalı veya Palet Boş..");
-                    InsertAfterRefresh();
-                }
-                else
-                {
-                    let InsertData =
-                    [
-                        UserParam.Kullanici,
-                        $scope.CmbEvrakTip,
-                        0,
-                        '',
-                        0,
-                        $scope.PaletKodu,
-                        $scope.RafKodu,
-                        $scope.RafKodu,
-                        1,
-                        $scope.Miktar,
-                        '',
-                        '',
-                    ];
-                    
-                    db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
-                    { 
-                        if(typeof(InsertResult.result.err) == 'undefined')
-                        {                          
-                            if( $scope.CmbEvrakTip == 0)
+            {console.log(2)
+                let InsertData =
+                [
+                    UserParam.Kullanici,
+                    UserParam.Kullanici,
+                    $scope.CmbEvrakTip,
+                    1,
+                    '',
+                    0,
+                    $scope.Stok,
+                    $scope.PaletKodu,
+                    $scope.RafKodu,
+                    $scope.RafKodu,
+                    1,
+                    $scope.Miktar,
+                    '',
+                    '',
+                ];
+                
+                db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
+                { 
+                    if(typeof(InsertResult.result.err) == 'undefined')
+                    {                          
+                        if( $scope.CmbEvrakTip == 0)
+                        {
+                            let TmpQuery = 
                             {
-                                let TmpQuery = 
-                                {
-                                    db : $scope.Firma,
-                                    query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
-                                    param : ['MIKTAR','KODU'],
-                                    type : ['float','string|50'],
-                                    value : [$scope.Miktar,$scope.RafKodu]
-                                }
-                                db.GetDataQuery(TmpQuery,function(Data)
-                                {
-                                    console.log('CREATED BY RECEP KARACA ;)')   
-                                    InsertAfterRefresh();
-                                });
+                                db : $scope.Firma,
+                                query:  "UPDATE PARTILER SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
+                                param : ['MIKTAR','KODU'],
+                                type : ['float','string|50'],
+                                value : [$scope.Miktar,$scope.PaletKodu]
                             }
-                            else
+                            db.GetDataQuery(TmpQuery,function(Data)
                             {
-                                let TmpQuery = 
-                                {
-                                    db : $scope.Firma,
-                                    query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
-                                    param : ['MIKTAR','KODU'],
-                                    type : ['float','string|50'],
-                                    value : [$scope.Miktar,$scope.RafKodu]
-                                }
-                                db.GetDataQuery(TmpQuery,function(Data)
-                                {
-                                    let Param =
-                                    [
-                                        $scope.Miktar,
-                                        $scope.PaletKodu,
-                                    ];
-                                    
-                                    db.ExecuteTag($scope.Firma,'PaletEksiltme',Param,function(InsertResult)
-                                    { 
-                                        if(typeof(InsertResult.result.err) == 'undefined')
-                                        {  
-                                           console.log('başarılı')
-                                           InsertAfterRefresh();
-                                           
-                                        }
-                                    });             
-                                });
-  
-                            }
+                                console.log('CREATED BY RECEP KARACA ;)')   
+                                InsertAfterRefresh();
+                            });
                         }
-                    });   
-                }    
-            }
+                    }
+                    InsertAfterRefresh();
+                });   
+            }    
         }
     }
 

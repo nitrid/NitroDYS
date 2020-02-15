@@ -12,14 +12,12 @@ var QuerySql =
                 ",[DTARIH] " + 
                 ",[KODU] " + 
                 ",[TIP] " + 
-                ",[STOK] " + 
                 ",[KAT] " + 
                 ",[SIRA] " + 
                 ",[EN] " + 
                 ",[BOY] " + 
                 ",[YUKSEKLIK] " + 
-                ",[KATEGORI] " + 
-                ",[MIKTAR]) " + 
+                ",[KATEGORI]) " + 
                 "VALUES " + 
                 "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
                 ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
@@ -27,33 +25,29 @@ var QuerySql =
                 ",GETDATE()		    --<DTARIH, datetime,> \n" +
                 ",@KODU			    --<KODU, nvarchar(25),> \n" +
                 ",@TIP			    --<TIP, smallint,> \n" +
-                ",@STOK			    --<STOK, nvarchar(25),> \n" +
                 ",@KAT			    --<KAT, smallint,> \n" +
                 ",@SIRA			    --<SIRA, int,> \n" +
                 ",@EN				--<EN, int,> \n" +
                 ",@BOY			    --<BOY, int,> \n" +
                 ",@YUKSEKLIK		--<YUKSEKLIK, int,> \n" +
                 ",@KATEGORI		    --<KATEGORI, nvarchar(25),> \n" +
-                ",@MIKTAR		    --<MIKTAR, flota,> \n" +
                 ") " +
                 "ELSE " + 
                 "UPDATE [dbo].[RAFLAR] SET " +
                 "[DKULLANICI] = @DKULLANICI " +
                 ",[DTARIH] = GETDATE() " +
                 ",[TIP] = @TIP " +
-                ",[STOK] = @STOK " +
                 ",[SIRA] = @SIRA " +
                 ",[EN] = @EN " +
                 ",[BOY] = @BOY " +
                 ",[YUKSEKLIK] = @YUKSEKLIK " +
                 ",[KATEGORI] = @KATEGORI " +
-                ",[MIKTAR] = @MIKTAR " +
                 "WHERE [KODU] = @TMPCODE AND [KAT] = @KAT",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','STOK:string|25','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25','MIKTAR:float']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25']
     },
     RafTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,CONVERT(NVARCHAR(10),TIP) AS TIP,STOK AS STOK,CONVERT(NVARCHAR(10),KAT) AS KAT,SIRA AS SIRA,EN AS EN,BOY AS BOY,YUKSEKLIK AS YUKSEKLIK,KATEGORI AS KATEGORI,MIKTAR AS MIKTAR FROM RAFLAR WHERE KODU = @KODU",
+        query : "SELECT KODU AS KODU,CONVERT(NVARCHAR(10),TIP) AS TIP,CONVERT(NVARCHAR(10),KAT) AS KAT,SIRA AS SIRA,EN AS EN,BOY AS BOY,YUKSEKLIK AS YUKSEKLIK,KATEGORI AS KATEGORI FROM RAFLAR WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
     },
@@ -104,9 +98,9 @@ var QuerySql =
     PaletTanimlariKaydet : 
     {
         query : "DECLARE @TMPCODE NVARCHAR(25) " +
-                "SET @TMPCODE = ISNULL((SELECT KODU FROM PALETLER WHERE KODU = @KODU),'') " +
+                "SET @TMPCODE = ISNULL((SELECT KODU FROM PARTILER WHERE KODU = @KODU),'') " +
                 "IF @TMPCODE = '' " +
-                "INSERT INTO [dbo].[PALETLER] " + 
+                "INSERT INTO [dbo].[PARTILER] " + 
                 "([OKULLANICI] " + 
                 ",[DKULLANICI] " + 
                 ",[OTARIH] " + 
@@ -128,7 +122,7 @@ var QuerySql =
                 ",@MIKTAR			--<MIKTAR, float,> \n" +
                 ") " +
                 "ELSE " + 
-                "UPDATE [dbo].[PALETLER] SET " +
+                "UPDATE [dbo].[PARTILER] SET " +
                 "[DKULLANICI] = @DKULLANICI " +
                 ",[DTARIH] = GETDATE() " +
                 ",[STOK] = @STOK " +
@@ -140,12 +134,12 @@ var QuerySql =
     },
     PaletTanimlariSil :
     {
-        query : "DELETE FROM PALETLER WHERE KODU = @KODU",
+        query : "DELETE FROM PARTILER WHERE KODU = @KODU",
         param : ['KODU:string|25']
     },
     PaletTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM PALETLER WHERE KODU = @KODU",
+        query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM PARTILER WHERE KODU = @KODU",
         param : ['KODU'],
         type : ['string|25']
     },
@@ -255,14 +249,17 @@ var QuerySql =
         query : "INSERT INTO [dbo].[EMIR_HAREKETLERI] " +
                 "([UID] " +
                 ",[OKULLANICI] " +
+                ",[DKULLANICI] " +
                 ",[OTARIH] " +
+                ",[DTARIH] " +
                 ",[TIP] " +
                 ",[CINS] " +
                 ",[TARIH] " +
                 ",[SERI] " +
                 ",[SIRA] " +
                 ",[SATIRNO] " +
-                ",[KODU] " +
+                ",[STOK] " +
+                ",[PARTI] " +
                 ",[GIRIS] " +
                 ",[CIKIS] " +
                 ",[BIRIM]" +
@@ -272,14 +269,17 @@ var QuerySql =
                 "VALUES " +
                 "(  NEWID()             --<UID, uniqueidentifier,>  \n" +
                     ",@OKULLANICI       --<OKULLANICI, nvarchar(10),>  \n" +
+                    ",@DKULLANICI       --<DKULLANICI, nvarchar(10),>  \n" +
                     ",GETDATE()         --<OTARIH, datetime,>  \n" +
+                    ",GETDATE()         --<DTARIH, datetime,>  \n" +
                     ",@TIP              --<TIP, smallint,>  \n" +
                     ",@CINS             --<CINS, smallint,>  \n" +
                     ",GETDATE()         --<TARIH, datetime,>  \n" +
                     ",@SERI             --<SERI, nvarchar(10),>  \n" +
                     ",@SIRA             --<SIRA, int,>  \n" +
                     ",(SELECT ISNULL(MAX(SATIRNO),-1) + 1 AS SATIRNO FROM EMIR_HAREKETLERI WHERE SERI = @SERI AND SIRA = @SIRA AND CINS = @CINS)            --<SATIRNO, int,>  \n" +
-                    ",@KODU             --<KODU, nvarchar(25),>  \n" +
+                    ",@STOK             --<STOK, nvarchar(25),>  \n" +
+                    ",@PARTI             --<PARTI, nvarchar(25),>  \n" +
                     ",@GIRIS            --<GIRIS, nvarchar(25),>  \n" +
                     ",@CIKIS            --<CIKIS, nvarchar(25),>  \n" +
                     ",@BIRIM           --<BIRIM, nvarchar(10),>  \n" +
@@ -287,7 +287,7 @@ var QuerySql =
                     ",@OZEL                --<OZEL, nvarchar(50),>  \n" +
                     ",@EMIRID             --<EMIRID, nvarchar(50),>  \n" +
                     " ) ",
-    param :  ['OKULLANICI:string|10','TIP:int','CINS:int','SERI:string|10','SIRA:int','KODU:string|25','GIRIS:string|25','CIKIS:string|25','BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
+    param :  ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','CINS:int','SERI:string|10','SIRA:int','STOK:string|25','PARTI:string|15','GIRIS:string|25','CIKIS:string|25','BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
     },
     EtiketKaydet : 
     {
@@ -324,7 +324,7 @@ var QuerySql =
     },
     EtiketGetir : 
     {
-        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PALET AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PALETLER WHERE KODU = PALET),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
+        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PALET AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PALET),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
         param : ['SERI','SIRA'],
         type : ['string|10','int']
     },
@@ -337,11 +337,21 @@ var QuerySql =
     },
     SubeEmriGetir :
     {
-        query: "SELECT EMIRLER.KODU AS STOKKOD,(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI,RAFLAR.KODU AS RAFKODU,EMIRLER.UID AS EMIRUID ," +
-                "RAFLAR.KAT AS RAFKATI,EMIRLER.KODU AS EMIRKODU,(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI ,"+
-                " (SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS KATSAYI,(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBEADI, * FROM EMIRLER " +
-                "INNER JOIN RAFLAR " +
-                "ON EMIRLER.KODU = RAFLAR.STOK  WHERE EMIRLER.SERI = @SERI AND EMIRLER.SIRA = @SIRA AND EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 ORDER BY RAFLAR.SIRA " ,
+        query: "SELECT *, " + 
+                " EMIRLER.KODU AS STOKKOD ," + 
+                "(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI ," + 
+                "dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU) AS RAFKODU ," + 
+                "(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI ," + 
+                "(SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS KATSAYI ," + 
+                "(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBEADI ," + 
+                "EMIRLER.UID AS EMIRUID ," +
+                "EMIRLER.BIRIM AS BIRIM ," +
+                "EMIRLER.GIRIS AS GIRISSUBE " +
+                " FROM EMIRLER " + 
+                "INNER JOIN STOK_HAREKET_VIEW_01 AS STOK " + 
+                "ON EMIRLER.KODU = STOK.STOK " + 
+                "WHERE EMIRLER.SERI = @SERI AND EMIRLER.SIRA = @SIRA AND EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 " + 
+                "ORDER BY (SELECT SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
         param: ['SERI','SIRA','TIP','CINS'],
         type : ['string|10','int','int','int']
     },
@@ -354,7 +364,7 @@ var QuerySql =
     },
     PaletEksiltme : 
     {
-        query: " UPDATE PALETLER SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
+        query: " UPDATE PARTILER SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
         param: ['MIKTAR','KODU'],
         type: ['float','string|25']
     }

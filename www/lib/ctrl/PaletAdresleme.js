@@ -110,7 +110,7 @@ function PaletAdresleme ($scope,$window,db)
         TmpQuery = 
         {
             db : $scope.Firma,
-            query : "SELECT TOP(10) KODU AS PALET, GIRIS AS RAF, " +
+            query : "SELECT TOP(10) PARTI AS PALET, GIRIS AS RAF, " +
                     " CASE  WHEN TIP = 0 THEN 'GİRİŞ' " +
                     " WHEN TIP = 1 THEN 'ÇIKIŞ' END AS TIP, MIKTAR AS MIKTAR  from EMIR_HAREKETLERI WHERE MIKTAR > @MIKTAR AND CINS = 0 ORDER BY OTARIH DESC" ,
             param : ['MIKTAR:float'],
@@ -130,6 +130,7 @@ function PaletAdresleme ($scope,$window,db)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
             $scope.Miktar = $scope.PaletListe[0].MIKTAR
+            $scope.Stok = $scope.PaletListe[0].STOK
         });
     }
     function RafGetir(pKodu)
@@ -208,7 +209,7 @@ function PaletAdresleme ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,STOK,SKT FROM PALETLER"
+                query:  "SELECT KODU,STOK,SKT FROM PARTILER"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -260,10 +261,12 @@ function PaletAdresleme ($scope,$window,db)
                 let InsertData =
                 [
                     UserParam.Kullanici,
+                    UserParam.Kullanici,
                     $scope.CmbEvrakTip,
                     0,
                     '',
                     0,
+                    $scope.Stok,
                     $scope.PaletKodu,
                     $scope.RafKodu,
                     $scope.RafKodu,
@@ -277,39 +280,10 @@ function PaletAdresleme ($scope,$window,db)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
                     {                          
-                       if( $scope.CmbEvrakTip == 0)
-                       {
-                        let TmpQuery = 
-                        {
-                            db : $scope.Firma,
-                            query:  "UPDATE RAFLAR SET MIKTAR = @MIKTAR WHERE KODU = @KODU",
-                            param : ['MIKTAR','KODU'],
-                            type : ['float','string|50'],
-                            value : [$scope.Miktar,$scope.RafKodu]
-                        }
-                        db.GetDataQuery(TmpQuery,function(Data)
-                        {
-                            console.log('CREATED BY RECEP KARACA ;)')   
-                        });
-                       }
-                       else
-                       {
-                        let TmpQuery = 
-                        {
-                            db : $scope.Firma,
-                            query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
-                            param : ['MIKTAR','KODU'],
-                            type : ['float','string|50'],
-                            value : [$scope.Miktar,$scope.RafKodu]
-                        }
-                        db.GetDataQuery(TmpQuery,function(Data)
-                        {
-                            console.log('CREATED BY RECEP KARACA ;)')   
-                        });
-                       }
+                        AdresGetir();
+                        InsertAfterRefresh();
                     }
-                    AdresGetir();
-                    InsertAfterRefresh();
+        
                 });   
             }
         }

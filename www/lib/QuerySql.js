@@ -299,7 +299,7 @@ var QuerySql =
                 ",[SERI] " + 
                 ",[SIRA] " + 
                 ",[TARIH] " + 
-                ",[PALET] " + 
+                ",[PARTI] " + 
                 ",[STOK] " + 
                 ",[BARKOD] " + 
                 ",[BIRIM] " + 
@@ -313,18 +313,18 @@ var QuerySql =
                 ",@SERI			    --<SERI, nvarchar(10),> \n" +
                 ",@SIRA			    --<SIRA, int,> \n" +
                 ",@TARIH		    --<TARIH, datetime,> \n" +
-                ",@PALET			--<PALET, nvarchar(15),> \n" +
+                ",@PARTI			--<PALET, nvarchar(15),> \n" +
                 ",@STOK				--<STOK, nvarchar(25),> \n" +
                 ",@BARKOD			--<BARKOD, nvarchar(25),> \n" +
                 ",@BIRIM			--<BIRIM, nvarchar(10),> \n" +
                 ",@BAS_MIKTAR		--<BAS_MIKTAR, float,> \n" +
                 ",@DURUM			--<DURUM, smallint,> \n" +
                 ") ",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','TARIH:date','PALET:string|15','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','TARIH:date','PARTI:string|15','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
     },
     EtiketGetir : 
     {
-        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PALET AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PALET),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
+        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PARTI AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PARTI),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
         param : ['SERI','SIRA'],
         type : ['string|10','int']
     },
@@ -351,7 +351,7 @@ var QuerySql =
                 "INNER JOIN STOK_HAREKET_VIEW_01 AS STOK " + 
                 "ON EMIRLER.KODU = STOK.STOK " + 
                 "WHERE EMIRLER.SERI = @SERI AND EMIRLER.SIRA = @SIRA AND EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 " + 
-                "ORDER BY (SELECT SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
+                "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
         param: ['SERI','SIRA','TIP','CINS'],
         type : ['string|10','int','int','int']
     },

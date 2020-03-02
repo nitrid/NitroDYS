@@ -52,7 +52,8 @@ File: Main Css File
 45. Coming Soon
 46. Responsive
 */
-
+@import url("https://fonts.googleapis.com/css?family=Arial:400,700");
+@import url("https://fonts.googleapis.com/css?family=Arial:300,400,500,700");
 /* =============
   Menu
 ============= */

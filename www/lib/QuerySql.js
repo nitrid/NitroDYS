@@ -154,7 +154,8 @@ var QuerySql =
                 ",[OTARIH] " + 
                 ",[DTARIH] " + 
                 ",[KODU] " + 
-                ",[ADI]) " + 
+                ",[ADI] " + 
+                ",[KATEGORI])" +
                 "VALUES " + 
                 "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
                 ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
@@ -162,6 +163,7 @@ var QuerySql =
                 ",GETDATE()		    --<DTARIH, datetime,> \n" +
                 ",@KODU			    --<KODU, nvarchar(25),> \n" +
                 ",@ADI			    --<ADI, nvarchar(150),> \n" +
+                ",@KATEGORI			    --<KATEGORI, nvarchar(25),> \n" +
                 ") " +
                 "ELSE " + 
                 "UPDATE [dbo].[STOKLAR] SET " +
@@ -169,7 +171,7 @@ var QuerySql =
                 ",[DTARIH] = GETDATE() " +
                 ",[ADI] = @ADI " +
                 "WHERE [KODU] = @TMPCODE",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','ADI:string|150']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','ADI:string|150','KATEGORI:string|25']
     },
     StokTanimlariSil :
     {
@@ -335,6 +337,12 @@ var QuerySql =
         param : ['SERI','TIP','CINS'],
         type : ['string|10','int','int']
     },
+    RafMaxSira : 
+    {
+        query: "SELECT ISNULL(MAX(SIRA),0) + 1 AS MAXEVRSIRA FROM RAFLAR " ,
+        param : ['SERI','TIP','CINS'],
+        type : ['string|10','int','int']
+    },
     SubeEmriGetir :
     {
         query: "SELECT *, " + 
@@ -348,8 +356,6 @@ var QuerySql =
                 "EMIRLER.BIRIM AS BIRIM ," +
                 "EMIRLER.GIRIS AS GIRISSUBE " +
                 " FROM EMIRLER " + 
-                "INNER JOIN STOK_HAREKET_VIEW_01 AS STOK " + 
-                "ON EMIRLER.KODU = STOK.STOK " + 
                 "WHERE EMIRLER.SERI = @SERI AND EMIRLER.SIRA = @SIRA AND EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 " + 
                 "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
         param: ['SERI','SIRA','TIP','CINS'],
@@ -357,7 +363,7 @@ var QuerySql =
     },
     BarkodGetir :
     {
-        query: "SELECT(SELECT ADI FROM STOKLAR WHERE KODU = BARKODLAR.STOK) AS STOKADI,(SELECT KATSAYI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK) AS KATSAYI, (SELECT ADI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK) AS BIRIMADI, "+
+        query: "SELECT(SELECT ADI FROM STOKLAR WHERE KODU = BARKODLAR.STOK) AS STOKADI,(SELECT TOP 1 KATSAYI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK) AS KATSAYI, (SELECT   TOP 1 ADI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK) AS BIRIMADI, "+
         " * FROM BARKODLAR WHERE KODU = @KODU",
         param: ['KODU'],
         type:  ['string|25']

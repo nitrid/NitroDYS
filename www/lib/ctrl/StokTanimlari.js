@@ -257,7 +257,8 @@ function StokTanimlari ($scope,$window,db)
                     UserParam.Kullanici,
                     UserParam.Kullanici,
                     $scope.StokListe[0].KODU,
-                    $scope.StokListe[0].ADI
+                    $scope.StokListe[0].ADI,
+                    $scope.StokListe[0].KATEGORI,
                 ];
                 
                 db.ExecuteTag($scope.Firma,'StokTanimlariKaydet',InsertData,function(InsertResult)
@@ -303,6 +304,11 @@ function StokTanimlari ($scope,$window,db)
             StokGetir(SecimSelectedRow.Item.KODU,SecimSelectedRow.Item.KAT);
             $("#MdlSecim").modal('hide');
         }
+        else if(ModalTip == "Kategori")
+        {
+            $scope.StokListe[0].KATEGORI = SecimSelectedRow.Item.KODU
+            $("#MdlSecim").modal('hide');
+        }
 
         ModalTip = "";
     }
@@ -316,6 +322,19 @@ function StokTanimlari ($scope,$window,db)
             {
                 db : $scope.Firma,
                 query:  "SELECT KODU,ADI FROM STOKLAR"
+            } 
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                TblSecimInit(Data);
+                $('#MdlSecim').modal('show');
+            });
+        }
+        else if(ModalTip == "Kategori")
+        {
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT ADI,KODU FROM RAF_KATEGORI"
             } 
             db.GetDataQuery(TmpQuery,function(Data)
             {

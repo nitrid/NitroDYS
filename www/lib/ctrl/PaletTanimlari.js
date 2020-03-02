@@ -25,6 +25,7 @@ function PaletTanimlari ($scope,$window,db)
                     return (!filter.KODU || client.KODU.indexOf(filter.KODU) > -1)
                         && (!filter.ADI || client.ADI.indexOf(filter.ADI) > -1)
                         && (!filter.STOK || client.STOK.indexOf(filter.STOK) > -1)
+                        && (!filter.BARKOD || client.BARKOD.indexOf(filter.BARKOD) > -1)
                 });
             }
         };
@@ -245,6 +246,33 @@ function PaletTanimlari ($scope,$window,db)
             }
         ];
     }
+    $scope.BtnGetirKey = function(keyEvent)
+    {
+        if(keyEvent.which === 13)
+        {
+            console.log( $scope.DataListe[0].STOK)
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "SELECT KODU,ADI,ISNULL((SELECT TOP 1 KODU FROM BARKODLAR WHERE STOK = STOKLAR.KODU),KODU) AS BARKOD FROM STOKLAR WHERE (SELECT MAX(KODU) FROM BARKODLAR WHERE STOK = STOKLAR.KODU) = @BARKOD",
+                param: ['BARKOD:string|25'],
+                value: [$scope.DataListe[0].STOK]
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                if(Data.length > 0)
+                {
+                    $scope.DataListe[0].STOK = Data[0].KODU
+                }
+                else
+                {
+                    alertify.alert("Barkod Sistemde bulunamadı !");
+                    $scope.DataListe[0].STOK = ''
+                }
+                
+            });
+        }
+    }
     $scope.BtnPaletGenerate = function()
     {        
         let KulStr = "";
@@ -374,7 +402,7 @@ function PaletTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,ADI FROM STOKLAR"
+                query:  "SELECT KODU,ADI,(SELECT TOP 1 KODU FROM BARKODLAR WHERE STOK = STOKLAR.KODU) AS BARKOD FROM STOKLAR"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -403,8 +431,8 @@ function PaletTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PALET",
-                param : ['PALET'],
+                query:  "UPDATE ETIKET SET DURUM = 1 WHERE PARTI = @PARTI",
+                param : ['PARTI'],
                 type : ['string|15'],
                 value : [EtiketSelectedRow.Item.PALET]
             }
@@ -423,8 +451,8 @@ function PaletTanimlari ($scope,$window,db)
                 let TmpQuery = 
                 {
                     db : $scope.Firma,
-                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PALET",
-                    param : ['PALET'],
+                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE PARTI = @PARTI",
+                    param : ['PARTI'],
                     type : ['string|15'],
                     value : [item.PALET]
                 }

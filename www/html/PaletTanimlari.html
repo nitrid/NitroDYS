@@ -43,7 +43,7 @@
                 <label class="col-md-2 col-form-label">Stok Kodu :</label>
                 <div class="col-md-3">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="DataListe[0].STOK">
+                        <input type="text" class="form-control"  ng-keypress = "BtnGetirKey($event)"  ng-model="DataListe[0].STOK">
                         <div class="input-group-append">
                             <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid('Stok')"><i class="fas fa-search vertical-middle"></i></button>
                         </div>
@@ -68,6 +68,11 @@
                 </div>
             </div>
         </form>
+        <div class="row">
+            <div class="col-12 px-1">
+                <button type="submit"  class="btn btn-primary btn-block btn-block h-40" ng-click="BtnKaydet()">KAYDET</button>        
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs">

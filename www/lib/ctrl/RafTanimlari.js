@@ -98,7 +98,7 @@ function RafTanimlari ($scope,$window,db)
                 TIP : "0",
                 STOK : "",
                 KAT : "0",
-                SIRA : 1,
+                SIRA : "1",
                 KATEGORI : "",
                 EN : "",
                 BOY : "",
@@ -106,6 +106,7 @@ function RafTanimlari ($scope,$window,db)
             }
         ];
 
+       
         
     }
     $scope.BtnKaydet = function()
@@ -121,14 +122,14 @@ function RafTanimlari ($scope,$window,db)
                     UserParam.Kullanici,
                     $scope.DataListe[0].KODU,
                     $scope.DataListe[0].TIP,
-                    $scope.DataListe[0].STOK,
                     $scope.DataListe[0].KAT,
                     $scope.DataListe[0].SIRA,
                     0,
                     0,
                     0,                    
                     $scope.DataListe[0].KATEGORI,
-                    0
+                    0,
+                    
                 ];
                 
                 db.ExecuteTag($scope.Firma,'RafTanimlariKaydet',InsertData,function(InsertResult)
@@ -236,6 +237,22 @@ function RafTanimlari ($scope,$window,db)
         if(keyEvent.which === 13)
         {
             RafGetir($scope.DataListe[0].KODU);
+        }
+    }
+    $scope.EvrakTipChange= function()
+    {
+        if($scope.DataListe[0].TIP == 1)
+        {
+            db.MaxSira($scope.Firma,'RafMaxSira',[$scope.Seri,1,1],function(data)
+            {
+                $scope.DataListe[0].SIRA = data
+                console.log(data)
+            });
+    
+        }
+        else
+        {
+            $scope.DataListe[0].SIRA = 1
         }
     }
 }

@@ -277,11 +277,41 @@ function PaletAdresleme ($scope,$window,db)
                 ];
                 
                 db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
-                { 
+                {                    
                     if(typeof(InsertResult.result.err) == 'undefined')
-                    {                          
-                        AdresGetir();
-                        InsertAfterRefresh();
+                    {    
+                        if($scope.CmbEvrakTip == 0)
+                        {
+                            
+                            let TmpQuery = 
+                            {
+                                db : $scope.Firma,
+                                query:  "UPDATE RAFLAR SET MIKTAR = (MIKTAR + @MIKTAR) WHERE KODU = @KODU",
+                                param : ['MIKTAR','KODU'],
+                                type : ['float','string|25'],
+                                value : [$scope.Miktar,$scope.RafKodu]
+                            }
+                            db.GetDataQuery(TmpQuery,function(Data)
+                            {
+                                InsertAfterRefresh();
+                            });
+                        }
+                        else
+                        {
+                                
+                            let TmpQuery = 
+                            {
+                                db : $scope.Firma,
+                                query:  "UPDATE RAFLAR SET MIKTAR = (MIKTAR - @MIKTAR) WHERE KODU = @KODU",
+                                param : ['MIKTAR','KODU'],
+                                type : ['float','string|25'],
+                                value : [$scope.Miktar,$scope.RafKodu]
+                            }
+                            db.GetDataQuery(TmpQuery,function(Data)
+                            {
+                                InsertAfterRefresh();
+                            });
+                        }
                     }
         
                 });   

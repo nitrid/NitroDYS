@@ -131,25 +131,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
             $scope.Stok = $scope.PaletListe[0].STOK;
-            if($scope.CmbEvrakTip == 1)
-            {
-                $scope.Miktar = $scope.PaletListe[0].MIKTAR
-            }
-            else
-            {
-                TmpQuery = 
-                {
-                    db : $scope.Firma,
-                    query : "SELECT TOP(1) MIKTAR FROM EMIR_HAREKETLERI WHERE PARTI = @KODU AND CINS = 1 AND TIP = 1 ORDER BY TARIH  DESC " ,
-                    param : ['KODU:string|25'],
-                    value : [$scope.PaletKodu]
-                } 
-                db.GetDataQuery(TmpQuery,function(Data)
-                {
-                    console.log(Data[0].MIKTAR)
-                    $scope.Miktar = Data[0].MIKTAR
-                });
-            }
+            $scope.Miktar = $scope.PaletListe[0].MIKTAR
         });
     }
     function RafGetir(pKodu)
@@ -306,12 +288,39 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                             }
                             db.GetDataQuery(TmpQuery,function(Data)
                             {
-                                console.log('CREATED BY RECEP KARACA ;)')   
+                                console.log($scope.Miktar)
+                                console.log($scope.RafKodu)
+                                let TmpQuery = 
+                                {
+                                    db : $scope.Firma,
+                                    query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
+                                    param : ['MIKTAR','KODU'],
+                                    type : ['float','string|50'],
+                                    value : [$scope.Miktar,$scope.RafKodu]
+                                }
+                                db.GetDataQuery(TmpQuery,function(Data)
+                                {
+                                    console.log('CREATED BY RECEP KARACA ;)')   
+                                    InsertAfterRefresh();
+                                });
+                            });
+                        }
+                        else
+                        {
+                            let TmpQuery = 
+                            {
+                                db : $scope.Firma,
+                                query:  "UPDATE RAFLAR SET MIKTAR = (MIKTAR - @MIKTAR) WHERE KODU = @KODU",
+                                param : ['MIKTAR','KODU'],
+                                type : ['float','string|25'],
+                                value : [$scope.Miktar,$scope.RafKodu]
+                            }
+                            db.GetDataQuery(TmpQuery,function(Data)
+                            {
                                 InsertAfterRefresh();
                             });
                         }
                     }
-                    InsertAfterRefresh();
                 });   
             }    
         }

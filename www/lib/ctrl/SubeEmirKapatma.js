@@ -100,7 +100,8 @@ function SubeEmirKapatma ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT SERI AS SERI,SIRA AS SIRA,CIKIS AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,CIKIS,TIP,CINS",
+                
+                query:  "SELECT SERI AS SERI,SIRA AS SIRA,(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,GIRIS,TIP,CINS",
                 param: ['ILKTARIH','SONTARIH'],
                 type: ['date','date'],
                 value:[$scope.SipTarih,$scope.SipTarih2]
@@ -132,6 +133,7 @@ function SubeEmirKapatma ($scope,$window,db)
                 if(BarkodData.length > 0)
                 { 
                     $scope.BarkodData = BarkodData
+                    console.log(1)
                     if($scope.SipStokKodu == $scope.BarkodData[0].STOK)
                     {
                         console.log($scope.BarkodData)
@@ -324,6 +326,8 @@ function SubeEmirKapatma ($scope,$window,db)
         $scope.PaletRafKodu = ''
         $scope.BtnSipSec()
         $scope.PaletGonder = false;
+        $window.document.getElementById("Barkod").focus();
+        $window.document.getElementById("Barkod").select();
     }
     $scope.Init = function()
     {
@@ -401,6 +405,8 @@ function SubeEmirKapatma ($scope,$window,db)
     
                 $("#TbSiparisGiris").addClass('active');
                 $("#TbSiparisSecim").removeClass('active');
+                $window.document.getElementById("Barkod").focus();
+                $window.document.getElementById("Barkod").select();
             }
 
         });
@@ -465,5 +471,9 @@ function SubeEmirKapatma ($scope,$window,db)
             $scope.RafLock = true;
         }
         
+    }
+    $scope.BtnTemizle = function()
+    {
+        $scope.Barkod = ''
     }
 }

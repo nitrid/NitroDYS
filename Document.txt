@@ -10,3 +10,8 @@ npm install msnodesqlv8
 npm install moment
 npm install node-machine-id
 npm install node-windows
+
+# EMIR_HAREKETLERI 
+TIP : 0 - GİRİŞ, 1 - ÇIKIŞ
+CİNS : 0 - PALET ADRESLEME, 1 - TOPLAMA ALANINA TRANSFER, 2 - ŞUBE EMRİ KAPAMA (DEPOSEVK)
+HARTIP : 0 - PALET, 1 - STOK

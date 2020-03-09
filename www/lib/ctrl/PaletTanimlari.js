@@ -186,7 +186,7 @@ function PaletTanimlari ($scope,$window,db)
             "",
             "",
             1,
-            0
+            2,
         ];
         db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
         { 
@@ -198,6 +198,7 @@ function PaletTanimlari ($scope,$window,db)
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
+        $('side-menu').hide()
     
         TblSecimInit([]);
         TblEtiketInit([]);
@@ -254,7 +255,7 @@ function PaletTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,ADI,ISNULL((SELECT TOP 1 KODU FROM BARKODLAR WHERE STOK = STOKLAR.KODU),KODU) AS BARKOD FROM STOKLAR WHERE (SELECT MAX(KODU) FROM BARKODLAR WHERE STOK = STOKLAR.KODU) = @BARKOD",
+                query:  "SELECT STOKLAR.KODU AS KODU,STOKLAR.ADI AS ADI , BARKODLAR.KODU AS BARKOD FROM STOKLAR INNER JOIN   BARKODLAR ON STOKLAR.KODU = BARKODLAR.STOK WHERE BARKODLAR.KODU = @BARKOD ",
                 param: ['BARKOD:string|25'],
                 value: [$scope.DataListe[0].STOK]
             }
@@ -438,6 +439,7 @@ function PaletTanimlari ($scope,$window,db)
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
+                EtiketGetir();
             });
         },
         function(){});

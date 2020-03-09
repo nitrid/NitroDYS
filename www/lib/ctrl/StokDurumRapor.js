@@ -113,7 +113,7 @@ function StokDurumRapor($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,ADI,ISNULL((SELECT TOP 1 KODU FROM BARKODLAR WHERE STOK = STOKLAR.KODU),KODU) AS BARKOD FROM STOKLAR WHERE (SELECT TOP 1 KODU FROM BARKODLAR WHERE STOK = STOKLAR.KODU) = @BARKOD",
+                query:  "SELECT STOKLAR.KODU AS KODU,STOKLAR.ADI AS ADI , BARKODLAR.KODU AS BARKOD FROM STOKLAR INNER JOIN   BARKODLAR ON STOKLAR.KODU = BARKODLAR.STOK WHERE BARKODLAR.KODU = @BARKOD",
                 param: ['BARKOD:string|25'],
                 value: [$scope.Barkod]
             }

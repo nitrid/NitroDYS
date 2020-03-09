@@ -17,7 +17,8 @@ var QuerySql =
                 ",[EN] " + 
                 ",[BOY] " + 
                 ",[YUKSEKLIK] " + 
-                ",[KATEGORI]) " + 
+                ",[KATEGORI] " + 
+                ",[MIKTAR]) " + 
                 "VALUES " + 
                 "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
                 ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
@@ -31,6 +32,7 @@ var QuerySql =
                 ",@BOY			    --<BOY, int,> \n" +
                 ",@YUKSEKLIK		--<YUKSEKLIK, int,> \n" +
                 ",@KATEGORI		    --<KATEGORI, nvarchar(25),> \n" +
+                ",@MIKTAR		    --<MIKTAR, nvarchar(25),> \n" +
                 ") " +
                 "ELSE " + 
                 "UPDATE [dbo].[RAFLAR] SET " +
@@ -43,7 +45,7 @@ var QuerySql =
                 ",[YUKSEKLIK] = @YUKSEKLIK " +
                 ",[KATEGORI] = @KATEGORI " +
                 "WHERE [KODU] = @TMPCODE AND [KAT] = @KAT",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|25','TIP:int','KAT:int','SIRA:int','EN:int','BOY:int','YUKSEKLIK:int','KATEGORI:string|25','MIKTAR:float']
     },
     RafTanimlariGetir : 
     {
@@ -326,7 +328,7 @@ var QuerySql =
     },
     EtiketGetir : 
     {
-        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PARTI AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PARTI),0) AS MIKTAR FROM ETIKET WHERE SERI = @SERI AND SIRA = @SIRA",
+        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PARTI AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PARTI),0) AS MIKTAR FROM ETIKET WHERE DURUM = 2 AND SERI = @SERI AND SIRA = @SIRA ORDER BY OTARIH",
         param : ['SERI','SIRA'],
         type : ['string|10','int']
     },

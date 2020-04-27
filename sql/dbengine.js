@@ -2,6 +2,7 @@ var fs = require('fs');
 var _sql = require("./sqllib");
 var io = require('socket.io')();
 var lic = require('./license');
+var sync = require('../sync/datasync.js');
 
 var msql;
 var tsql;

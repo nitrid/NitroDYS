@@ -7,11 +7,16 @@ var Param = [
 		{
 			"FirmaNo": "1",
 			"SubeNo": "0",
-			"PaletFormat" : "KKK|YYYYMMDD|OOOO"
+			"PaletFormat" : "YYMMDD|NNNNNNN"
 		},	
 		"Etiket" :	
 		{
 			"Seri" : "A"
+		},
+		"MalKabul" :	
+		{
+			"Seri" : "A",
+			"DepoNo" : "1"
 		}
 	},
 	{

@@ -36,6 +36,10 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/SubeEmirKapatma.html"
     })
+    .when("/MalKabul", 
+    {
+        templateUrl : "html/MalKabul.html"
+    })
     .when("/ToplamaAlaniTransfer", 
     {
         templateUrl : "html/ToplamaAlaniTransfer.html"

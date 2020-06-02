@@ -309,6 +309,21 @@ function PaletTanimlari ($scope,$window,db)
                     AutoStr += chars[Math.floor(Math.random() * chars.length)];
                 }
             }
+            else if(item.toString().indexOf("N") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
         });
 
         $scope.DataListe[0].KODU = KulStr + TarihStr + AutoStr;

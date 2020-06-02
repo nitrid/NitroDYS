@@ -278,7 +278,7 @@ var QuerySql =
                     ",GETDATE()         --<DTARIH, datetime,>  \n" +
                     ",@TIP              --<TIP, smallint,>  \n" +
                     ",@CINS             --<CINS, smallint,>  \n" +
-                    ",GETDATE()         --<TARIH, datetime,>  \n" +
+                    ",@TARIH        --<TARIH, datetime,>  \n" +
                     ",@SERI             --<SERI, nvarchar(10),>  \n" +
                     ",@SIRA             --<SIRA, int,>  \n" +
                     ",(SELECT ISNULL(MAX(SATIRNO),-1) + 1 AS SATIRNO FROM EMIR_HAREKETLERI WHERE SERI = @SERI AND SIRA = @SIRA AND CINS = @CINS)            --<SATIRNO, int,>  \n" +
@@ -291,7 +291,18 @@ var QuerySql =
                     ",@OZEL                --<OZEL, nvarchar(50),>  \n" +
                     ",@EMIRID             --<EMIRID, nvarchar(50),>  \n" +
                     " ) ",
-    param :  ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','CINS:int','SERI:string|10','SIRA:int','STOK:string|25','PARTI:string|15','GIRIS:string|25','CIKIS:string|25','BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
+    param :  ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','CINS:int','TARIH:date','SERI:string|10','SIRA:int','STOK:string|25','PARTI:string|15','GIRIS:string|25','CIKIS:string|25',
+            'BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
+    },
+    EmirHarGetir :
+    {
+        query : "SELECT *,(SELECT ADI FROM STOKLAR WHERE KODU = STOK) AS STOKADI FROM EMIR_HAREKETLERI WHERE TIP = @TIP AND CINS = @CINS AND SERI = @SERI AND SIRA = @SIRA",
+        param :  ['TIP:int','CINS:int','SERI:string|10','SIRA:int']
+    },
+    EmırHarDelete :
+    {
+        query : "DELETE FROM EMIR_HAREKETLERI WHERE TIP = @TIP AND CINS = @CINS AND SERI = @SERI AND SIRA = @SIRA",
+        param :  ['TIP:int','CINS:int','SERI:string|10','SIRA:int']
     },
     EtiketKaydet : 
     {
@@ -345,7 +356,7 @@ var QuerySql =
         param : ['SERI','TIP','CINS'],
         type : ['string|10','int','int']
     },
-    SubeEmriGetir :
+    EmirGetir :
     {
         query: "SELECT *, " + 
                 " EMIRLER.KODU AS STOKKOD ," + 
@@ -365,7 +376,7 @@ var QuerySql =
     },
     BarkodGetir :
     {
-        query: "SELECT(SELECT ADI FROM STOKLAR WHERE KODU = BARKODLAR.STOK) AS STOKADI,(SELECT TOP 1 KATSAYI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK) AS KATSAYI, (SELECT   TOP 1 ADI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK) AS BIRIMADI, "+
+        query: "SELECT(SELECT ADI FROM STOKLAR WHERE KODU = BARKODLAR.STOK) AS STOKADI,(SELECT TOP 1 KATSAYI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK  AND KODU = BARKODLAR.BIRIM ) AS KATSAYI, (SELECT   TOP 1 ADI FROM BIRIMLER WHERE STOK = BARKODLAR.STOK AND KODU = BARKODLAR.BIRIM ) AS BIRIMADI, "+
         " * FROM BARKODLAR WHERE KODU = @KODU",
         param: ['KODU'],
         type:  ['string|25']
@@ -375,7 +386,29 @@ var QuerySql =
         query: " UPDATE PARTILER SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
         param: ['MIKTAR','KODU'],
         type: ['float','string|25']
+    },
+    CariGetir : 
+    {
+        query: "SELECT KODU , ADI FROM CARILER "
+    },
+    DepoGetir : 
+    {
+        query: "SELECT KODU , ADI FROM DEPOLAR "
+    },
+    PaletGetir : 
+    {
+        query: "SELECT *  FROM PARTILER WHERE KODU = @KODU ",
+        param: ['KODU'],
+        type: ['string|25']
+    },
+    PaletTanimlariUpdate :
+    {
+        query: "UPDATE PARTILER SET STOK = @STOK, SKT = @SKT, MIKTAR = @MIKTAR WHERE KODU = @KODU",
+        param: ['STOK','SKT','MIKTAR','KODU'],
+        type: ['string|50','date','float','string|50']
+
     }
+    
 };
 
 

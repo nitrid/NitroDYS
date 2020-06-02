@@ -12,5 +12,11 @@ var ParamTemp =
 		"Etiket" : 
 		{
 			"Seri" : {"Title" : "Seri","DefaultValue" : ""}
+		},
+		"MalKabul" : 
+		{
+			"Seri" : {"Title" : "Seri","DefaultValue" : "A"},
+			"DepoNo" : {"Title" : "DepoNo","DefaultValue" : "1"}
+			
 		}
 	}

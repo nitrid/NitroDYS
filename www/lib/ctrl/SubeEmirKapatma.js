@@ -365,7 +365,7 @@ function SubeEmirKapatma ($scope,$window,db)
     $scope.BtnSipSec = function()
     {
         console.log(1)
-        db.GetData($scope.Firma,'SubeEmriGetir',[$scope.SipSeri,$scope.SipSira,1,1],function(data)
+        db.GetData($scope.Firma,'EmirGetir',[$scope.SipSeri,$scope.SipSira,1,1],function(data)
         {console.log(2)
             $scope.SiparisStok = data;
             if($scope.SiparisStok == '')

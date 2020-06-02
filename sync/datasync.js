@@ -1,9 +1,16 @@
 let SqlLib = require("../sql/sqllib");
 let Process = require("./process");
 
-Start();
+//Start();
+function datasync() 
+{
 
-function Start() 
+}
+datasync.prototype.Start = _Start;
+datasync.prototype.DataTransfer = _DataTransfer;
+datasync.prototype.Process = Process;
+
+function _Start() 
 {
     for (let i = 0;i < Process.length;i++)
     {
@@ -15,10 +22,10 @@ function Start()
 }
 async function StartTransfer(pParam)
 {
-    await DataTransfer({...pParam});
+    await _DataTransfer({...pParam});
     setTimeout(StartTransfer,pParam.auto,{...pParam})
 }
-function DataTransfer(pParam)
+function _DataTransfer(pParam)
 {
     return  new Promise(async resolve =>
     {
@@ -52,6 +59,7 @@ function DataTransfer(pParam)
                 await Execute(BuildQueryParam(pParam.insert,SData[i]),pParam.target);
             }
         }
+        console.log(pParam.name + " Aktarımı Bitti.")
         resolve();
     });
 }
@@ -108,7 +116,7 @@ function BuildQueryParam(pQuery,pData)
 
     return pQuery;
 }
-
+module.exports = datasync;
 // module.exports.Socket = function(io)
 // {
 //     io.on('connection', function(socket) 

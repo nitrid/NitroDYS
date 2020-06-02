@@ -2,7 +2,7 @@ var fs = require('fs');
 var _sql = require("./sqllib");
 var io = require('socket.io')();
 var lic = require('./license');
-var sync = require('../sync/datasync.js');
+var _sync = require('../sync/datasync.js');
 
 var msql;
 var tsql;
@@ -10,7 +10,7 @@ var tsql;
 var LicKullanici = 0;
 var LicMenu = "";
 
-function dbengine(config)
+async function dbengine(config)
 {    
     this.config = config;
     io.listen(config.port);
@@ -77,6 +77,10 @@ function dbengine(config)
             io.close();
         }
     });
+
+    let sync = new _sync();
+    await sync.DataTransfer({...sync.Process[0]})
+    //console.log(sync.Process);
 }
 io.on('connection', function(socket) 
 {     

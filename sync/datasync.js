@@ -44,7 +44,10 @@ function _DataTransfer(pParam)
                     if(CtrlData.length > 0)
                     {
                         //UPDATE
-                        await Execute(BuildQueryParam(pParam.update,SData[i]),pParam.target);
+                        if(typeof pParam.update != 'undefined')
+                        {
+                            await Execute(BuildQueryParam(pParam.update,SData[i]),pParam.target);
+                        }
                     }
                     else
                     {
@@ -117,10 +120,3 @@ function BuildQueryParam(pQuery,pData)
     return pQuery;
 }
 module.exports = datasync;
-// module.exports.Socket = function(io)
-// {
-//     io.on('connection', function(socket) 
-//     {
-//         console.log("sss");
-//     });
-// }

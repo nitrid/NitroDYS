@@ -102,6 +102,7 @@ sqllib.prototype.QueryPromise = function(pQuery,pResult)
 
                 if(typeof pQuery.param != 'undefined')
                 {
+                    
                     for(i = 0;i < pQuery.param.length;i++)
                     {
                         let pType = null;

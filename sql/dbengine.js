@@ -79,7 +79,7 @@ async function dbengine(config)
     });
 
     let sync = new _sync();
-    await sync.DataTransfer({...sync.Process[0]})
+    await sync.DataTransfer({...sync.Process[3]})
     //console.log(sync.Process);
 }
 io.on('connection', function(socket) 
@@ -129,7 +129,7 @@ io.on('connection', function(socket)
                     TmpDb = pQuery.db;            
             }
             
-            msql = new _sql(config.server,TmpDb,config.uid,config.pwd,config.trustedConnection);
+            msql = new _sql(config.server,TmpDb,config.uid,config.pwd,config.trustedConnection);            
             msql.QueryPromise(pQuery,function(data)
             {
                 let obj = JSON.parse(data);

@@ -412,7 +412,19 @@ var QuerySql =
         param: ['STOK','SKT','MIKTAR','KODU'],
         type: ['string|50','date','float','string|50']
 
+    },
+    SiparisStokGetir :
+    {
+        query: "SELECT *, " +
+        "(MIKTAR - TESLIM_MIKTAR) AS BEKLEYEN, " +
+        "(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI, " +
+        "(SELECT TOP 1 KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU  AND KODU = EMIRLER.BIRIM ) AS KATSAYI, " + 
+        "(SELECT  TOP 1 ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI " +
+        "FROM EMIRLER WHERE SERI = @SERI AND SIRA = @SIRA AND KODU = @STOK AND TIP = @TIP AND CINS = @CINS",
+        param: ['SERI','SIRA','STOK','TIP','CINS'],
+        type: ['string|50','int','string|50','int','int']
     }
+
     
 };
 

@@ -1,6 +1,7 @@
 function MalKabul ($scope,$window,db)
 {
     let CariSelectedRow = null;
+    let IslemSelectedRow = null;
 
     function StokBarkodGetir(pBarkod)
     {
@@ -472,6 +473,52 @@ function MalKabul ($scope,$window,db)
             }
         }
         ,function(){});
+    }
+    $scope.BtnSatirSil = function()
+    {
+        alertify.confirm('Satırı silmek istediğinize eminmisiniz ?', 
+        function()
+        { 
+            if($scope.IslemListe.length > 0)
+            {
+                db.ExecuteTag($scope.Firma,'EmırHarSatirDelete',[0,4,$scope.Seri,$scope.Sira,$scope.IslemListe[$scope.IslemListeSelectedIndex].SATIRNO],function(InsertResult)
+                { 
+                    console.log(InsertResult)
+                    if(typeof(InsertResult.result.err) == 'undefined')
+                    {
+                        alertify.alert("<a style='color:#3e8ef7''>" + "Silme İşlemi Başarılı !" + "</a>" );
+                        
+                        db.GetData($scope.Firma,'EmirHarGetir',[0,4,$scope.Seri,$scope.Sira],function(data)
+                        {
+                            console.log(data)
+                            $scope.IslemListe = data 
+                            $("#TblIslem").jsGrid({data : $scope.IslemListe});    
+                        });
+                        InsertAfterRefesh(); 
+                        
+                    }
+                });   
+            }
+            else
+            {
+                alertify.okBtn("Tamam");
+                alertify.alert("Kayıtlı evrak olmadan evrak silemezsiniz !");
+            }
+        }
+        ,function(){});
+    }
+    $scope.IslemListeRowClick = function(pIndex,pItem,pObj)
+    {
+        if ( IslemSelectedRow ) { IslemSelectedRow.children('.jsgrid-cell').css('background-color', '').css('color',''); }
+        var $row = pObj.rowByItem(pItem);
+        $row.children('.jsgrid-cell').css('background-color','#2979FF').css('color','white');
+        IslemSelectedRow = $row;
+        console.log(pIndex)
+        $scope.IslemListeSelectedIndex = pIndex;
+    }
+    $scope.BtnTemizle = function
+    {
+        InsertAfterRefesh()
     }
     
 }

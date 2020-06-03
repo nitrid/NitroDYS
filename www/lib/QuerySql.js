@@ -304,6 +304,11 @@ var QuerySql =
         query : "DELETE FROM EMIR_HAREKETLERI WHERE TIP = @TIP AND CINS = @CINS AND SERI = @SERI AND SIRA = @SIRA",
         param :  ['TIP:int','CINS:int','SERI:string|10','SIRA:int']
     },
+    EmırHarSatirDelete :
+    {
+        query : "DELETE FROM EMIR_HAREKETLERI WHERE TIP = @TIP AND CINS = @CINS AND SERI = @SERI AND SIRA = @SIRA AND SATIRNO = @SATIRNO",
+        param :  ['TIP:int','CINS:int','SERI:string|10','SIRA:int','SATIRNO:int']
+    },
     EtiketKaydet : 
     {
         query : "INSERT INTO [dbo].[ETIKET] " + 

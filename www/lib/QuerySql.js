@@ -423,8 +423,16 @@ var QuerySql =
         "FROM EMIRLER WHERE SERI = @SERI AND SIRA = @SIRA AND KODU = @STOK AND TIP = @TIP AND CINS = @CINS",
         param: ['SERI','SIRA','STOK','TIP','CINS'],
         type: ['string|50','int','string|50','int','int']
+    },
+    MaxEmirKodu :
+    {
+        query: "SELECT (MAX(EMIRNO) + 1) AS MAXEMIRKOD FROM EMIRLER "
+    },
+    EmırNoUpdate : 
+    {
+        query: "UPDATE EMIRLER SET EMIRNO = @EMIRKODU WHERE UID = @UID",
+        param : ['EMIRKODU:int','UID:string|50']
     }
-
     
 };
 

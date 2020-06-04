@@ -79,7 +79,8 @@ async function dbengine(config)
     });
 
     let sync = new _sync();
-    await sync.DataTransfer({...sync.Process[3]})
+    sync.Start();
+    //await sync.DataTransfer({...sync.Process[3]})
     //console.log(sync.Process);
 }
 io.on('connection', function(socket) 

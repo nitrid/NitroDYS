@@ -268,7 +268,8 @@ function SiparisMalKabul ($scope,$window,db)
                             [
                                 $scope.StokKodu,
                                 $scope.Skt,
-                                $scope.Miktar * $scope.Katsayi
+                                $scope.Miktar * $scope.Katsayi,
+                                $scope.PaletKodu
                             ];
                             db.ExecuteTag($scope.Firma,'PaletTanimlariUpdate',UpdateData,function(UpdateResult)
                             {

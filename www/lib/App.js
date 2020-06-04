@@ -40,6 +40,14 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/MalKabul.html"
     })
+    .when("/SiparisMalKabul", 
+    {
+        templateUrl : "html/SiparisMalKabul.html"
+    })
+    .when("/ToplamaEmriOlustur", 
+    {
+        templateUrl : "html/ToplamaEmriOlustur.html"
+    })
     .when("/ToplamaAlaniTransfer", 
     {
         templateUrl : "html/ToplamaAlaniTransfer.html"

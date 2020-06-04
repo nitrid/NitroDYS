@@ -57,6 +57,7 @@ function ToplamaEmriOlustur ($scope,$window,db)
     }
     function TblSiparisSecimGrid()
     {                
+        
         $("#TblSipSecim").jsGrid
         ({
             width: "100%",
@@ -65,11 +66,27 @@ function ToplamaEmriOlustur ($scope,$window,db)
             selecting: true,
             data : $scope.SiparisListe,
             paging : true,
-            pageSize: 5,
+            pageSize: 10,
             pageButtonCount: 3,
+            controller: {
+                loadData: function() {
+                  return data;
+              }
+            },
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: 
             [
+                 
+                { name: "SECIM", title: "SEÇİM", align: "center", width: 50,
+                    itemTemplate: function(value, item) {
+                    return $("<input>").attr("type", "checkbox")
+                            .attr("checked", value || item.Checked)
+                        .on("change", function() {
+                            item.Checked = $(this).is(":checked");
+                        });
+                    }
+                },
+      
                 {
                     name: "SERI",
                     title: "SERI",
@@ -91,12 +108,24 @@ function ToplamaEmriOlustur ($scope,$window,db)
                     align: "center",
                     width: 150
                 },
+                {
+                    name: "MIKTAR",
+                    title: "MIKTAR",
+                    type: "text",
+                    align: "center",
+                    width: 100
+                },
+                {
+                    name: "TASIYICI",
+                    title: "TASIYICI",
+                    type: "text",
+                    align: "center",
+                    width: 100
+                },
+
+                { type: "control" }
+               
             ],
-            rowClick: function(args)
-            {
-                $scope.SiparisListeRowClick(args.itemIndex,args.item,this);
-                $scope.$apply();
-            }
 
         });
     }
@@ -115,6 +144,7 @@ function ToplamaEmriOlustur ($scope,$window,db)
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: 
             [
+               
                 {
                     name: "ADI",
                     title: "ADI",
@@ -136,6 +166,7 @@ function ToplamaEmriOlustur ($scope,$window,db)
                     align: "center",
                     width: 50
                 },
+               
             ],
 
         });
@@ -185,148 +216,17 @@ function ToplamaEmriOlustur ($scope,$window,db)
             }
         });
     }
-    function Insert()
-    {
-            let InsertData =
-            [
-                UserParam.Kullanici,
-                UserParam.Kullanici,
-                0,
-                3,
-                $scope.Tarih,
-                $scope.Seri,
-                $scope.Sira,
-                $scope.StokKodu,
-                $scope.PaletKodu,
-                $scope.DepoNo,
-                $scope.CariKodu,
-                1,
-                $scope.Miktar * $scope.Katsayi,
-                '',
-                $scope.OzelUid,
-            ];
-            db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
-            { 
-                let TmpQuery = 
-                {
-                    db : $scope.Firma,
-                    query:  "UPDATE EMIRLER SET TESLIM_MIKTAR = (TESLIM_MIKTAR + @TESLIM) WHERE UID = @UID",
-                    param : ['TESLIM','UID'],
-                    type : ['float','string|50'],
-                    value : [($scope.Miktar * $scope.Katsayi),$scope.SipStokUid]
-                }
-                db.GetDataQuery(TmpQuery,function(Data)
-                {
-                    console.log(Data)
-                });
-
-                db.GetData($scope.Firma,'PaletGetir',[$scope.PaletKodu],function(data)
-                    {
-                        console.log(data)
-                        if(data.length <= 0)
-                        {
-                            console.log(1)
-                            let InsertData =
-                            [
-                                UserParam.Kullanici,
-                                UserParam.Kullanici,
-                                $scope.PaletKodu,
-                                $scope.StokKodu,
-                                0,
-                                $scope.Skt,
-                                $scope.Miktar * $scope.Katsayi
-                            ];
-                            
-                            db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
-                            { 
-                                if(typeof(InsertResult.result.err) == 'undefined')
-                                {                          
-                                    let InsertEtiket =
-                                    [
-                                        UserParam.Kullanici,
-                                        UserParam.Kullanici,
-                                        $scope.Seri,
-                                        $scope.Sira,
-                                        moment(new Date()).format("DD.MM.YYYY"),
-                                        $scope.PaletKodu,
-                                        $scope.StokKodu,
-                                        "",
-                                        "",
-                                        1,
-                                        1,
-                                    ];
-                                    db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
-                                    { 
-                                        InsertAfterRefesh();                                        
-                                    });
-                                }
-                            });   
-                        }
-                        else
-                        {
-                            let UpdateData =
-                            [
-                                $scope.StokKodu,
-                                $scope.Skt,
-                                $scope.Miktar * $scope.Katsayi
-                            ];
-                            db.ExecuteTag($scope.Firma,'PaletTanimlariUpdate',UpdateData,function(UpdateResult)
-                            {
-                                console.log(UpdateResult)
-                                InsertAfterRefesh();                 
-                            });
-                        }
-                    });
-            });   
-    }
-    InsertAfterRefesh = function()
-    {
-        $scope.Barkod = ''
-        $scope.PaletKodu = ''
-        $scope.Miktar = 1
-        $scope.StokAdi = ''
-        $scope.Birim = ''
-        $scope.BirimAdi = ''
-        $scope.Katsayi = ''
-        $scope.StokKodu = ''
-        $scope.BekleyenMiktar = ''
-        $scope.SipStokUid = ''
-        $scope.SiparisStok = ''
-        $scope.OzelUid = ''
-        TasiyiciListe = []
-        $scope.Skt = moment(new Date()).format("DD.MM.YYYY");
-
-        $window.document.getElementById("Barkod").focus();
-        $window.document.getElementById("Barkod").select();
-
-        db.GetData($scope.Firma,'EmirHarGetir',[0,3,$scope.Seri,$scope.Sira],function(data)
-        {
-            console.log(data)
-            $scope.IslemListe = data 
-            $("#TblIslem").jsGrid({data : $scope.IslemListe});    
-        });
-        $scope.SipListesi();
-    }
     $scope.Init = function()
     {
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
-        $scope.Seri = UserParam.MalKabul.Seri
-        $scope.Urun = ''
-        $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
-        $scope.Skt = moment(new Date()).format("DD.MM.YYYY");
-        $scope.CariAdi = ''
-        $scope.CariKodu = ''
-        $scope.PaletKodu = ''
-        $scope.StokAdi = ''
-        $scope.BekleyenMiktar = ''
-        $scope.SiparisStok = ''
-        $scope.SipStokUid = ''
-        $scope.OzelUid = ''
+
+        $scope.TasiyiciKodu = ''
         $scope.IslemListe = []
         $scope.SiparisStokListe = []
         $scope.SiparisListe = []
+        TasiyiciListe = []
         $scope.SipTarih =  moment(new Date()).format("DD.MM.YYYY");
         $scope.SipTarih2 =  moment(new Date()).format("DD.MM.YYYY");
 
@@ -334,10 +234,10 @@ function ToplamaEmriOlustur ($scope,$window,db)
         $scope.DepoGetir();
         $scope.TasiyiciGetir();
 
-        db.MaxSira($scope.Firma,'EmirlerMaxSira',[$scope.Seri,0,3],function(data)
+        db.GetData($scope.Firma,'MaxEmirKodu',[],function(data)
         {
-            $scope.Sira = data
             console.log(data)
+            $scope.EmirNo = data[0].MAXEMIRKOD
         });
 
         $scope.CariListe = [];
@@ -366,7 +266,6 @@ function ToplamaEmriOlustur ($scope,$window,db)
         $("#TbBarkodGiris").removeClass('active');
         $("#TbIslemSatirlari").removeClass('active');
 
-        $scope.BtnCariListele()
     }
     $scope.BtnBelgeBilgisi =  function()
     {
@@ -422,38 +321,26 @@ function ToplamaEmriOlustur ($scope,$window,db)
     }
     $scope.BtnEkle = function()
     {
-        if($scope.StokKodu == '')
-        {
-            alertify.alert("<a style='color:#3e8ef7''>" + "Lütfen Stok Okutunuz !" + "</a>" );
+        for(i = 0;i < $scope.SiparisListe.length;i++)
+        {   
+            if($scope.SiparisListe[i].Checked == true)
+            { 
+                db.ExecuteTag($scope.Firma,'EmırNoUpdate',[$scope.EmirNo,$scope.SiparisListe[i].UID],function(InsertResult)
+                { 
+                    alertify.alert("Emir Oluşturuldu")
+                    $('#MdlOnay').modal('hide');
+                });  
+               
+                if(i == $scope.SiparisListe.length -1 )
+                {
+                    $scope.Init();
+                    console.log(1)
+                }
+            }
+
+           
         }
-        else if($scope.PaletKodu == '')
-        {
-            alertify.alert("<a style='color:#3e8ef7''>" + "Palet Kodunuz Boş !" + "</a>" );
-        }
-        else
-        {
-            Insert()   
-        }
-    }
-    $scope.BtnCariListele = function()
-    {   
         
-        db.GetData($scope.Firma,'CariGetir',[],function(data)
-        {
-            $scope.CariListe = data;
-            if($scope.CariListe.length > 0)
-            {
-                $("#TblCari").jsGrid({data : $scope.CariListe});
-                $("#TblCari").jsGrid({pageIndex: true})
-            } 
-            else
-            {
-                alertify.alert("Cari Bulunamadı")
-                $("#TblCari").jsGrid({data : $scope.CariListe});
-                $("#TblCari").jsGrid({pageIndex: true})
-            }     
-            
-        });
     }
     $scope.SiparisListeRowClick = function(pIndex,pItem,pObj)
     {
@@ -465,15 +352,17 @@ function ToplamaEmriOlustur ($scope,$window,db)
     }
     $scope.BtnSipSec = function()
     {
-        $scope.SipSeri = $scope.SiparisListe[$scope.SiparisListeSelectedIndex].SERI;
-        $scope.SipSira = $scope.SiparisListe[$scope.SiparisListeSelectedIndex].SIRA;
-        $scope.CariAdi =  $scope.SiparisListe[$scope.SiparisListeSelectedIndex].CARIADI;
-        $scope.CariKodu =  $scope.SiparisListe[$scope.SiparisListeSelectedIndex].CARIKODU;
-        $scope.DepoNo =  $scope.SiparisListe[$scope.SiparisListeSelectedIndex].DEPO;
-        $scope.DepoChange();
-        $scope.SipListesi();
+        $scope.ToplamEmirMiktar = 0
 
-        $scope.MainClick();
+        for(i = 0;i < $scope.SiparisListe.length;i++)
+        {   
+            if($scope.SiparisListe[i].Checked == true)
+            { 
+                $scope.ToplamEmirMiktar = $scope.ToplamEmirMiktar + $scope.SiparisListe[i].MIKTAR
+                $('#MdlOnay').modal('show');
+            }
+        }
+       
     }
     $scope.DepoGetir = function()
     {
@@ -622,7 +511,8 @@ function ToplamaEmriOlustur ($scope,$window,db)
     }
     $scope.BtnTemizle = function()
     {
-        InsertAfterRefesh()
+        $scope.TasiyiciKodu = ''
+        $scope.TasiyiciChange()
     }
     function SiparisListele()
     {
@@ -631,10 +521,10 @@ function ToplamaEmriOlustur ($scope,$window,db)
             {
                 db : $scope.Firma,
                 
-                query:  "SELECT SERI AS SERI,SIRA AS SIRA,GIRIS AS DEPO,(SELECT ADI FROM CARILER WHERE KODU = EMIRLER.CIKIS) AS CARIADI,(SELECT KODU FROM CARILER WHERE KODU = EMIRLER.CIKIS) AS CARIKODU,CINS FROM EMIRLER WHERE TIP = 0 AND CINS = 3 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,GIRIS,CIKIS,TIP,CINS",
-                param: ['ILKTARIH','SONTARIH'],
-                type: ['date','date'],
-                value:[$scope.SipTarih,$scope.SipTarih2]
+                query:  "SELECT '' AS SECIM,UID AS UID,SERI AS SERI,SIRA AS SIRA,SUM(MIKTAR) AS MIKTAR,EMIRNO AS EMIRNO,GIRIS AS DEPO,SATICI AS SATICI,(SELECT ADI FROM PERSONEL WHERE KODU = TASIYICI) AS TASIYICI, (SELECT ADI FROM CARILER WHERE KODU = EMIRLER.CIKIS) AS CARIADI,(SELECT KODU FROM CARILER WHERE KODU = EMIRLER.CIKIS) AS CARIKODU,CINS FROM EMIRLER WHERE ((TASIYICI = @TASIYICI) OR (@TASIYICI = '')) AND EMIRNO = 0 AND  TIP = 0 AND CINS = 3 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY UID,SERI,SIRA,TASIYICI,SATICI,GIRIS,CIKIS,TIP,CINS,EMIRNO",
+                param: ['TASIYICI','ILKTARIH','SONTARIH'],
+                type: ['string|15','date','date'],
+                value:[$scope.TasiyiciKodu,$scope.SipTarih,$scope.SipTarih2]
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -683,7 +573,16 @@ function ToplamaEmriOlustur ($scope,$window,db)
     }
     $scope.TasiyiciChange = function()
     {
-        
+        $scope.TasiyiciListe.forEach(function(item) 
+        {
+            if(item.KODU == $scope.TasiyiciKodu)
+                $scope.TasiyiciAdi = item.ADI;
+            else
+            $scope.TasiyiciAdi = ""
+        });
+        SiparisListele()
+
+
     }
     $scope.TasiyiciGetir = function()
     {
@@ -697,15 +596,18 @@ function ToplamaEmriOlustur ($scope,$window,db)
             if(Data.length > 0)
             {
                 $scope.TasiyiciListe = Data
-               
             }
             else
             {
                
             }
           
-
         });
+        SiparisListele()
+    }
+    $scope.BtnVazgec = function()
+    {
+        $('#MdlOnay').modal('hide');
     }
     
 }

@@ -173,6 +173,7 @@ function PaletAdresleme ($scope,$window,db)
         $scope.CmbEvrakTip = '0';
         $scope.Miktar = 0;
         $scope.PaletKodu = '';
+        $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
 
         document.getElementById("page-title").innerHTML = "Palet Adresleme";
         document.getElementById("page-path").innerHTML = "Palet Adresleme";
@@ -264,6 +265,7 @@ function PaletAdresleme ($scope,$window,db)
                     UserParam.Kullanici,
                     $scope.CmbEvrakTip,
                     0,
+                    $scope.Tarih,
                     '',
                     0,
                     $scope.Stok,

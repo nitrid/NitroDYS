@@ -142,6 +142,15 @@ function ToplamaAlaniTransfer ($scope,$window,db)
             $scope.RafListe = Data
             $scope.RafTip = $scope.RafListe[0].TIP
             $scope.RafStok = $scope.RafListe[0].STOK
+
+            if($scope.RafTip == 0)
+            {
+                $scope.CmbEvrakTip = 1
+            }
+            else
+            {
+                $scope.CmbEvrakTip = 0
+            }
         });
       
     }
@@ -159,11 +168,11 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
-        $scope.CmbEvrakTip = '0';
         $scope.Miktar = 0;
         $scope.PaletKodu = '';
         $scope.RafKodu = '';
         $scope.RafMiktar = 0;
+        $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
 
         document.getElementById("page-title").innerHTML = "Palet Adresleme";
         document.getElementById("page-path").innerHTML = "Palet Adresleme";
@@ -253,13 +262,14 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                 InsertAfterRefresh();
             }
             else
-            {console.log(2)
+            {
                 let InsertData =
                 [
                     UserParam.Kullanici,
                     UserParam.Kullanici,
                     $scope.CmbEvrakTip,
                     1,
+                    $scope.Tarih,
                     '',
                     0,
                     $scope.Stok,

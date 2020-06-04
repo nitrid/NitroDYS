@@ -269,7 +269,8 @@ var QuerySql =
                 ",[BIRIM]" +
                 ",[MIKTAR] " +
                 ",[OZEL] " +
-                ",[EMIRID]) " +
+                ",[EMIRID] " +
+                ",[DURUM]) " +
                 "VALUES " +
                 "(  NEWID()             --<UID, uniqueidentifier,>  \n" +
                     ",@OKULLANICI       --<OKULLANICI, nvarchar(10),>  \n" +
@@ -290,6 +291,7 @@ var QuerySql =
                     ",@MIKTAR           --<MIKTAR, float,>  \n" +
                     ",@OZEL                --<OZEL, nvarchar(50),>  \n" +
                     ",@EMIRID             --<EMIRID, nvarchar(50),>  \n" +
+                    ",0                    --<DURUM, int,>  \n" +
                     " ) ",
     param :  ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','CINS:int','TARIH:date','SERI:string|10','SIRA:int','STOK:string|25','PARTI:string|15','GIRIS:string|25','CIKIS:string|25',
             'BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
@@ -378,6 +380,24 @@ var QuerySql =
                 "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
         param: ['SERI','SIRA','TIP','CINS'],
         type : ['string|10','int','int','int']
+    },
+    SevkiyatEmriGetir :
+    {
+        query: "SELECT *, " + 
+                " EMIRLER.KODU AS STOKKOD ," + 
+                "(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI ," + 
+                "dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU) AS RAFKODU ," + 
+                "(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI ," + 
+                "(SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS KATSAYI ," + 
+                "(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBEADI ," + 
+                "EMIRLER.UID AS EMIRUID ," +
+                "EMIRLER.BIRIM AS BIRIM ," +
+                "EMIRLER.GIRIS AS GIRISSUBE " +
+                " FROM EMIRLER " + 
+                "WHERE EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRNO = @EMIRNO AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 " + 
+                "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
+        param: ['TIP','CINS','EMIRNO'],
+        type : ['int','int','int']
     },
     BarkodGetir :
     {

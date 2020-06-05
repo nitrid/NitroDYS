@@ -1,0 +1,57 @@
+<div ng-controller="PersonelTanimlari" ng-init="Init()">
+    <div class="card-box">
+        <div class="row">
+            <div class="col-12" style="padding-bottom: 10px;">
+                <div class="btn-group float-right">
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-24 vertical-middle"></i></button>
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnKaydet()"><i class="mdi mdi-content-save-move font-24 vertical-middle"></i></button>
+                    <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-24 vertical-middle"></i></button>
+                </div>
+            </div>
+        </div>
+        <form class="form-horizontal">
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label px-0">Personel Kodu :</label>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="DataListe[0].KODU">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary waves-effect waves-light" type="button" ng-click="BtnSecimGrid()"><i class="fas fa-search vertical-middle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label px-0">Personel Adı :</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" ng-model="DataListe[0].ADI">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-2 col-form-label px-0">Personel Tipi :</label>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="DataListe[0].TIP" ng-change="PersonelChange()">
+                        <option value="0">Satıcı</option>
+                        <option value="1">Taşıyıcı</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal fade bs-example-modal-lg" id="MdlSecim" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myLargeModalLabel">Seçim Ekranı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-block btn-primary waves-effect waves-light mb-1" ng-click="BtnGridSec()">Seç</button>
+                    <div id="TblSecim"></div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>

@@ -99,40 +99,22 @@ var QuerySql =
     },
     PaletTanimlariKaydet : 
     {
-        query : "DECLARE @TMPCODE NVARCHAR(25) " +
-                "SET @TMPCODE = ISNULL((SELECT KODU FROM PARTILER WHERE KODU = @KODU),'') " +
-                "IF @TMPCODE = '' " +
-                "INSERT INTO [dbo].[PARTILER] " + 
-                "([OKULLANICI] " + 
-                ",[DKULLANICI] " + 
-                ",[OTARIH] " + 
-                ",[DTARIH] " + 
-                ",[KODU] " + 
-                ",[STOK] " + 
-                ",[TIP] " + 
-                ",[SKT] " + 
-                ",[MIKTAR]) " + 
-                "VALUES " + 
-                "(@OKULLANICI		--<OKULLANICI, nvarchar(10),> \n" +
-                ",@DKULLANICI		--<DKULLANICI, nvarchar(10),> \n" +
-                ",GETDATE()		    --<OTARIH, datetime,> \n" +
-                ",GETDATE()		    --<DTARIH, datetime,> \n" +
-                ",@KODU			    --<KODU, nvarchar(15),> \n" +
-                ",@STOK			    --<STOK, nvarchar(15),> \n" +
-                ",@TIP			    --<TIP, int,> \n" +
-                ",@SKT				--<SKT, datetime,> \n" +
-                ",@MIKTAR			--<MIKTAR, float,> \n" +
-                ") " +
-                "ELSE " + 
-                "UPDATE [dbo].[PARTILER] SET " +
-                "[DKULLANICI] = @DKULLANICI " +
-                ",[DTARIH] = GETDATE() " +
-                ",[STOK] = @STOK " +
-                ",[TIP] = @TIP " +
-                ",[SKT] = @SKT " +
-                ",[MIKTAR] = @MIKTAR " +
-                "WHERE [KODU] = @TMPCODE",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','KODU:string|15','STOK:string|25','TIP:int','SKT:date','MIKTAR:float']
+        query : "INSERT INTO [dbo].[PALETLER]  " +
+                    "([UID]  " +
+                    ",[OTARIH]  " +
+                    ",[KODU]  " +
+                    ",[PARTI]  " +
+                    ",[TIP]  " +
+                    ",[MIKTAR])  " +
+                    "VALUES  " +
+                    "(NEWID()       --<UID, uniqueidentifier,> \n" +
+                    ",GETDATE()     --<OTARIH, datetime,> \n" +
+                    ",@KODU         --<KODU, nvarchar(50),> \n" +
+                    ",@PARTI        --<PARTI, nvarchar(50),> \n" +
+                    ",@TIP          --<TIP, int,> \n" +
+                    ",@MIKTAR       --<MIKTAR, float,> \n" +
+                    " )",
+        param : ['KODU:string|25','PARTI:string|25','TIP:int','MIKTAR:float']
     },
     PaletTanimlariSil :
     {
@@ -141,7 +123,7 @@ var QuerySql =
     },
     PaletTanimlariGetir : 
     {
-        query : "SELECT KODU AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM PARTILER WHERE KODU = @KODU",
+        query : "SELECT (SELECT KODU FROM PALETLER WHERE PARTI = PARTILER.KODU) AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM PARTILER WHERE KODU = (SELECT PARTI FROM PALETLER WHERE KODU = @KODU)",
         param : ['KODU'],
         type : ['string|25']
     },
@@ -322,6 +304,7 @@ var QuerySql =
                 ",[SIRA] " + 
                 ",[TARIH] " + 
                 ",[PARTI] " + 
+                ",[PALET] " + 
                 ",[STOK] " + 
                 ",[BARKOD] " + 
                 ",[BIRIM] " + 
@@ -336,17 +319,18 @@ var QuerySql =
                 ",@SIRA			    --<SIRA, int,> \n" +
                 ",@TARIH		    --<TARIH, datetime,> \n" +
                 ",@PARTI			--<PALET, nvarchar(15),> \n" +
+                ",@PALET			--<PALET, nvarchar(25),> \n" +
                 ",@STOK				--<STOK, nvarchar(25),> \n" +
                 ",@BARKOD			--<BARKOD, nvarchar(25),> \n" +
                 ",@BIRIM			--<BIRIM, nvarchar(10),> \n" +
                 ",@BAS_MIKTAR		--<BAS_MIKTAR, float,> \n" +
                 ",@DURUM			--<DURUM, smallint,> \n" +
                 ") ",
-        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','TARIH:date','PARTI:string|15','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','SERI:string|10','SIRA:int','TARIH:date','PARTI:string|15','PALET:string|25','STOK:string|25','BARKOD:string|25','BIRIM:string|10','BAS_MIKTAR:float','DURUM:int']
     },
     EtiketGetir : 
     {
-        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PARTI AS PALET,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PARTI),0) AS MIKTAR FROM ETIKET WHERE DURUM = 2 AND SERI = @SERI AND SIRA = @SIRA ORDER BY OTARIH",
+        query : "SELECT SERI AS SERI,SIRA AS SIRA,FORMAT(TARIH,'dd.MM.yyyy') AS TARIH,PALET AS PALET,PARTI AS PARTI,STOK AS STOK,ISNULL((SELECT MIKTAR FROM PARTILER WHERE KODU = PARTI),0) AS MIKTAR FROM ETIKET WHERE DURUM = 2 AND SERI = @SERI AND SIRA = @SIRA ORDER BY OTARIH",
         param : ['SERI','SIRA'],
         type : ['string|10','int']
     },
@@ -452,7 +436,37 @@ var QuerySql =
     {
         query: "UPDATE EMIRLER SET EMIRNO = @EMIRKODU WHERE UID = @UID",
         param : ['EMIRKODU:int','UID:string|50']
+    },
+    PartiInsert : 
+    {
+        query : "INSERT INTO [dbo].[PARTILER] " +
+                "([UID] " +
+                ",[OKULLANICI] " +
+                ",[DKULLANICI] " +
+                ",[OTARIH] " +
+                ",[DTARIH] " +
+                ",[KODU] " +
+                ",[STOK] " +
+                ",[TIP] " +
+                ",[SKT] " +
+                ",[MIKTAR]) " +
+                "VALUES " +
+                "(newid()            --<UID, uniqueidentifier,> \n" +
+                ",@OKULLANICI        --<OKULLANICI, nvarchar(10),> \n" +
+                ",@DKULLANICI        --<DKULLANICI, nvarchar(10),> \n" +
+                ",GETDATE()          --<OTARIH, datetime,> \n" +
+                ",GETDATE()          --<DTARIH, datetime,> \n" +
+                ",@KODU              --<KODU, nvarchar(15),> \n" +
+                ",@STOK              --<STOK, nvarchar(25),> \n" +
+                ",@TIP               --<TIP, smallint,> \n" +
+                ",@SKT                --<SKT, datetime,> \n" +
+                ",@MIKTAR             --<MIKTAR, float,> \n" +
+                " ) ",
+        param : ['OKULLANICI','DKULLANICI','KODU','STOK','TIP','SKT','MIKTAR'],
+        type: ['string|10','string|10','string|15','string|25','int','date','float']
+
     }
+
     
 };
 

@@ -7,7 +7,9 @@ var ParamTemp =
 		{
 			"FirmaNo" : {"Title" : "Firma No","DefaultValue" : "0"},
 			"SubeNo" : {"Title" : "Şube No","DefaultValue" : "0"},
-			"PaletFormat" : {"Title" : "Palet Format","DefaultValue" : "###YYYYMMGG"}
+			"PaletFormat" : {"Title" : "Palet Format","DefaultValue" : "###YYYYMMGG"},
+			"OtomatikParti" : {"Title" : "Otomatik Parti","DefaultValue" : "1"},
+			"SktTakip" : {"Title" : "Skt Takip","DefaultValue" : "1"}
 		},
 		"Etiket" : 
 		{

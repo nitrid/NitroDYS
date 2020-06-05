@@ -124,6 +124,7 @@ function PaletAdresleme ($scope,$window,db)
     }
     function PaletGetir(pKodu)
     {
+        console.log(1)
         $scope.PaletListe = [];
         db.GetData($scope.Firma,'PaletTanimlariGetir',[pKodu],function(Data)
         {
@@ -131,6 +132,7 @@ function PaletAdresleme ($scope,$window,db)
             $scope.PaletKodu = $scope.PaletListe[0].KODU;
             $scope.Miktar = $scope.PaletListe[0].MIKTAR
             $scope.Stok = $scope.PaletListe[0].STOK
+            console.log($scope.Stok)
         });
     }
     function RafGetir(pKodu)
@@ -210,7 +212,7 @@ function PaletAdresleme ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,STOK,SKT FROM PARTILER"
+                query:  "SELECT (SELECT TOP 1 KODU FROM PALETLER WHERE PARTI = PARTILER.KODU) AS KODU,STOK,SKT FROM PARTILER"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

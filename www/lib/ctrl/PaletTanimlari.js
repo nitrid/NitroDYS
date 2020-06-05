@@ -67,13 +67,7 @@ function PaletTanimlari ($scope,$window,db)
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: 
             [
-                {
-                    name: "TARIH",
-                    title: "TARIH",
-                    type: "text",
-                    align: "center",
-                    width: 100
-                },
+               
                 {
                     name: "PALET",
                     title: "PALET",
@@ -81,20 +75,6 @@ function PaletTanimlari ($scope,$window,db)
                     align: "center",
                     width: 150
                 }, 
-                {
-                    name: "STOK",
-                    title: "STOK",
-                    type: "text",
-                    align: "center",
-                    width: 200
-                },
-                {
-                    name: "MIKTAR",
-                    title: "MIKTAR",
-                    type: "text",
-                    align: "center",
-                    width: 100
-                }
             ],
             rowClick: function(args)
             {
@@ -134,6 +114,7 @@ function PaletTanimlari ($scope,$window,db)
         $scope.EtiketListe = [];
         db.GetData($scope.Firma,'EtiketGetir',[$scope.EtiketSeri,$scope.EtiketSira],function(Data)
         {
+            console.log(Data)
             $scope.EtiketListe = Data;
             TblEtiketInit(Data);
         });
@@ -154,26 +135,7 @@ function PaletTanimlari ($scope,$window,db)
         });
     }
     function Kaydet(pCallback)
-    {
-        let InsertData =
-        [
-            UserParam.Kullanici,
-            UserParam.Kullanici,
-            $scope.DataListe[0].KODU,
-            $scope.DataListe[0].STOK,
-            $scope.DataListe[0].TIP,
-            $scope.DataListe[0].SKT,
-            $scope.DataListe[0].MIKTAR
-        ];
-        
-        db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
-        { 
-            if(typeof(InsertResult.result.err) == 'undefined')
-            {                          
-                
-            }
-        });   
-        
+    { 
         let InsertEtiket =
         [
             UserParam.Kullanici,
@@ -181,13 +143,15 @@ function PaletTanimlari ($scope,$window,db)
             $scope.EtiketSeri,
             $scope.EtiketSira,
             moment(new Date()).format("DD.MM.YYYY"),
+            '',
             $scope.DataListe[0].KODU,
-            $scope.DataListe[0].STOK,
+            '',
             "",
             "",
             1,
             2,
         ];
+        console.log(InsertEtiket)
         db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
         { 
             pCallback(true);
@@ -405,7 +369,7 @@ function PaletTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,STOK,SKT FROM PARTILER"
+                query:  "SELECT KODU,PARTI,MIKTAR FROM PALETLER"
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

@@ -220,64 +220,40 @@ function SiparisMalKabul ($scope,$window,db)
                     console.log(Data)
                 });
 
-                db.GetData($scope.Firma,'PaletGetir',[$scope.PaletKodu],function(data)
-                    {
-                        console.log(data)
-                        if(data.length <= 0)
-                        {
-                            console.log(1)
-                            let InsertData =
-                            [
-                                UserParam.Kullanici,
-                                UserParam.Kullanici,
-                                $scope.PaletKodu,
-                                $scope.StokKodu,
-                                0,
-                                $scope.Skt,
-                                $scope.Miktar * $scope.Katsayi
-                            ];
-                            
-                            db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
-                            { 
-                                if(typeof(InsertResult.result.err) == 'undefined')
-                                {                          
-                                    let InsertEtiket =
-                                    [
-                                        UserParam.Kullanici,
-                                        UserParam.Kullanici,
-                                        $scope.Seri,
-                                        $scope.Sira,
-                                        moment(new Date()).format("DD.MM.YYYY"),
-                                        $scope.PaletKodu,
-                                        $scope.StokKodu,
-                                        "",
-                                        "",
-                                        1,
-                                        1,
-                                    ];
-                                    db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
-                                    { 
-                                        InsertAfterRefesh();                                        
-                                    });
-                                }
-                            });   
-                        }
-                        else
-                        {
-                            let UpdateData =
-                            [
-                                $scope.StokKodu,
-                                $scope.Skt,
-                                $scope.Miktar * $scope.Katsayi,
-                                $scope.PaletKodu
-                            ];
-                            db.ExecuteTag($scope.Firma,'PaletTanimlariUpdate',UpdateData,function(UpdateResult)
-                            {
-                                console.log(UpdateResult)
-                                InsertAfterRefesh();                 
-                            });
-                        }
-                    });
+               
+                let InsertData =
+                [
+                    $scope.PaletKodu,
+                    $scope.PartiKodu,
+                    0,
+                    $scope.Miktar * $scope.Katsayi,
+                    ''
+                ];
+                
+                db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
+                { 
+                    if(typeof(InsertResult.result.err) == 'undefined')
+                    {                          
+                        let InsertData =
+                        [
+                            UserParam.Kullanici,
+                            UserParam.Kullanici,
+                            $scope.PartiKodu,
+                            $scope.StokKodu,
+                            1,
+                            $scope.Skt,
+                            $scope.Miktar * $scope.Katsayi
+                        ];
+                        
+                        db.ExecuteTag($scope.Firma,'PartiInsert',InsertData,function(InsertResult)
+                        { 
+                            if(typeof(InsertResult.result.err) == 'undefined')
+                            {                          
+                                $scope.EtiketKontrol()
+                            }
+                        });   
+                    }
+                });   
             });   
     }
     InsertAfterRefesh = function()
@@ -680,6 +656,47 @@ function SiparisMalKabul ($scope,$window,db)
     $scope.BtnSiparisListe = function()
     {
         $('#MdlSipListe').modal('show');
+    }
+    $scope.EtiketKontrol = function()
+    {
+        let TmpQuery = 
+        {
+            db : $scope.Firma,
+            query:  "SELECT * FROM ETIKET WHERE PALET = @PALET ",
+            param: ['PALET:string|25'],
+            value: [ $scope.PaletKodu]
+        }
+
+        db.GetDataQuery(TmpQuery,function(Data)
+        {
+            if(Data.length <= 0 )
+            {
+                let InsertEtiket =
+                [
+                    UserParam.Kullanici,
+                    UserParam.Kullanici,
+                    $scope.Seri,
+                    $scope.Sira,
+                    moment(new Date()).format("DD.MM.YYYY"),
+                    $scope.PartiKodu,
+                    $scope.PaletKodu,
+                    $scope.StokKodu,
+                    "",
+                    $scope.BirimAdi,
+                    1,
+                    1,
+                ];
+                console.log(InsertEtiket)
+                db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
+                { 
+                    InsertAfterRefesh()
+                });
+            }
+            else
+            {
+                InsertAfterRefesh()
+            }
+        });
     }
     
 }

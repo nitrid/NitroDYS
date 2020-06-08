@@ -11,6 +11,11 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-6 py-2 ">
+                        <button type="submit" data-target="#MdlStokGetir" data-target="#" data-toggle="modal" ng-click="SipListesi()" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-12">
                         <label class="col-6 col-form-label"> Seri-Sıra : {{Seri}}-{{Sira}}</label>
                     </div>
@@ -19,12 +24,21 @@
                     <label class="col-8 col-form-label"> Tarih : {{Tarih}}</label>
                 </div>
                 <div class="row">
-                    <div class="col-6 py-2 ">
-                        <button type="submit" data-target="#MdlStokGetir" data-target="#" data-toggle="modal" ng-click="SipListesi()" class="btn btn-primary btn-block btn-block h-40">Sipariş Listesi</button>        
-                    </div>
+                    <label class="col-8 col-form-label"> STK Miktarı : {{PalettekiMiktar}}</label>
                 </div>
+               
                 <div class="row">
-                    <label class="col-4 col-form-label"> Raf : {{Raf}}</label>
+                    <label class="col-12 col-form-label"> Raf : {{Raf}}</label>
+                </div>
+                <div class="row py-1">
+                    <div class="col-12 px-1">
+                        <div class="input-group">
+                            <input type="text" class="form-control" ng-model="RafOkut" ng-keypress = "BtnRafKoduOkut($event)" ng-disabled="BarkodLock" id="RafOkut">
+                            <span class="input-group-append">
+                            <button type="submit" class="btn btn-primary" ng-click="BtnRafTemizle()"><i class="fas fa-backspace fa-lg"></i></button>
+                            </span>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <label class="col-12 col-form-label"> Ürün : {{Urun}}</label>

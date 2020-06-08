@@ -299,6 +299,12 @@ function PaletAdresleme ($scope,$window,db)
                             {
                                 InsertAfterRefresh();
                             });
+                            
+
+                            db.ExecuteTag($scope.Firma,'PaletRafıUpdate',[$scope.RafKodu,$scope.PaletKodu],function(InsertResult)
+                            { 
+                                console.log(InsertResult)
+                            });
                         }
                         else
                         {

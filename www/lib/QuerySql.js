@@ -105,7 +105,8 @@ var QuerySql =
                     ",[KODU]  " +
                     ",[PARTI]  " +
                     ",[TIP]  " +
-                    ",[MIKTAR])  " +
+                    ",[MIKTAR]  " +
+                    ",[RAF])  " +
                     "VALUES  " +
                     "(NEWID()       --<UID, uniqueidentifier,> \n" +
                     ",GETDATE()     --<OTARIH, datetime,> \n" +
@@ -113,8 +114,9 @@ var QuerySql =
                     ",@PARTI        --<PARTI, nvarchar(50),> \n" +
                     ",@TIP          --<TIP, int,> \n" +
                     ",@MIKTAR       --<MIKTAR, float,> \n" +
+                    ",@RAF       --<RAF, nvarchar(25),> \n" +
                     " )",
-        param : ['KODU:string|25','PARTI:string|25','TIP:int','MIKTAR:float']
+        param : ['KODU:string|50','PARTI:string|50','TIP:int','MIKTAR:float','RAF:string|25']
     },
     PaletTanimlariSil :
     {
@@ -123,7 +125,7 @@ var QuerySql =
     },
     PaletTanimlariGetir : 
     {
-        query : "SELECT (SELECT KODU FROM PALETLER WHERE PARTI = PARTILER.KODU) AS KODU,STOK AS STOK,CONVERT(NVARCHAR(2),TIP) AS TIP,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM PARTILER WHERE KODU = (SELECT PARTI FROM PALETLER WHERE KODU = @KODU)",
+        query : "SELECT PALET AS KODU,STOK AS STOK,PARTI AS PARTI,FORMAT(SKT,'dd.MM.yyyy') AS SKT,MIKTAR AS MIKTAR FROM [PALET_VIEW_01] WHERE PALET = @KODU",
         param : ['KODU'],
         type : ['string|25']
     },
@@ -367,19 +369,22 @@ var QuerySql =
     },
     SevkiyatEmriGetir :
     {
-        query: "SELECT *, " + 
+        query: "SELECT  " + 
                 " EMIRLER.KODU AS STOKKOD ," + 
                 "(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI ," + 
-                "dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU) AS RAFKODU ," + 
+                "(SELECT TOP 1 RAF FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ) AS RAFKODU ," + 
+                "(SELECT TOP 1 MIKTAR FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ) AS PALETMIKTAR ," + 
+                "(SELECT TOP 1 PARTI FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ) AS PARTI ," + 
                 "(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI ," + 
                 "(SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS KATSAYI ," + 
-                "(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBEADI ," + 
-                "EMIRLER.UID AS EMIRUID ," +
-                "EMIRLER.BIRIM AS BIRIM ," +
-                "EMIRLER.GIRIS AS GIRISSUBE " +
+                "EMIRLER.BIRIM AS BIRIM, " +
+                "SUM(MIKTAR) AS MIKTAR, " +
+                "SUM(TESLIM_MIKTAR) AS TESLIM_MIKTAR, " +
+                "SUM(MIKTAR) - SUM(TESLIM_MIKTAR) AS BEKLEYEN " +
                 " FROM EMIRLER " + 
                 "WHERE EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRNO = @EMIRNO AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 " + 
-                "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (dbo.FnToplamaAlaniStokRafi(EMIRLER.KODU)))"  ,       
+                " GROUP BY KODU,BIRIM " +
+                "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (SELECT TOP 1 RAF FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ))"  ,       
         param: ['TIP','CINS','EMIRNO'],
         type : ['int','int','int']
     },
@@ -465,6 +470,11 @@ var QuerySql =
         param : ['OKULLANICI','DKULLANICI','KODU','STOK','TIP','SKT','MIKTAR'],
         type: ['string|10','string|10','string|15','string|25','int','date','float']
 
+    },
+    PaletRafıUpdate :
+    {
+        query: "UPDATE PALETLER SET RAF = @RAF WHERE KODU = @KODU",
+        param : ['RAF:string|25','KODU:string|50']
     }
 
     

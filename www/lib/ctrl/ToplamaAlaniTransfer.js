@@ -286,20 +286,8 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                 { 
                     if(typeof(InsertResult.result.err) == 'undefined')
                     {                          
-                        if( $scope.CmbEvrakTip == 0)
+                        if($scope.CmbEvrakTip == 0)
                         {
-                            let TmpQuery = 
-                            {
-                                db : $scope.Firma,
-                                query:  "UPDATE PARTILER SET MIKTAR = MIKTAR - @MIKTAR WHERE KODU = @KODU",
-                                param : ['MIKTAR','KODU'],
-                                type : ['float','string|50'],
-                                value : [$scope.Miktar,$scope.PaletKodu]
-                            }
-                            db.GetDataQuery(TmpQuery,function(Data)
-                            {
-                                console.log($scope.Miktar)
-                                console.log($scope.RafKodu)
                                 let TmpQuery = 
                                 {
                                     db : $scope.Firma,
@@ -311,9 +299,15 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                                 db.GetDataQuery(TmpQuery,function(Data)
                                 {
                                     console.log('CREATED BY RECEP KARACA ;)')   
+                                    db.ExecuteTag($scope.Firma,'PaletRafıUpdate',[$scope.RafKodu,$scope.PaletKodu],function(InsertResult)
+                                    { 
+                                        console.log(InsertResult)
+                                    });
                                     InsertAfterRefresh();
                                 });
-                            });
+
+                                
+                          
                         }
                         else
                         {

@@ -169,6 +169,7 @@ function MalKabul ($scope,$window,db)
                     $scope.PartiKodu,
                     0,
                     $scope.Miktar * $scope.Katsayi,
+                    ''
                 ];
                 
                 db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
@@ -183,7 +184,7 @@ function MalKabul ($scope,$window,db)
                             $scope.StokKodu,
                             1,
                             $scope.Skt,
-                            $scope.Miktar * $scope.Katsayi
+                            $scope.Miktar * $scope.Katsayi,
                         ];
                         
                         db.ExecuteTag($scope.Firma,'PartiInsert',InsertData,function(InsertResult)
@@ -531,7 +532,7 @@ function MalKabul ($scope,$window,db)
             param: ['PALET:string|25'],
             value: [ $scope.PaletKodu]
         }
-        console.log(TmpQuery)
+
         db.GetDataQuery(TmpQuery,function(Data)
         {
             if(Data.length <= 0 )

@@ -475,6 +475,12 @@ var QuerySql =
     {
         query: "UPDATE PALETLER SET RAF = @RAF WHERE KODU = @KODU",
         param : ['RAF:string|25','KODU:string|50']
+    },
+    MalKabulEvrakGetir : 
+    {
+        query : "SELECT *,(SELECT ADI FROM CARILER WHERE KODU = EMIRLER.CIKIS) AS CARIADI  FROM EMIR_HAREKETLERI WHERE TIP = 0 AND CINS = 3 AND SERI = @SERI AND SIRA = @SIRA",
+        param : ['SERI:string|25','SIRA:int']
+
     }
 
     

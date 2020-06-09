@@ -152,7 +152,7 @@ function MalKabul ($scope,$window,db)
                 $scope.Seri,
                 $scope.Sira,
                 $scope.StokKodu,
-                $scope.PaletKodu,
+                $scope.PartiKodu,
                 $scope.DepoNo,
                 $scope.CariKodu,
                 1,

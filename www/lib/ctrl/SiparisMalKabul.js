@@ -197,7 +197,7 @@ function SiparisMalKabul ($scope,$window,db)
                 $scope.Seri,
                 $scope.Sira,
                 $scope.StokKodu,
-                $scope.PaletKodu,
+                $scope.PartiKodu,
                 $scope.DepoNo,
                 $scope.CariKodu,
                 1,
@@ -306,6 +306,7 @@ function SiparisMalKabul ($scope,$window,db)
         $scope.SiparisListe = []
         $scope.SipTarih =  moment(new Date()).format("DD.MM.YYYY");
         $scope.SipTarih2 =  moment(new Date()).format("DD.MM.YYYY");
+        $scope.EvrakgetirList = []
 
         $scope.MainClick();
         $scope.DepoGetir();
@@ -697,6 +698,21 @@ function SiparisMalKabul ($scope,$window,db)
                 InsertAfterRefesh()
             }
         });
+    }
+    $scope.EvrakGetir = function()
+    {
+        db.GetData($scope.Firma,'MalKabulEvrakGetir',[$scope.Seri,$scope.Sira],function(data)
+        {
+            $scope.EvrakgetirList = data
+            console.log($scope.EvrakgetirList)
+            $scope.CariKodu = data[0].CIKIS
+            $scope.CariAdi = data[0].CARIADI
+
+        });
+    }
+    $scope.BtnEvrakGetir = function()
+    {
+        $('#MdlEvrakGetir').modal('show');
     }
     
 }

@@ -29,6 +29,11 @@
                 </div>
                 <div class="row">
                     <div class="col-6">
+                        <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnEvrakGetir()">Evrak Getir</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
                         <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnBelgeBilgisi()">Belge Bilgisi</button>
                     </div>
                     <div class="col-6">
@@ -237,6 +242,32 @@
                         <div class="loader vertical-align-middle loader-circle"></div>
                     </div>
                     <div id="TblSipListe" class="pt-5"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!-- Evrak Getir Modal Başlangıç-->
+     <div class="modal fade" id="MdlEvrakGetir" aria-labelledby="exampleOptionalSmall" role="dialog" tabindex="-1" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-simple modal-primary modal-center px-10">
+            <div class="modal-content ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">X</span>
+                </button>
+                <h4 class="modal-title">Evrak Getir</h4>
+            </div>
+                <div class="modal-body py-10">
+                    <div class="form-group row p-1">
+                        <label class="col-6"><div class="float-right"><span style="color:dodgerblue;"><b>Evrak Seri :</b></span></div></label>
+                        <input type="text" class="col-4" ng-model="Seri">
+                    </div>
+                    <div class="form-group row p-1">
+                        <label class="col-6"><div class="float-right"><span style="color:dodgerblue;"><b>Evrak Sıra :</b></span></div></label>
+                        <input type="text" class="col-4" ng-model="Sira">
+                    </div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary form-control-sm btn-block col-lg-12 col-sm-12 col-sm-12" ng-click="EvrakGetir()">Getir</button>
+                    </div>
                 </div>
             </div>
         </div>

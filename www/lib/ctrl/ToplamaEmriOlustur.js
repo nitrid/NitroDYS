@@ -243,6 +243,9 @@ function ToplamaEmriOlustur ($scope,$window,db)
         $scope.CariListe = [];
         $scope.DepoListe = [];
 
+        document.getElementById("page-title").innerHTML = "Toplama Emri Oluştur";
+        document.getElementById("page-path").innerHTML = "Toplama Emri Oluştur";
+
 
         InitIslemGrid()
         TblSiparisSecimGrid()

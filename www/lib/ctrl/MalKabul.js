@@ -251,6 +251,8 @@ function MalKabul ($scope,$window,db)
         $scope.CariListe = [];
         $scope.DepoListe = [];
 
+        document.getElementById("page-title").innerHTML = "Mal Kabul";
+        document.getElementById("page-path").innerHTML = "Mal Kabul";
 
         InitCariGrid()
         InitIslemGrid()

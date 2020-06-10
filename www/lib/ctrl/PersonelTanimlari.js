@@ -85,8 +85,8 @@ function PersonelTanimlari ($scope,$window,db)
     
         TblSecimInit([]);
 
-        document.getElementById("page-title").innerHTML = "Raf Kategori Tanımları";
-        document.getElementById("page-path").innerHTML = "Raf Kategori Tanımları";
+        document.getElementById("page-title").innerHTML = "Personel Tanımları";
+        document.getElementById("page-path").innerHTML = "Personel Tanımları";
 
         $scope.DataListe = 
         [

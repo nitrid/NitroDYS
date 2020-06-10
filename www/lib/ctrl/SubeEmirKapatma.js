@@ -349,6 +349,8 @@ function SubeEmirKapatma ($scope,$window,db)
             console.log(data)
         });
 
+        document.getElementById("page-title").innerHTML = "Şube Emri Kapatma";
+        document.getElementById("page-path").innerHTML = "Şube Emri Kapatma";
 
         SiparisListele()
         TblSiparisSecimGrid()

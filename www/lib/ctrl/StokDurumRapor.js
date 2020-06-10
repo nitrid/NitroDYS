@@ -68,6 +68,9 @@ function StokDurumRapor($scope,$window,db)
         $scope.SMiktar = ""
         $scope.Toplam = ""
 
+        document.getElementById("page-title").innerHTML = "Stok Durum Raporu";
+        document.getElementById("page-path").innerHTML =  "Stok Durum Raporu";
+
         $scope.EvrakTipChange();
     }
     $scope.BtnSecimGrid = function()

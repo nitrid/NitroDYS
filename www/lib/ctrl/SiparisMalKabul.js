@@ -320,6 +320,9 @@ function SiparisMalKabul ($scope,$window,db)
         $scope.CariListe = [];
         $scope.DepoListe = [];
 
+        document.getElementById("page-title").innerHTML = "Siparişe Bağlı Mal Kabul";
+        document.getElementById("page-path").innerHTML = "Siparişe Bağlı Mal Kabul";
+
 
         InitIslemGrid()
         TblSiparisSecimGrid()

@@ -47,6 +47,9 @@ function BosRaflar($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.CmbEvrakTip = "0"
 
+        document.getElementById("page-title").innerHTML = "Boş Raflar Raporu";
+        document.getElementById("page-path").innerHTML = "Boş Raflar Raporu";
+
         InıtBosRaflarRapor();
         $scope.EvrakTipChange();
     }

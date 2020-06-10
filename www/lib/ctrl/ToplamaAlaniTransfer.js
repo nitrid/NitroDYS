@@ -174,8 +174,8 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         $scope.RafMiktar = 0;
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
 
-        document.getElementById("page-title").innerHTML = "Palet Adresleme";
-        document.getElementById("page-path").innerHTML = "Palet Adresleme";
+        document.getElementById("page-title").innerHTML = "Toplama Alanı Transfer";
+        document.getElementById("page-path").innerHTML = "Toplama Alanı Transfer";
 
     
         

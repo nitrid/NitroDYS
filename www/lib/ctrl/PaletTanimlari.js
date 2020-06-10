@@ -411,7 +411,7 @@ function PaletTanimlari ($scope,$window,db)
             let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "UPDATE ETIKET SET DURUM = 1 WHERE PARTI = @PARTI",
+                query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PARTI",
                 param : ['PARTI'],
                 type : ['string|15'],
                 value : [EtiketSelectedRow.Item.PALET]
@@ -432,7 +432,7 @@ function PaletTanimlari ($scope,$window,db)
                 let TmpQuery = 
                 {
                     db : $scope.Firma,
-                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE PARTI = @PARTI",
+                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PARTI",
                     param : ['PARTI'],
                     type : ['string|15'],
                     value : [item.PALET]

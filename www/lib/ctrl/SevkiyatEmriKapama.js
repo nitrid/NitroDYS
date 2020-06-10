@@ -395,6 +395,8 @@ function SevkiyatEmriKapama ($scope,$window,db)
             $scope.Sira = data
         });
 
+        document.getElementById("page-title").innerHTML = "Toplama Emri Kapatma";
+        document.getElementById("page-path").innerHTML = "Toplama Emri Kapatma";
 
         SiparisListele()
         TblSiparisSecimGrid()

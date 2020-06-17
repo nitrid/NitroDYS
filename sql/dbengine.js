@@ -78,8 +78,8 @@ async function dbengine(config)
         }
     });
 
-    let sync = new _sync();
-    sync.Start();
+    // let sync = new _sync();
+    // sync.Start();
     //await sync.DataTransfer({...sync.Process[3]})
     //console.log(sync.Process);
 }

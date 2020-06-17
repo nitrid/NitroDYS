@@ -234,9 +234,8 @@ var QuerySql =
     },
     EmirHarInsert :
     {
-        query : "INSERT INTO [dbo].[EMIR_HAREKETLERI] " +
-                "([UID] " +
-                ",[OKULLANICI] " +
+        query : "INSERT INTO [dbo].[EMIR_HAREKETLERI] (" +
+                " [OKULLANICI] " +
                 ",[DKULLANICI] " +
                 ",[OTARIH] " +
                 ",[DTARIH] " +
@@ -254,31 +253,30 @@ var QuerySql =
                 ",[MIKTAR] " +
                 ",[OZEL] " +
                 ",[EMIRID] " +
-                ",[DURUM]) " +
-                "VALUES " +
-                "(  NEWID()             --<UID, uniqueidentifier,>  \n" +
-                    ",@OKULLANICI       --<OKULLANICI, nvarchar(10),>  \n" +
-                    ",@DKULLANICI       --<DKULLANICI, nvarchar(10),>  \n" +
-                    ",GETDATE()         --<OTARIH, datetime,>  \n" +
-                    ",GETDATE()         --<DTARIH, datetime,>  \n" +
-                    ",@TIP              --<TIP, smallint,>  \n" +
-                    ",@CINS             --<CINS, smallint,>  \n" +
-                    ",@TARIH        --<TARIH, datetime,>  \n" +
-                    ",@SERI             --<SERI, nvarchar(10),>  \n" +
-                    ",@SIRA             --<SIRA, int,>  \n" +
-                    ",(SELECT ISNULL(MAX(SATIRNO),-1) + 1 AS SATIRNO FROM EMIR_HAREKETLERI WHERE SERI = @SERI AND SIRA = @SIRA AND CINS = @CINS)            --<SATIRNO, int,>  \n" +
-                    ",@STOK             --<STOK, nvarchar(25),>  \n" +
-                    ",@PARTI             --<PARTI, nvarchar(25),>  \n" +
-                    ",@GIRIS            --<GIRIS, nvarchar(25),>  \n" +
-                    ",@CIKIS            --<CIKIS, nvarchar(25),>  \n" +
-                    ",@BIRIM           --<BIRIM, nvarchar(10),>  \n" +
-                    ",@MIKTAR           --<MIKTAR, float,>  \n" +
-                    ",@OZEL                --<OZEL, nvarchar(50),>  \n" +
-                    ",@EMIRID             --<EMIRID, nvarchar(50),>  \n" +
-                    ",0                    --<DURUM, int,>  \n" +
-                    " ) ",
-    param :  ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','CINS:int','TARIH:date','SERI:string|10','SIRA:int','STOK:string|25','PARTI:string|15','GIRIS:string|25','CIKIS:string|25',
-            'BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
+                ",[DURUM] " +
+                ") VALUES ( " +
+                " @OKULLANICI       --<OKULLANICI, nvarchar(10),>  \n" +
+                ",@DKULLANICI       --<DKULLANICI, nvarchar(10),>  \n" +
+                ",GETDATE()         --<OTARIH, datetime,>  \n" +
+                ",GETDATE()         --<DTARIH, datetime,>  \n" +
+                ",@TIP              --<TIP, smallint,>  \n" +
+                ",@CINS             --<CINS, smallint,>  \n" +
+                ",@TARIH        --<TARIH, datetime,>  \n" +
+                ",@SERI             --<SERI, nvarchar(10),>  \n" +
+                ",@SIRA             --<SIRA, int,>  \n" +
+                ",(SELECT ISNULL(MAX(SATIRNO),-1) + 1 AS SATIRNO FROM EMIR_HAREKETLERI WHERE SERI = @SERI AND SIRA = @SIRA AND CINS = @CINS)            --<SATIRNO, int,>  \n" +
+                ",@STOK             --<STOK, nvarchar(25),>  \n" +
+                ",@PARTI             --<PARTI, nvarchar(25),>  \n" +
+                ",@GIRIS            --<GIRIS, nvarchar(25),>  \n" +
+                ",@CIKIS            --<CIKIS, nvarchar(25),>  \n" +
+                ",@BIRIM           --<BIRIM, nvarchar(10),>  \n" +
+                ",@MIKTAR           --<MIKTAR, float,>  \n" +
+                ",@OZEL                --<OZEL, nvarchar(50),>  \n" +
+                ",@EMIRID             --<EMIRID, nvarchar(50),>  \n" +
+                ",0                    --<DURUM, int,>  \n" +
+                " ) ",
+        param : ['OKULLANICI:string|10','DKULLANICI:string|10','TIP:int','CINS:int','TARIH:date','SERI:string|10','SIRA:int','STOK:string|25',
+                'PARTI:string|15','GIRIS:string|25','CIKIS:string|25','BIRIM:string|10','MIKTAR:float','OZEL:string|50','EMIRID:string|50']
     },
     EmirHarGetir :
     {
@@ -369,22 +367,25 @@ var QuerySql =
     },
     SevkiyatEmriGetir :
     {
-        query: "SELECT  " + 
-        " EMIRLER.KODU AS STOKKOD ," + 
-        "(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI ," + 
-        "(SELECT TOP 1 RAF FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ) AS RAFKODU ," + 
-        "(SELECT TOP 1 MIKTAR FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ) AS PALETMIKTAR ," + 
-        "(SELECT TOP 1 PARTI FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ) AS PARTI ," + 
-        "(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS BIRIMADI ," + 
-        "(SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM ) AS KATSAYI ," + 
-        "EMIRLER.BIRIM AS BIRIM, " +
-        "SUM(MIKTAR) AS MIKTAR, " +
-        "SUM(TESLIM_MIKTAR) AS TESLIM_MIKTAR, " +
-        "SUM(MIKTAR) - SUM(TESLIM_MIKTAR) AS BEKLEYEN " +
-        " FROM EMIRLER " + 
-        "WHERE EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRNO = @EMIRNO AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI != 1 " + 
-        " GROUP BY KODU,BIRIM " +
-        "ORDER BY (SELECT top 1 SIRA FROM RAFLAR WHERE KODU = (SELECT TOP 1 RAF FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ))"  ,       
+        query:  "SELECT  " + 
+                " EMIRLER.KODU AS STOKKOD, " + 
+                "(SELECT ADI FROM STOKLAR WHERE KODU = EMIRLER.KODU) AS STOKADI, " + 
+                "EMIRLER.GIRIS AS CARI, " + 
+                "EMIRLER.CIKIS AS DEPO, " + 
+                "(SELECT TOP 1 PALET FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ASC) AS PALET, " + 
+                "(SELECT TOP 1 RAF FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ASC) AS RAFKODU, " + 
+                "(SELECT TOP 1 MIKTAR FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ASC) AS PALETMIKTAR, " + 
+                "(SELECT TOP 1 PARTI FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ASC) AS PARTI, " + 
+                "(SELECT ADI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM) AS BIRIMADI, " + 
+                "(SELECT KATSAYI FROM BIRIMLER WHERE STOK = EMIRLER.KODU AND KODU = EMIRLER.BIRIM) AS KATSAYI, " + 
+                "EMIRLER.BIRIM AS BIRIM, " +
+                "MIKTAR AS MIKTAR, " +
+                "TESLIM_MIKTAR AS TESLIM_MIKTAR, " +
+                "MIKTAR - TESLIM_MIKTAR AS BEKLEYEN, " +
+                "EMIRLER.UID AS UID " +
+                "FROM EMIRLER " + 
+                "WHERE EMIRLER.TIP = @TIP AND EMIRLER.CINS = @CINS AND EMIRNO = @EMIRNO AND EMIRLER.MIKTAR > EMIRLER.TESLIM_MIKTAR AND KAPALI <> 1 " + 
+                "ORDER BY (SELECT TOP 1 SIRA FROM PALET_VIEW_01 WHERE  STOK = EMIRLER.KODU AND MIKTAR > 0 ORDER BY SKT ASC)"  ,       
         param: ['TIP','CINS','EMIRNO'],
         type : ['int','int','int']
     },

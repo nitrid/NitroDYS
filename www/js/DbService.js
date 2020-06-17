@@ -201,7 +201,7 @@ angular.module('app.db', []).service('db',function($rootScope)
         {
             var m = 
             {
-                db : '{M}.' + pFirma,
+                db : pFirma,
                 tag : pQueryTag,
                 param : pQueryParam
             }
@@ -210,8 +210,9 @@ angular.module('app.db', []).service('db',function($rootScope)
                 if(pCallback)
                 {
                     pCallback(data.result.recordset);
-                    resolve();
+                    
                 }
+                resolve(data.result.recordset);
             });            
         });
     }    
@@ -223,9 +224,10 @@ angular.module('app.db', []).service('db',function($rootScope)
             {
                 if(pCallback)
                 {
-                    pCallback(data.result.recordset);
-                    resolve();
+                    pCallback(data.result.recordset);                    
                 }
+
+                resolve(data.result.recordset);
             });            
         });
     } 
@@ -235,7 +237,7 @@ angular.module('app.db', []).service('db',function($rootScope)
         {
             var m = 
             {
-                db : '{M}.' + pFirma,
+                db : pFirma,
                 tag : pQueryTag,
                 param : pQueryParam
             }
@@ -243,9 +245,9 @@ angular.module('app.db', []).service('db',function($rootScope)
             {
                 if(pCallback)
                 {
-                    pCallback(data);
-                    resolve();
+                    pCallback(data);                    
                 }
+                resolve(data);
             });            
         });
     }
@@ -257,9 +259,9 @@ angular.module('app.db', []).service('db',function($rootScope)
             {
                 if(pCallback)
                 {
-                    pCallback(data);
-                    resolve();
+                    pCallback(data);                    
                 }
+                resolve(data);
             });            
         });
     }   

@@ -17,19 +17,10 @@ function MalKabul ($scope,$window,db)
                         $scope.BirimAdi = $scope.BarkodData[0].BIRIMADI
                         $scope.Katsayi = $scope.BarkodData[0].KATSAYI
                         $scope.Miktar = 1;
-                        
-                        let TmpQuery = 
+                        if(UserParam.Sistem.OtomatikParti == 1)
                         {
-                            db : $scope.Firma,
-                            query:  "SELECT MAX(SUBSTRING(KODU, 2,LEN(KODU))) + count(KODU) AS PARTIFLAG FROM PARTILER  WHERE KODU LIKE 'A01%' ",
+                            $scope.BtnPartiGenerate()
                         }
-                        console.log(TmpQuery)
-                        db.GetDataQuery(TmpQuery,function(Data)
-                        {
-                            $scope.PartiKodu = $scope.PartiFlag + Data[0].PARTIFLAG
-
-                            
-                        });
 
         
                         $window.document.getElementById("Miktar").focus();
@@ -236,7 +227,6 @@ function MalKabul ($scope,$window,db)
         $scope.StokAdi = ''
         $scope.IslemListe = []
         $scope.PartiKodu = ''
-        $scope.PartiFlag = 'A01'
 
 
         $scope.MainClick();
@@ -565,6 +555,60 @@ function MalKabul ($scope,$window,db)
                 InsertAfterRefesh()
             }
         });
+    }
+    $scope.BtnPartiGenerate = function()
+    {        
+        let KulStr = "";
+        let TarihStr = "";
+        let AutoStr = "";
+
+        UserParam.Sistem.PartiFormat.toString().split("|").forEach(function(item)
+        {
+            if(item.toString().indexOf("K") > -1)
+            {
+                KulStr = $scope.PartiKodu.toString().substring(0,item.toString().length);
+            }
+            else if(item.toString().indexOf("YYYYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYYYMMDD");
+            }
+            else if(item.toString().indexOf("YYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYMMDD");
+            }
+            else if(item.toString().indexOf("O") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+            else if(item.toString().indexOf("N") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+        });
+
+        $scope.PartiKodu = KulStr + TarihStr + AutoStr;
     }
     
 }

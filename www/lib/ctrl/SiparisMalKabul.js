@@ -33,6 +33,11 @@ function SiparisMalKabul ($scope,$window,db)
                         $scope.Miktar = 1;
                         $scope.BekleyenMiktar = $scope.BarkodData[0].BEKLEYEN
                         $scope.SipStokUid = $scope.BarkodData[0].UID
+
+                        if(UserParam.Sistem.OtomatikParti == 1)
+                        {
+                            $scope.BtnPartiGenerate()
+                        }
         
                         $window.document.getElementById("Miktar").focus();
                         $window.document.getElementById("Miktar").select();
@@ -267,6 +272,7 @@ function SiparisMalKabul ($scope,$window,db)
         $scope.BirimAdi = ''
         $scope.Katsayi = ''
         $scope.StokKodu = ''
+        $scope.PartiKodu = ''
         $scope.BekleyenMiktar = ''
         $scope.SipStokUid = ''
         $scope.SiparisStok = ''
@@ -301,6 +307,7 @@ function SiparisMalKabul ($scope,$window,db)
         $scope.SiparisStok = ''
         $scope.SipStokUid = ''
         $scope.OzelUid = ''
+        $scope.PartiKodu = ''
         $scope.IslemListe = []
         $scope.SiparisStokListe = []
         $scope.SiparisListe = []
@@ -716,6 +723,60 @@ function SiparisMalKabul ($scope,$window,db)
     $scope.BtnEvrakGetir = function()
     {
         $('#MdlEvrakGetir').modal('show');
+    }
+    $scope.BtnPartiGenerate = function()
+    {        
+        let KulStr = "";
+        let TarihStr = "";
+        let AutoStr = "";
+
+        UserParam.Sistem.PartiFormat.toString().split("|").forEach(function(item)
+        {
+            if(item.toString().indexOf("K") > -1)
+            {
+                KulStr = $scope.PartiKodu.toString().substring(0,item.toString().length);
+            }
+            else if(item.toString().indexOf("YYYYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYYYMMDD");
+            }
+            else if(item.toString().indexOf("YYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYMMDD");
+            }
+            else if(item.toString().indexOf("O") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+            else if(item.toString().indexOf("N") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+        });
+
+        $scope.PartiKodu = KulStr + TarihStr + AutoStr;
     }
     
 }

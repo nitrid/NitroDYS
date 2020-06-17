@@ -136,6 +136,11 @@ function ToplamaAlaniTransfer ($scope,$window,db)
     }
     function RafGetir(pKodu)
     {
+        if($scope.Kat == 0)
+        {
+            pKodu= pKodu + '-0'
+            $scope.RafKatı = pKodu
+        }
         $scope.RafListe = [];
         db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
@@ -171,6 +176,8 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         $scope.Miktar = 0;
         $scope.PaletKodu = '';
         $scope.RafKodu = '';
+        $scope.Kat = '0'
+        $scope.RafKatı = ''
         $scope.RafMiktar = 0;
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
 
@@ -274,8 +281,8 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                     0,
                     $scope.Stok,
                     $scope.PaletKodu,
-                    $scope.RafKodu,
-                    $scope.RafKodu,
+                    $scope.RafKatı,
+                    $scope.RafKatı,
                     1,
                     $scope.Miktar,
                     '',
@@ -294,12 +301,12 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                                     query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
                                     param : ['MIKTAR','KODU'],
                                     type : ['float','string|50'],
-                                    value : [$scope.Miktar,$scope.RafKodu]
+                                    value : [$scope.Miktar,$scope.RafKatı]
                                 }
                                 db.GetDataQuery(TmpQuery,function(Data)
                                 {
                                     console.log('CREATED BY RECEP KARACA ;)')   
-                                    db.ExecuteTag($scope.Firma,'PaletRafıUpdate',[$scope.RafKodu,$scope.PaletKodu],function(InsertResult)
+                                    db.ExecuteTag($scope.Firma,'PaletRafıUpdate',[$scope.RafKatı,$scope.PaletKodu],function(InsertResult)
                                     { 
                                         console.log(InsertResult)
                                     });
@@ -317,7 +324,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                                 query:  "UPDATE RAFLAR SET MIKTAR = (MIKTAR - @MIKTAR) WHERE KODU = @KODU",
                                 param : ['MIKTAR','KODU'],
                                 type : ['float','string|25'],
-                                value : [$scope.Miktar,$scope.RafKodu]
+                                value : [$scope.Miktar,$scope.RafKatı]
                             }
                             db.GetDataQuery(TmpQuery,function(Data)
                             {
@@ -327,6 +334,31 @@ function ToplamaAlaniTransfer ($scope,$window,db)
                     }
                 });   
             }    
+        }
+    }
+    $scope.CmbKatChange = function()
+    {
+        console.log($scope.RafKodu)
+        if($scope.Kat == 0)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-0'
+            console.log($scope.RafKatı)
+            RafGetir($scope.RafKatı)
+        }
+        else if($scope.Kat == 1)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-1'
+            RafGetir($scope.RafKatı)
+        }
+        else if($scope.Kat == 2)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-2'
+            RafGetir($scope.RafKatı)
+        }
+        else if($scope.Kat == 3)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-3'
+            RafGetir($scope.RafKatı)
         }
     }
 

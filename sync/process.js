@@ -4,17 +4,17 @@ let Process =
         name: "STOK", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU
@@ -61,17 +61,17 @@ let Process =
         name: "CARI", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU
@@ -112,17 +112,17 @@ let Process =
         name: "BARKOD", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU
@@ -165,17 +165,17 @@ let Process =
         name: "BIRIM", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU
@@ -222,17 +222,17 @@ let Process =
         name: "ALIŞ SİPARİŞİ", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU
@@ -284,6 +284,7 @@ let Process =
                     ",[SATICI]" +
                     ",[TASIYICI]" +
                     ",[EMIRNO]" +
+                    ",[DURUM]" +
                     ") VALUES ( " +
                     " 'Admin'						--<OKULLANICI, nvarchar(10),>\n" +
                     ",'Admin'						--<DKULLANICI, nvarchar(10),>\n" +
@@ -306,6 +307,7 @@ let Process =
                     ",@SATICI						--<SATICI, nvarchar(15),>\n" +
                     ",@TASIYICI						--<TASIYICI, nvarchar(15),>\n" +
                     ",@EMIRNO						--<EMIRNO, int,>\n" +
+                    ",0						--<DURUM, int,>\n" +
                     ")",
             param : ['TARIH:string|10','SERI:string|10','SIRA:int','SATIRNO:int','KODU:string|25','GIRIS:string|25','CIKIS:string|25',
                      'BIRIM:string|10','MIKTAR:float','TESLIM_MIKTAR:float','OZEL:string|50','SATICI:string|15','TASIYICI:string|15',
@@ -316,17 +318,17 @@ let Process =
         name: "SATIŞ SİPARİŞİ", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU
@@ -343,10 +345,10 @@ let Process =
                   "sip_miktar AS MIKTAR," + 
                   "sip_teslim_miktar AS TESLIM_MIKTAR," + 
                   "CONVERT(nvarchar(50),sip_Guid) AS OZEL, " +
-                  "'' AS SATICI, " +
+                  "sip_satici_kod AS SATICI, " +
                   "'' AS TASIYICI, " +
                   "0 AS EMIRNO " +
-                  "FROM SIPARISLER WHERE sip_tip = 0 AND sip_cins = 0 AND sip_tarih >= GETDATE() - 60 " + 
+                  "FROM SIPARISLER WHERE sip_tip = 0 AND sip_cins = 0 AND sip_tarih >= GETDATE() - 150 " + 
                   "AND (SELECT TOP 1 sth_Guid FROM STOK_HAREKETLERI WHERE sth_sip_uid = sip_Guid) IS NULL"
         },
         control:    //KAYITLAR KARŞI TARAFADA VAR İSE GÜNCELLEMESİ İÇİN KONTROL SORGUSU
@@ -378,6 +380,7 @@ let Process =
                     ",[SATICI]" +
                     ",[TASIYICI]" +
                     ",[EMIRNO]" +
+                    ",[DURUM]" +
                     ") VALUES ( " +
                     " 'Admin'						--<OKULLANICI, nvarchar(10),>\n" +
                     ",'Admin'						--<DKULLANICI, nvarchar(10),>\n" +
@@ -400,6 +403,7 @@ let Process =
                     ",@SATICI						--<SATICI, nvarchar(15),>\n" +
                     ",@TASIYICI						--<TASIYICI, nvarchar(15),>\n" +
                     ",@EMIRNO						--<EMIRNO, int,>\n" +
+                    ",0						--<DURUM, int,>\n" +
                     ")",
             param : ['TARIH:string|10','SERI:string|10','SIRA:int','SATIRNO:int','KODU:string|25','GIRIS:string|25','CIKIS:string|25',
                      'BIRIM:string|10','MIKTAR:float','TESLIM_MIKTAR:float','OZEL:string|50','SATICI:string|15','TASIYICI:string|15',
@@ -411,17 +415,17 @@ let Process =
         name: "ALIŞ İRSALİYESİ", //GÖRÜNEN ADI
         source : //KAYNAK VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"NTGDB",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         target : //HEDEF VERİTABANI BAĞLANTISI
         {
-            server: "DEMO;1434",
+            server: "192.168.100.12",
             database:"MikroDB_V16_MOPSAN2020",
-            uid:"nitrogen",
-            pwd:"lp8462+"
+            uid:"beka",
+            pwd:"1122334455"
         },
         //auto: 300000,  //OTOMATİK AKTARIM YAPILACAKSA BURAYA MİLİSANİYE CİNSİNDEN SÜRE YAZILIR (1000 = 1 SN) UNDEFINED VEYA BU KEY TANIMLANMAZSA OTOMATİK AKTARILMAZ.
         select :    //KAYITLARIN GETİRİLECEĞİ SELECT SORGUSU

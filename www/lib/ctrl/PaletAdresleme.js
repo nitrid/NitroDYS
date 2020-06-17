@@ -137,7 +137,12 @@ function PaletAdresleme ($scope,$window,db)
     }
     function RafGetir(pKodu)
     {
-        $scope.RafListe = [];
+        if($scope.Kat == 0)
+        {
+            pKodu= pKodu + '-0'
+        }
+        $scope.RafListe = []
+        console.log(pKodu)
         db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
 
@@ -145,17 +150,11 @@ function PaletAdresleme ($scope,$window,db)
             $scope.RafMiktar = $scope.RafListe[0].MIKTAR
             $scope.RafTip = $scope.RafListe[0].TIP
             $scope.RafStok = $scope.RafListe[0].STOK
+            $scope.Kat = $scope.RafListe[0].KAT
 
-            if($scope.RafMiktar >= 1 && $scope.RafTip == 0)
-            {
-                alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
-            }
+            
         });
 
-        if($scope.RafMiktar >= 1)
-        {
-            alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
-        }
       
     }
     function InsertAfterRefresh()
@@ -174,6 +173,8 @@ function PaletAdresleme ($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.CmbEvrakTip = '0';
         $scope.Miktar = 0;
+        $scope.Kat = '0'
+        $scope.RafKatı = ''
         $scope.PaletKodu = '';
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
 
@@ -241,6 +242,31 @@ function PaletAdresleme ($scope,$window,db)
             PaletGetir($scope.PaletKodu)
             $window.document.getElementById("RafKodu").focus();
             $window.document.getElementById("RafKodu").select();
+        }
+    }
+    $scope.CmbKatChange = function()
+    {
+        console.log($scope.RafKodu)
+        if($scope.Kat == 0)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-0'
+            console.log($scope.RafKatı)
+            RafGetir($scope.RafKatı)
+        }
+        else if($scope.Kat == 1)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-1'
+            RafGetir($scope.RafKatı)
+        }
+        else if($scope.Kat == 2)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-2'
+            RafGetir($scope.RafKatı)
+        }
+        else if($scope.Kat == 3)
+        {
+            $scope.RafKatı =  $scope.RafKodu + '-3'
+            RafGetir($scope.RafKatı)
         }
     }
     $scope.RafKoduGetir = function(keyEvent)

@@ -21,9 +21,9 @@
         <link href="theme/src/alertify.css" rel="stylesheet">
         <link href="custom.css" rel="stylesheet">
     </head>
-    <body ng-controller="Main" ng-init="Init()">
+    <body ng-controller="Main" ng-init="Init()" id="Main">
         <div id="wrapper">
-            <div class="left-side-menu">
+            <div class="left-side-menu" data-target=".navbar-collapse" data-toggle="collapse">
                 <div class="slimscroll-menu">
                     <!-- Menü -->
                     <div id="sidebar-menu" style="padding-top: 80px;">
@@ -35,11 +35,11 @@
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <ul class="nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
-                                    <li><a href="#!RafTanimlari">Raf Tanımları</a></li>
-                                    <li><a href="#!RafKategoriTanimlari">Raf Kategori Tanımları</a></li> 
-                                    <li><a href="#!PaletTanimlari">Palet Tanımları</a></li>
-                                    <li><a href="#!StokTanimlari">Stok Tanımları</a></li>
-                                    <li><a href="#!PersonelTanimlari">Personel Tanımları</a></li>
+                                    <li><a class='animsition-link' href="#!RafTanimlari">Raf Tanımları</a></li>
+                                    <li><a class='animsition-link' href="#!RafKategoriTanimlari">Raf Kategori Tanımları</a></li> 
+                                    <li><a class='animsition-link' href="#!PaletTanimlari">Palet Tanımları</a></li>
+                                    <li><a class='animsition-link' href="#!StokTanimlari">Stok Tanımları</a></li>
+                                    <li><a class='animsition-link' href="#!PersonelTanimlari">Personel Tanımları</a></li>
                                 </ul>
                             </li>
                             <li class="">
@@ -49,13 +49,13 @@
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <ul class="nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
-                                    <li><a href="#!PaletAdresleme">Palet Adresleme</a></li>
-                                    <li><a href="#!SubeEmirKapatma">Şube Emri Kapatma</a></li>
-                                    <li><a href="#!ToplamaAlaniTransfer">Toplama Alanına Transfer</a></li>
-                                    <li><a href="#!MalKabul">Mal Kabul</a></li>
-                                    <li><a href="#!SiparisMalKabul">Siparişe Bağlı Mal Kabul</a></li>
-                                    <li><a href="#!ToplamaEmriOlustur">Toplama Emri Oluştur</a></li>
-                                    <li><a href="#!SevkiyatEmriKapama">Toplama Emri Kapatma</a></li>
+                                    <li><a class='animsition-link' href="#!PaletAdresleme">Palet Adresleme</a></li>
+                                    <li><a class='animsition-link' href="#!SubeEmirKapatma">Şube Emri Kapatma</a></li>
+                                    <li><a class='animsition-link' href="#!ToplamaAlaniTransfer">Toplama Alanına Transfer</a></li>
+                                    <li><a class='animsition-link' href="#!MalKabul">Mal Kabul</a></li>
+                                    <li><a class='animsition-link' href="#!SiparisMalKabul">Siparişe Bağlı Mal Kabul</a></li>
+                                    <li><a class='animsition-link' href="#!ToplamaEmriOlustur">Toplama Emri Oluştur</a></li>
+                                    <li><a class='animsition-link' href="#!SevkiyatEmriKapama">Toplama Emri Kapatma</a></li>
                                 </ul>
                             </li>
                             <li class="">
@@ -65,8 +65,8 @@
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <ul class="nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
-                                    <li><a href="#!BosRaflar">Boş Raflar Raporu</a></li>
-                                    <li><a href="#!StokDurumRapor">Stok Durum Raporu</a></li>
+                                    <li><a class='animsition-link' href="#!BosRaflar">Boş Raflar Raporu</a></li>
+                                    <li><a class='animsition-link' href="#!StokDurumRapor">Stok Durum Raporu</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -104,10 +104,12 @@
         <script src="theme/vertical/bootstrap-datepicker/bootstrap-datepicker.tr.min.js"></script>
         <script src="theme/src/alertify.js"></script>
 
+    
         <!-- JSGrid -->
         <!-- <script src="theme/vertical/jsgrid/tables/jsgrid.js"></script> -->
         <script src="theme/vertical/jsgrid/tables/jsgrid-db.js"></script>
         <script src="theme/vertical/jsgrid/vendorJS/jsgrid.js"></script>
+        
 
         <script src="js/moment.min.js"></script>
         <script src="js/moment-with-locales.min.js"></script>
@@ -145,12 +147,12 @@
 
         <script src="lib/App.js"></script>
         <script src="lib/Controller.js"></script> 
-        
-        <style>
-            .jsgrid-cell
-            { 
-                overflow: hidden; 
-            }
-        </style>
+
+        <script>
+            $('.animsition-link').on('click', function()
+            {
+                $('#Main').removeClass("sidebar-enable")
+            });     
+        </script>
     </body>
 </html>

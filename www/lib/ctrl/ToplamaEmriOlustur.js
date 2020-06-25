@@ -79,18 +79,19 @@ function ToplamaEmriOlustur ($scope,$window,db)
                 
                 { name: "SECIM", title: "SEÇİM", align: "center", width: 50,
                 
-				 	 headerTemplate: function() {
-                        return $("<input>").attr("type", "checkbox")
-                        .on("change", function () {
+                    headerTemplate: function() 
+                    {
+                        return $("<input>").attr("type", "checkbox").on("change", function () 
+                        {
+                            console.log(11);
                             $(this).is(":checked") ? selectAll(item) : unselectAll(item);
                         });
-                        
-                        
                     },
-                    itemTemplate: function(value, item) {
-                    return $("<input>").attr("type", "checkbox")
-                            .attr("checked", value || item.Checked)
-                        .on("change", function() {
+                    itemTemplate: function(value, item) 
+                    {
+                        return $("<input>").attr("type", "checkbox").attr("checked", value || item.Checked)
+                        .on("change", function() 
+                        {
                             item.Checked = $(this).is(":checked");
                         });
                     }

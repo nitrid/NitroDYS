@@ -15,4 +15,6 @@ angular.module('app.controller', [])
 .controller('BosRaflar',['$scope','$window','db',BosRaflar])
 .controller('StokDurumRapor',['$scope','$window','db',StokDurumRapor])
 .controller('PersonelTanimlari',['$scope','$window','db',PersonelTanimlari])
+.controller('MalKabulDurumRaporu',['$scope','$window','db',MalKabulDurumRaporu])
+.controller('SevkiyatDurumRaporu',['$scope','$window','db',SevkiyatDurumRaporu])
 

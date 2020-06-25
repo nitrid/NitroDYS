@@ -1,0 +1,18 @@
+<div ng-controller="MalKabulDurumRaporu" ng-init="Init()">
+    <div class="card-box"> 
+        <div class="col-6 px-1">
+            <select class="form-control form-control" ng-model="CmbEvrakTip" ng-change="EvrakTipChange()" ng-disabled="EvrakLock">
+                <option value="0">Bekleyen</option>
+                <option value="1">Çalışılan</option>
+                <option value="2">Tamamlanmış</option>
+            </select>
+        </div>  
+        <div class="row py-3">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block btn-sm" ng-click="BtnGetir()">RAPOR AL</button>
+            </div>
+        </div>     
+        <div id="TblMalKabulDurum" class="pt-5"></div>
+    </div>
+
+</div>

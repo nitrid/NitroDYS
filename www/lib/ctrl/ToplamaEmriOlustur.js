@@ -76,8 +76,17 @@ function ToplamaEmriOlustur ($scope,$window,db)
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: 
             [
-                 
+                
                 { name: "SECIM", title: "SEÇİM", align: "center", width: 50,
+                
+				 	 headerTemplate: function() {
+                        return $("<input>").attr("type", "checkbox")
+                        .on("change", function () {
+                            $(this).is(":checked") ? selectAll(item) : unselectAll(item);
+                        });
+                        
+                        
+                    },
                     itemTemplate: function(value, item) {
                     return $("<input>").attr("type", "checkbox")
                             .attr("checked", value || item.Checked)
@@ -120,10 +129,11 @@ function ToplamaEmriOlustur ($scope,$window,db)
                     title: "TASIYICI",
                     type: "text",
                     align: "center",
-                    width: 100
+                    width: 150
                 },
 
                 { type: "control" }
+                
                
             ],
 
@@ -213,6 +223,7 @@ function ToplamaEmriOlustur ($scope,$window,db)
             {
                 $scope.IslemListeRowClick(args.itemIndex,args.item,this);
                 $scope.$apply();
+
             }
         });
     }
@@ -227,9 +238,6 @@ function ToplamaEmriOlustur ($scope,$window,db)
         $scope.SiparisStokListe = []
         $scope.SiparisListe = []
         TasiyiciListe = []
-        $scope.SipTarih =  moment(new Date()).format("DD.MM.YYYY");
-        $scope.SipTarih2 =  moment(new Date()).format("DD.MM.YYYY");
-
         $scope.MainClick();
         $scope.DepoGetir();
         $scope.TasiyiciGetir();
@@ -524,10 +532,10 @@ function ToplamaEmriOlustur ($scope,$window,db)
             {
                 db : $scope.Firma,
                 
-                query:  "SELECT '' AS SECIM,UID AS UID,SERI AS SERI,SIRA AS SIRA,SUM(MIKTAR) AS MIKTAR,EMIRNO AS EMIRNO,CIKIS AS DEPO,SATICI AS SATICI,(SELECT ADI FROM PERSONEL WHERE KODU = TASIYICI) AS TASIYICI, (SELECT ADI FROM CARILER WHERE KODU = EMIRLER.GIRIS) AS CARIADI,(SELECT KODU FROM CARILER WHERE KODU = EMIRLER.GIRIS) AS CARIKODU,CINS FROM EMIRLER WHERE ((TASIYICI = @TASIYICI) OR (@TASIYICI = '')) AND EMIRNO = 0 AND  TIP = 1 AND CINS = 3 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY UID,SERI,SIRA,TASIYICI,SATICI,GIRIS,CIKIS,TIP,CINS,EMIRNO",
-                param: ['TASIYICI','ILKTARIH','SONTARIH'],
-                type: ['string|15','date','date'],
-                value:[$scope.TasiyiciKodu,$scope.SipTarih,$scope.SipTarih2]
+                query:  "SELECT '' AS SECIM,SERI AS SERI,SIRA AS SIRA,SUM(MIKTAR) AS MIKTAR,EMIRNO AS EMIRNO,CIKIS AS DEPO,SATICI AS SATICI, TASIYICI AS TASIYICI, (SELECT ADI FROM CARILER WHERE KODU = EMIRLER.GIRIS) AS CARIADI,(SELECT KODU FROM CARILER WHERE KODU = EMIRLER.GIRIS) AS CARIKODU,CINS FROM EMIRLER WHERE ((TASIYICI = @TASIYICI) OR (@TASIYICI = '')) AND EMIRNO = 0 AND  TIP = 1 AND CINS = 3 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR  GROUP BY SERI,SIRA,TASIYICI,SATICI,GIRIS,CIKIS,TIP,CINS,EMIRNO,TARIH ORDER BY TARIH DESC",
+                param: ['TASIYICI'],
+                type: ['string|50'],
+                value:[$scope.TasiyiciKodu]
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {

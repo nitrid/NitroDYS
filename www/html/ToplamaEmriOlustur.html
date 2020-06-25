@@ -37,30 +37,6 @@
                         <h5>Tarih</h5>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-6 px-1">
-                        <div class="input-group input-group-icon">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <span class="icon wb-calendar" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" type="text" id="SipTarih" ng-model="SipTarih" data-provide="datepicker" ng-disabled="EvrakLock">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 px-1">
-                        <div class="input-group input-group-icon">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <span class="icon wb-calendar" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" type="text" id="SipTarih2" ng-model="SipTarih2" data-provide="datepicker" ng-disabled="EvrakLock">
-                        </div>
-                    </div>
-                </div>
                 <div class="row my-0 py-0">
                     <div class="col-4 text-info px-1 py-0 my-0"><div class="col-form-label  py-2">Taşıyıcı:</div></div>
                     <div class="col-7 px-1">
@@ -71,7 +47,6 @@
                     <div class="col-1 ">
                     <button type="submit" class="btn btn-primary" ng-click="BtnTemizle()"><i class="fas fa-backspace fa-lg"></i></button>
                     </div>
-
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -127,7 +102,7 @@
                         </div>
                         <div class="row">
                             <div class="col-4 px-0 text-info"><label class="form-control-label float-right">Taşıyıcı :</label></div>
-                            <div class="col-8 px-0 text-truncate"><label class="form-control-label pl-10">{{Tasiyici}}</label></div>
+                            <div class="col-8 px-0 text-truncate"><label class="form-control-label pl-10">{{TasiyiciKodu}}</label></div>
                         </div>
                         <div class="row">
                             <div class="col-4 px-0 text-info"><label class="form-control-label float-right">Toplam Miktar :</label></div>
@@ -152,15 +127,19 @@
 </div>
 <script>
     $("#Tarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#Skt").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#SipTarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#SipTarih2").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
 </script>

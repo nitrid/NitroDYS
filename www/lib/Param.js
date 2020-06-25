@@ -9,7 +9,7 @@ var Param = [
 			"SubeNo": "0",
 			"PaletFormat" : "YYMMDD|NNNNNNN",
 			"PartiFormat" : "YYMMDD|NOOON",
-			"OtomatikParti" : "1",
+			"OtomatikParti" : "0",
 			"SktTakip" : "1"
 		},	
 		"Etiket" :	
@@ -32,7 +32,7 @@ var Param = [
 			"SubeNo": "0",
 			"PaletFormat" : "YYMMDD|NNNNNNN",
 			"PartiFormat" : "YYMMDD|NOOON",
-			"OtomatikParti" : "1",
+			"OtomatikParti" : "0",
 			"SktTakip" : "1"
 		},	
 		"Etiket" :	

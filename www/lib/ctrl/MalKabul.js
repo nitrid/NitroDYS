@@ -148,7 +148,7 @@ function MalKabul ($scope,$window,db)
                 $scope.CariKodu,
                 1,
                 $scope.Miktar * $scope.Katsayi,
-                '',
+                $scope.EvrakTip,
                 '',
             ];
             db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
@@ -227,6 +227,7 @@ function MalKabul ($scope,$window,db)
         $scope.StokAdi = ''
         $scope.IslemListe = []
         $scope.PartiKodu = ''
+        $scope.EvrakTip = "11"
 
 
         $scope.MainClick();
@@ -609,6 +610,45 @@ function MalKabul ($scope,$window,db)
         });
 
         $scope.PartiKodu = KulStr + TarihStr + AutoStr;
+    }
+    $scope.Gonder = function()
+    {
+        console.log()
+        let TmpQuery = 
+        {
+            db : $scope.Firma,
+            query:  "UPDATE EMIR_HAREKETLERI SET DURUM = @EVRAKTIP WHERE SERI=@SERI AND SIRA = @SIRA",
+            param : ['EVRAKTIP','SERI','SIRA'],
+            type : ['int','string|25','int'],
+            value : [$scope.EvrakTip,$scope.Seri,$scope.Sira]
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        { 
+            alertify.alert("<a style='color:#3e8ef7''>" + "Evrak Gönderildi !" + "</a>" );  
+        });
+    }
+    $scope.EvrakGetir = function()
+    {
+        db.GetData($scope.Firma,'MalKabulEvrakGetir',[$scope.Seri,$scope.Sira],function(data)
+        {
+            $scope.EvrakgetirList = data
+            console.log($scope.EvrakgetirList)
+            $scope.CariKodu = data[0].CIKIS
+            $scope.CariAdi = data[0].CARIADI
+            $scope.Tarih = new Date(data[0].TARIH).toLocaleDateString();
+            db.GetData($scope.Firma,'EmirHarGetir',[0,3,$scope.Seri,$scope.Sira],function(data)
+        {
+            console.log(data)
+            $scope.IslemListe = data 
+            $("#TblIslem").jsGrid({data : $scope.IslemListe});    
+        });
+            $('#MdlEvrakGetir').modal('hide');
+
+        });
+    }
+    $scope.BtnEvrakGetir = function()
+    {
+        $('#MdlEvrakGetir').modal('show');
     }
     
 }

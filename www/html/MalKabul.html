@@ -3,10 +3,17 @@
         <div class="tab-content">
             <div id="TbMain" class="tab-pane ">
                 <div class="row">
+                    <div class="col-4 text-info px-1 py-0 my-0"><div class="col-form-label  py-2">Evrak Tipi:</div></div>
+                    <div class="col-7 px-1">
+                        <select class="form-control" ng-model="EvrakTip" >
+                            <option value="11">Yurt İçi</option>
+                            <option value="12">Yurt Dışı</option>
+                        </select>
+                    </div>
                     <div class="col-12" style="padding-bottom: 10px;">
                         <div class="btn-group float-right">
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-20 vertical-middle"></i></button>                    
-                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Insert()"><i class="mdi mdi-content-save-move font-20 vertical-middle"></i></button>
+                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Gonder()"><i class="mdi mdi-content-save-move font-20 vertical-middle"></i></button>
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-20 vertical-middle"></i></button>
                         </div>
                     </div>
@@ -26,6 +33,11 @@
                 <div class="row">
                     <div class="col-4 px-0 text-info"><label class="form-control-label float-right">Tarih :</label></div>
                     <div class="col-8 px-0 text-truncate"><label class="form-control-label pl-10">{{Tarih}}</label></div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnEvrakGetir()">Evrak Getir</button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -178,12 +190,40 @@
         </div>
     </div>
      <!-- MODALS -->
+          <!-- Evrak Getir Modal Başlangıç-->
+          <div class="modal fade" id="MdlEvrakGetir" aria-labelledby="exampleOptionalSmall" role="dialog" tabindex="-1" style="display: none;" aria-hidden="true">
+            <div class="modal-dialog modal-simple modal-primary modal-center px-10">
+                <div class="modal-content ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                    </button>
+                    <h4 class="modal-title">Evrak Getir</h4>
+                </div>
+                    <div class="modal-body py-10">
+                        <div class="form-group row p-1">
+                            <label class="col-6"><div class="float-right"><span style="color:dodgerblue;"><b>Evrak Seri :</b></span></div></label>
+                            <input type="text" class="col-4" ng-model="Seri">
+                        </div>
+                        <div class="form-group row p-1">
+                            <label class="col-6"><div class="float-right"><span style="color:dodgerblue;"><b>Evrak Sıra :</b></span></div></label>
+                            <input type="text" class="col-4" ng-model="Sira">
+                        </div>
+                        <div class="row">
+                            <button type="submit" class="btn btn-primary form-control-sm btn-block col-lg-12 col-sm-12 col-sm-12" ng-click="EvrakGetir()">Getir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 <script>
     $("#Tarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#Skt").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
 </script>

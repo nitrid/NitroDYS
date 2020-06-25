@@ -101,35 +101,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-4">
-                        <h5>Tarih</h5>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 px-1">
-                        <div class="input-group input-group-icon">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <span class="icon wb-calendar" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" type="text" id="SipTarih" ng-model="SipTarih" data-provide="datepicker" ng-disabled="EvrakLock">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 px-1">
-                        <div class="input-group input-group-icon">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <span class="icon wb-calendar" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" type="text" id="SipTarih2" ng-model="SipTarih2" data-provide="datepicker" ng-disabled="EvrakLock">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-6">
                         <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnSipListele()"> Emir Listele</button>
                     </div>
@@ -167,12 +138,15 @@
 </div>
 <script>
     $("#Tarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#SipTarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#SipTarih2").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
 </script>

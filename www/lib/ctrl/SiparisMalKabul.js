@@ -33,6 +33,7 @@ function SiparisMalKabul ($scope,$window,db)
                         $scope.Miktar = 1;
                         $scope.BekleyenMiktar = $scope.BarkodData[0].BEKLEYEN
                         $scope.SipStokUid = $scope.BarkodData[0].UID
+                        $scope.OzelUid = $scope.BarkodData[0].OZEL
 
                         if(UserParam.Sistem.OtomatikParti == 1)
                         {
@@ -207,8 +208,9 @@ function SiparisMalKabul ($scope,$window,db)
                 $scope.CariKodu,
                 1,
                 $scope.Miktar * $scope.Katsayi,
-                '',
                 $scope.OzelUid,
+                $scope.SipStokUid,
+                
             ];
             db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
             { 
@@ -717,6 +719,9 @@ function SiparisMalKabul ($scope,$window,db)
             console.log($scope.EvrakgetirList)
             $scope.CariKodu = data[0].CIKIS
             $scope.CariAdi = data[0].CARIADI
+            $scope.SipSeri = data[0].EMIRSERI
+            $scope.SipSira = data[0].EMIRSIRA
+            $('#MdlEvrakGetir').modal('hide');
 
         });
     }
@@ -777,6 +782,22 @@ function SiparisMalKabul ($scope,$window,db)
         });
 
         $scope.PartiKodu = KulStr + TarihStr + AutoStr;
+    }
+    $scope.Gonder = function()
+    {
+        console.log()
+        let TmpQuery = 
+        {
+            db : $scope.Firma,
+            query:  "UPDATE EMIR_HAREKETLERI SET DURUM = 1 WHERE SERI=@SERI AND SIRA = @SIRA",
+            param : ['SERI','SIRA'],
+            type : ['string|25','int'],
+            value : [$scope.Seri,$scope.Sira]
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        { 
+            alertify.alert("<a style='color:#3e8ef7''>" + "Evrak Gönderildi !" + "</a>" );      
+        });
     }
     
 }

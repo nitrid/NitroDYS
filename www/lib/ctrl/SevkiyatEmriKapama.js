@@ -95,9 +95,6 @@ function SevkiyatEmriKapama ($scope,$window,db)
                 db : $scope.Firma,
                 
                 query:  "SELECT EMIRNO AS EMIRNO,(SELECT ADI FROM PERSONEL WHERE KODU = EMIRLER.TASIYICI) AS TASIYICI ,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND EMIRNO <> 0 AND CINS = 3 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY EMIRNO,TASIYICI,TIP,CINS",
-                param: ['ILKTARIH','SONTARIH'],
-                type: ['date','date'],
-                value:[$scope.SipTarih,$scope.SipTarih2]
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -185,7 +182,7 @@ function SevkiyatEmriKapama ($scope,$window,db)
                         $scope.SiparisStok[i].DEPO,
                         $scope.Birim,
                         TmpMiktar,
-                        '',
+                        $scope.SiparisStok[i].OZEL,
                         $scope.SiparisStok[i].UID,
                     ];
 
@@ -257,7 +254,6 @@ function SevkiyatEmriKapama ($scope,$window,db)
         $scope.Katsayi = 1
         $scope.PalettekiMiktar = 0
         $scope.Parti = ''
-        $scope.RafKatı = ''
         $scope.BtnSipSec()
         $window.document.getElementById("RafOkut").focus();
         $window.document.getElementById("RafOkut").select();
@@ -269,7 +265,6 @@ function SevkiyatEmriKapama ($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.Seri = 'MOP'
         $scope.Urun = ''
-        $scope.RafKatı = ''
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
         $scope.SipTarih =   new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
         $scope.SipTarih2 =  new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
@@ -308,15 +303,15 @@ function SevkiyatEmriKapama ($scope,$window,db)
             }
             else
             {
-                $scope.Urun = $scope.SiparisStok[TmpIndex].STOKADI;
-                $scope.Raf = $scope.SiparisStok[TmpIndex].RAFKODU;
-                $scope.PalettekiMiktar = $scope.SiparisStok[TmpIndex].PALETMIKTAR;
-                $scope.SipStokKodu = $scope.SiparisStok[TmpIndex].STOKKOD;
-                $scope.Birim = $scope.SiparisStok[TmpIndex].BIRIM
-                $scope.BirimAdi = $scope.SiparisStok[TmpIndex].BIRIMADI
-                $scope.Katsayi = $scope.SiparisStok[TmpIndex].KATSAYI
-                $scope.Parti =  $scope.SiparisStok[TmpIndex].PARTI
-                $scope.BekleyenMiktar = db.SumColumn($scope.SiparisStok,"BEKLEYEN","STOKKOD = " + $scope.SiparisStok[TmpIndex].STOKKOD);
+                $scope.Urun = $scope.SiparisStok[0].STOKADI;
+                $scope.Raf = $scope.SiparisStok[0].RAFKODU;
+                $scope.PalettekiMiktar = $scope.SiparisStok[0].PALETMIKTAR;
+                $scope.SipStokKodu = $scope.SiparisStok[0].STOKKOD;
+                $scope.Birim = $scope.SiparisStok[0].BIRIM
+                $scope.BirimAdi = $scope.SiparisStok[0].BIRIMADI
+                $scope.Katsayi = $scope.SiparisStok[0].KATSAYI
+                $scope.Parti =  $scope.SiparisStok[0].PARTI
+                $scope.BekleyenMiktar = db.SumColumn($scope.SiparisStok,"BEKLEYEN","STOKKOD = " + $scope.SiparisStok[0].STOKKOD);
 
                 $scope.SipListesi();
     
@@ -337,7 +332,7 @@ function SevkiyatEmriKapama ($scope,$window,db)
     }
     $scope.BtnRafKoduOkut = function(keyEvent)
     {
-        $scope.RafKatı = $scope.RafOkut + '-0'
+        $scope.RafOkut = $scope.RafOkut + '-0'
         if(keyEvent.which === 13)
         {
           if($scope.Raf == $scope.RafOkut)

@@ -83,7 +83,6 @@ function ToplamaEmriOlustur ($scope,$window,db)
                     {
                         return $("<input>").attr("type", "checkbox").on("change", function () 
                         {
-                            console.log(11);
                             $(this).is(":checked") ? selectAll(item) : unselectAll(item);
                         });
                     },

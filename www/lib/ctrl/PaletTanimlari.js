@@ -111,6 +111,7 @@ function PaletTanimlari ($scope,$window,db)
     }
     function EtiketGetir()
     {
+        console.log(2)
         $scope.EtiketListe = [];
         db.GetData($scope.Firma,'EtiketGetir',[$scope.EtiketSeri,$scope.EtiketSira],function(Data)
         {
@@ -136,33 +137,87 @@ function PaletTanimlari ($scope,$window,db)
     }
     function Kaydet(pCallback)
     { 
-        let InsertEtiket =
-        [
-            UserParam.Kullanici,
-            UserParam.Kullanici,
-            $scope.EtiketSeri,
-            $scope.EtiketSira,
-            moment(new Date()).format("DD.MM.YYYY"),
-            '',
-            $scope.DataListe[0].KODU,
-            '',
-            "",
-            "",
-            1,
-            2,
-        ];
-        console.log(InsertEtiket)
-        db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
-        { 
-            pCallback(true);
+
+        let TmpQuery = 
+        {
+            db : $scope.Firma,
+            query:  "SELECT MAX(SUBSTRING(KODU,3,8)) + count(KODU) AS PARTIFLAG FROM PARTILER  WHERE KODU LIKE 'A01%' ",
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        {
+            $scope.PartiKodu = $scope.PartiFlag + Data[0].PARTIFLAG
+            console.log($scope.PartiKodu)
+            let InsertEtiket =
+            [
+                UserParam.Kullanici,
+                UserParam.Kullanici,
+                $scope.EtiketSeri,
+                $scope.EtiketSira,
+                moment(new Date()).format("DD.MM.YYYY"),
+                $scope.PartiKodu,
+                $scope.DataListe[0].KODU,
+                $scope.DataListe[0].STOK,
+                $scope.EtiketBarkod,
+                '',
+                1,
+                2,
+            ];
+            console.log(InsertEtiket)
+            db.ExecuteTag($scope.Firma,'EtiketKaydet',InsertEtiket,function(Result)
+            { 
+                let InsertData =
+                [
+                    $scope.DataListe[0].KODU,
+                    $scope.PartiKodu,
+                    0,
+                    $scope.DataListe[0].MIKTAR,
+                    ''
+                ];
+                
+                db.ExecuteTag($scope.Firma,'PaletTanimlariKaydet',InsertData,function(InsertResult)
+                { 
+                    if(typeof(InsertResult.result.err) == 'undefined')
+                    {                          
+                        let InsertData =
+                        [
+                            UserParam.Kullanici,
+                            UserParam.Kullanici,
+                            $scope.PartiKodu,
+                            $scope.DataListe[0].STOK,
+                            1,
+                            $scope.DataListe[0].SKT,
+                            $scope.DataListe[0].MIKTAR
+                        ];
+                        
+                        db.ExecuteTag($scope.Firma,'PartiInsert',InsertData,function(InsertResult)
+                        { 
+                            if(typeof(InsertResult.result.err) == 'undefined')
+                            {            
+                                console.log(1)              
+                                EtiketGetir()
+                                pCallback(true);
+                            }
+                        });   
+                    }
+                });   
+               
+            });
         });
+
+       
     }
     $scope.Init = function()
     {
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
-        $('side-menu').hide()
+        $('#wrapper').collapse('hide')
+
+        $window.document.getElementById("Palet").focus();
+        $window.document.getElementById("Palet").select();
+        
+        $scope.PartiFlag = 'A01'
+        $scope.EtiketBarkod = ''
     
         TblSecimInit([]);
         TblEtiketInit([]);
@@ -193,6 +248,7 @@ function PaletTanimlari ($scope,$window,db)
 
         $scope.EtiketSeri = UserParam.Etiket.Seri;
         $scope.OtoPaletAdet = 1;
+        $scope.PartiKodu = ''
 
         MaxEtiketSira();
     }
@@ -215,7 +271,7 @@ function PaletTanimlari ($scope,$window,db)
     {
         if(keyEvent.which === 13)
         {
-            console.log( $scope.DataListe[0].STOK)
+            $scope.EtiketBarkod = $scope.DataListe[0].STOK
             let TmpQuery = 
             {
                 db : $scope.Firma,
@@ -291,6 +347,62 @@ function PaletTanimlari ($scope,$window,db)
         });
 
         $scope.DataListe[0].KODU = KulStr + TarihStr + AutoStr;
+        $scope.BtnPartiGenerate()
+    }
+    $scope.BtnPartiGenerate = function()
+    {        
+        let KulStr = "";
+        let TarihStr = "";
+        let AutoStr = "";
+
+        UserParam.Sistem.PartiFormat.toString().split("|").forEach(function(item)
+        {
+            if(item.toString().indexOf("K") > -1)
+            {
+                KulStr = $scope.PartiKodu.toString().substring(0,item.toString().length);
+            }
+            else if(item.toString().indexOf("YYYYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYYYMMDD");
+            }
+            else if(item.toString().indexOf("YYMMDD") > -1)
+            {
+                TarihStr = moment(new Date()).format("YYMMDD");
+            }
+            else if(item.toString().indexOf("O") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZ'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+            else if(item.toString().indexOf("N") > -1)
+            {
+                let length = item.toString().length;
+                let chars = '0123456789'.split('');
+                
+                if (! length) 
+                {
+                    length = Math.floor(Math.random() * chars.length);
+                }
+                
+                for (let i = 0; i < length; i++) 
+                {
+                    AutoStr += chars[Math.floor(Math.random() * chars.length)];
+                }
+            }
+        });
+
+        $scope.PartiKodu = KulStr + TarihStr + AutoStr;
+        console.log($scope.PartiKodu)
     }
     $scope.BtnKaydet = function()
     {
@@ -303,14 +415,13 @@ function PaletTanimlari ($scope,$window,db)
                 {
                     if(pStatus)
                     {
-                        EtiketGetir();
                         $scope.Yenile();
                     }
                 });
             }
             else
             {
-                alertify.okBtn("Tamam");
+              
                 alertify.alert("Kodu bölümünü boş geçemezsiniz !");
             }
         }
@@ -432,10 +543,10 @@ function PaletTanimlari ($scope,$window,db)
                 let TmpQuery = 
                 {
                     db : $scope.Firma,
-                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE PALET = @PARTI",
-                    param : ['PARTI'],
-                    type : ['string|15'],
-                    value : [item.PALET]
+                    query:  "UPDATE ETIKET SET DURUM = 1 WHERE SERI  = @SERI AND SIRA = @SIRA",
+                    param : ['SERI','SIRA'],
+                    type : ['string|15','int'],
+                    value : [$scope.EtiketSeri,$scope.EtiketSira]
                 }
                 db.GetDataQuery(TmpQuery,function(Data)
                 {

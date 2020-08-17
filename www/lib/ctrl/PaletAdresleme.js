@@ -137,24 +137,33 @@ function PaletAdresleme ($scope,$window,db)
     }
     function RafGetir(pKodu)
     {
-        if($scope.Kat == 0)
-        {
-            pKodu= pKodu + '-0'
-        }
-        $scope.RafListe = []
-        console.log(pKodu)
+        $scope.RafListe = [];
         db.GetData($scope.Firma,'RafTanimlariGetir',[pKodu],function(Data)
         {
-
-            $scope.RafListe = Data
-            $scope.RafMiktar = $scope.RafListe[0].MIKTAR
-            $scope.RafTip = $scope.RafListe[0].TIP
-            $scope.RafStok = $scope.RafListe[0].STOK
-            $scope.Kat = $scope.RafListe[0].KAT
-
             
+            if(Data.length > 0)
+            {
+                $scope.RafListe = Data
+                $scope.RafMiktar = $scope.RafListe[0].MIKTAR
+                $scope.RafTip = $scope.RafListe[0].TIP
+                $scope.RafStok = $scope.RafListe[0].STOK
+
+                if($scope.RafMiktar >= 1 && $scope.RafTip == 0)
+                {
+                    alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
+                }
+            }
+            else
+            {
+                alertify.alert(" Raf Sistemde Bulunmuyor !!");
+                $scope.RafKodu = '';
+            }
         });
 
+        if($scope.RafMiktar >= 1)
+        {
+            alertify.alert("Seçmiş Olduğunuz Rafta Ürünler Mevcut!");
+        }
       
     }
     function InsertAfterRefresh()
@@ -173,8 +182,6 @@ function PaletAdresleme ($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.CmbEvrakTip = '0';
         $scope.Miktar = 0;
-        $scope.Kat = '0'
-        $scope.RafKatı = ''
         $scope.PaletKodu = '';
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
 
@@ -244,31 +251,6 @@ function PaletAdresleme ($scope,$window,db)
             $window.document.getElementById("RafKodu").select();
         }
     }
-    $scope.CmbKatChange = function()
-    {
-        console.log($scope.RafKodu)
-        if($scope.Kat == 0)
-        {
-            $scope.RafKatı =  $scope.RafKodu + '-0'
-            console.log($scope.RafKatı)
-            RafGetir($scope.RafKatı)
-        }
-        else if($scope.Kat == 1)
-        {
-            $scope.RafKatı =  $scope.RafKodu + '-1'
-            RafGetir($scope.RafKatı)
-        }
-        else if($scope.Kat == 2)
-        {
-            $scope.RafKatı =  $scope.RafKodu + '-2'
-            RafGetir($scope.RafKatı)
-        }
-        else if($scope.Kat == 3)
-        {
-            $scope.RafKatı =  $scope.RafKodu + '-3'
-            RafGetir($scope.RafKatı)
-        }
-    }
     $scope.RafKoduGetir = function(keyEvent)
     {
         if(keyEvent.which === 13)
@@ -304,6 +286,7 @@ function PaletAdresleme ($scope,$window,db)
                     $scope.Miktar,
                     '',
                     '',
+                    ''
                 ];
                 
                 db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)

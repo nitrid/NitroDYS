@@ -6,11 +6,12 @@
                     <div class="col-12" style="padding-bottom: 10px;">
                         <div class="btn-group float-right">
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Init()"><i class="mdi mdi-file-plus-outline font-20 vertical-middle"></i></button>                    
-                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Insert()"><i class="mdi mdi-content-save-move font-20 vertical-middle"></i></button>
-                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-20 vertical-middle"></i></button>
+                            <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="Gonder()"><i class="mdi mdi-content-save-move font-20 vertical-middle"></i></button>
+                            <!-- <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSil()"><i class="mdi mdi-delete font-20 vertical-middle"></i></button> -->
                         </div>
                     </div>
                 </div>
+                <h3>SİPARİŞ MAL KABUL</h3>
                 <div class="row pt-40">
                     <div class="col-4 px-0 text-info"><label class="form-control-label float-right">Evrak No :</label></div>
                     <div class="col-8 px-0"><label class="form-control-label pl-10">{{Seri}} - {{Sira}}</label></div>
@@ -31,6 +32,9 @@
                     <div class="col-6">
                         <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnEvrakGetir()">Evrak Getir</button>
                     </div>
+                    <div class="col-6">
+                        <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnCariSecim()">Cari Seç</button>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-6">
@@ -45,9 +49,18 @@
                         <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnBarkodGiris()">Barkod Giriş</button>
                     </div>
                     <div class="col-6">
-                        <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnIslemSatirlari()">İşlem Satırları</button>
+                        <button class="form-group btn btn-block btn-primary my-1 h-40" ng-click="BtnIslemSatirlari()">İ. Satırları</button>
                     </div>
                 </div>
+            </div>
+            <div id="TbCariSecim" class="tab-pane">
+                <div class="row py-1">
+                    <div class="col-4 px-1">
+                        <button class="form-group btn btn-block btn-primary mb-1 h-40" ng-click="MainClick()"><i class="" aria-hidden="true">Geri</i></button>
+                    </div>
+                </div>
+                    <button type="button" class="btn btn-block btn-primary waves-effect waves-light mb-1" ng-click="BtnGridSec()">Seç</button>
+                    <div id="TblCari"></div>                        
             </div>
             <div id="TbSiparisSecim" class="tab-pane ">
                 <div class="row">
@@ -60,7 +73,7 @@
                         <h5>Tarih</h5>
                     </div>
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-6 px-1">
                         <div class="input-group input-group-icon">
                             <div class="input-group-prepend">
@@ -71,7 +84,7 @@
                             <input type="text" class="form-control" type="text" id="SipTarih" ng-model="SipTarih" data-provide="datepicker" ng-disabled="EvrakLock">
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="row">
                     <div class="col-6 px-1">
                         <div class="input-group input-group-icon">
@@ -121,7 +134,23 @@
                         </select>
                     </div>
                 </div>
+                <div class="row my-0 py-0">
+                    <div class="col-4 text-info px-1"><div class="col-form-label float-right py-2">Belge No :</div></div>
+                    <div class="col-6 px-1">
+                        <input type="text" class="form-control" ng-model="BelgeNo" ng-disabled="EvrakLock">
+                    </div>
+                </div>
+                <div class="row my-0 py-0">
+                    <div class="col-4 text-info px-1 py-0 my-0"><div class="col-form-label float-right py-2">Depo:</div></div>
+                    <div class="col-8 px-1">
+                        <select class="form-control" ng-model="Yazici" ng-disabled="EvrakLock" >
+                            <option value="1">EKSPRESS</option>
+                            <option value="2">MEŞRUBAT</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+           
             <div id="TbBarkodGiris" class="tab-pane ">
                 <div class="row">
                     <div class="col-12">
@@ -196,14 +225,6 @@
                     </div> -->
                 </div>
                 <div class="form-group row">
-                    <label class="col-md-2 col-form-label">Parti Kodu :</label>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control" ng-model="PartiKodu">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
                     <label class="col-md-2 col-form-label">Son Kullanım Tarihi :</label>
                     <div class="col-md-2">
                         <div class="input-group">
@@ -225,11 +246,11 @@
                     <div class="col-4 px-1">
                         <button class="form-group btn btn-block btn-primary mb-1 h-40" ng-click="MainClick()"><i class="" aria-hidden="true">Geri</i></button>
                     </div>
-                    <div class="col-8" style="padding-bottom: 10px;">
+                    <!-- <div class="col-8" style="padding-bottom: 10px;">
                         <div class="btn-group float-right">
                             <button type="button" class="btn btn-sm btn-primary waves-effect" ng-click="BtnSatirSil()"><i class="mdi mdi-delete font-20 vertical-middle"></i></button>
                         </div>
-                    </div>
+                    </div> -->
                     <div id="TblIslem"></div>    
                 </div>
             </div>
@@ -283,15 +304,19 @@
 </div>
 <script>
     $("#Tarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#Skt").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#SipTarih").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
     $("#SipTarih2").datepicker({
-    language: "tr"
+    language: "tr",
+    autoclose: true
     });
 </script>

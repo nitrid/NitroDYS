@@ -12,28 +12,21 @@ function SubeEmirKapatma ($scope,$window,db)
             selecting: true,
             data : pData,
             paging : true,
-            pageSize: 5,
+            pageSize: 15,
             pageButtonCount: 3,
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: 
             [
                 {
-                    name: "SERI",
-                    title: "SERI",
-                    type: "text",
-                    align: "center",
-                    width: 150
-                },
-                {
-                    name: "SIRA",
-                    title: "SIRA",
-                    type: "text",
-                    align: "center",
-                    width: 150
-                },
-                {
                     name: "SUBE",
                     title: "SUBE",
+                    type: "text",
+                    align: "center",
+                    width: 150
+                },
+                {
+                    name: "SIPDURUM",
+                    title: "DURUM",
                     type: "text",
                     align: "center",
                     width: 150
@@ -62,13 +55,6 @@ function SubeEmirKapatma ($scope,$window,db)
             pagerFormat: "{pages} {next} {last}    {pageIndex} of {pageCount}",
             fields: 
             [
-                {
-                    name: "KODU",
-                    title: "KODU",
-                    type: "text",
-                    align: "center",
-                    width: 125
-                },
                 {
                     name: "ADI",
                     title: "ADI",
@@ -101,10 +87,14 @@ function SubeEmirKapatma ($scope,$window,db)
             {
                 db : $scope.Firma,
                 
-                query:  "SELECT SERI AS SERI,SIRA AS SIRA,(SELECT ADI FROM DEPOLAR WHERE KODU = EMIRLER.GIRIS) AS SUBE,TIP,CINS FROM EMIRLER WHERE TIP = 1 AND CINS = 1 AND KAPALI <> 1 AND MIKTAR > TESLIM_MIKTAR AND TARIH>=@ILKTARIH AND TARIH<=@SONTARIH GROUP BY SERI,SIRA,GIRIS,TIP,CINS",
-                param: ['ILKTARIH','SONTARIH'],
-                type: ['date','date'],
-                value:[$scope.SipTarih,$scope.SipTarih2]
+                query:  "SELECT SERI AS SERI,SIRA AS SIRA,(SELECT top 1 ADI FROM DEPOLAR WHERE KODU = EMIR.GIRIS) AS SUBE,DURUM AS DURUM,GIRIS AS GIRIS, " +
+                "CASE EMIR.DURUM WHEN 0 THEN 'BEKLIYOR' WHEN 1 THEN 'TOPLANIYOR' WHEN 2 THEN 'TAMAMLANMIŞ' END AS SIPDURUM, TIP,CINS FROM EMIRLER AS EMIR " +
+                "INNER JOIN PALET_VIEW_01 AS PALET ON EMIR.KODU = PALET.STOK " +
+                "WHERE EMIR.TIP = 1 AND EMIR.CINS = 2 AND EMIR.TARIH>=@ILKTARIH AND EMIR.TARIH<=@SONTARIH AND (SELECT TOP 1 KATEGORI FROM RAFLAR WHERE KODU = PALET.RAF) = @RAFTIP " +
+                "AND EMIR.KAPALI <> 1 AND EMIR.MIKTAR > EMIR.TESLIM_MIKTAR GROUP BY SERI,SIRA,GIRIS,TIP,CINS,DURUM ORDER BY (SELECT top 1 ADI FROM DEPOLAR WHERE KODU = EMIR.GIRIS) ",
+                param: ['ILKTARIH','SONTARIH','RAFTIP'],
+                type: ['date','date','string|25'],
+                value:[$scope.SipTarih,$scope.SipTarih2,$scope.RafTip]
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
@@ -123,6 +113,8 @@ function SubeEmirKapatma ($scope,$window,db)
         SiparisSelectedRow.Index = pIndex
         $scope.SipSeri = SiparisSelectedRow.Item.SERI;
         $scope.SipSira = SiparisSelectedRow.Item.SIRA;
+        $scope.SipGiris = SiparisSelectedRow.Item.GIRIS
+        console.log(SiparisSelectedRow.Item.GIRIS)
     }
     function StokBarkodGetir(pBarkod)
     {
@@ -133,10 +125,8 @@ function SubeEmirKapatma ($scope,$window,db)
                 if(BarkodData.length > 0)
                 { 
                     $scope.BarkodData = BarkodData
-                    console.log(1)
                     if($scope.SipStokKodu == $scope.BarkodData[0].STOK)
                     {
-                        console.log($scope.BarkodData)
                         $scope.StokAdi = $scope.BarkodData[0].STOKADI 
                         $scope.Stokkodu = $scope.BarkodData[0].STOK
                         $scope.Miktar = 1;
@@ -148,12 +138,14 @@ function SubeEmirKapatma ($scope,$window,db)
                     {
                         alertify.alert("<a style='color:#3e8ef7''>" + "Yanlış Stok Okuttunuz." + "</a>" );                 
                         console.log(" Yanlış Stok Okuttunuz.");
+                        $scope.Barkod = ''
                     }
                 }
                 else
                 {
                     alertify.alert("<a style='color:#3e8ef7''>" + "Stok Bulunamamıştır !" + "</a>" );          
                     console.log("Stok Bulunamamıştır.");
+                    $scope.Barkod = ''
                 }
             });
         }
@@ -183,7 +175,7 @@ function SubeEmirKapatma ($scope,$window,db)
 
     }
     function Insert()
-    {
+    { 
         if($scope.PaletGonder == false)
         {
             let InsertData =
@@ -192,6 +184,7 @@ function SubeEmirKapatma ($scope,$window,db)
                 UserParam.Kullanici,
                 1,
                 2,
+                $scope.Tarih,
                 $scope.Seri,
                 $scope.Sira,
                 $scope.Stokkodu,
@@ -200,11 +193,16 @@ function SubeEmirKapatma ($scope,$window,db)
                 1,
                 $scope.Birim,
                 $scope.Miktar,
-                '',
+                $scope.OzelUid,
                 $scope.SipStokUid,
+                '',
+                $scope.Barkod
             ];
+            console.log(InsertData)
             db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
             { 
+                console.log(InsertResult)
+
                 if(typeof(InsertResult.result.err) == 'undefined')
                 {                          
                     let TmpQuery = 
@@ -217,6 +215,7 @@ function SubeEmirKapatma ($scope,$window,db)
                     }
                     db.GetDataQuery(TmpQuery,function(Data)
                     {
+                        console.log(Data)
                         InsertAfterRefesh()
                     });
                 }
@@ -230,6 +229,7 @@ function SubeEmirKapatma ($scope,$window,db)
                 UserParam.Kullanici,
                 0,
                 1,
+                $scope.Tarih,
                 '',
                 0,
                 $scope.PaletStok,
@@ -240,6 +240,8 @@ function SubeEmirKapatma ($scope,$window,db)
                 $scope.Miktar,
                 '',
                 '',
+                '',
+                $scope.Barkod
             ];
             db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData1,function(InsertResult)
             { 
@@ -252,6 +254,7 @@ function SubeEmirKapatma ($scope,$window,db)
                         UserParam.Kullanici,
                         1,
                         1,
+                        $scope.Tarih,
                         '',
                         0,
                         $scope.PaletStok,
@@ -262,6 +265,8 @@ function SubeEmirKapatma ($scope,$window,db)
                         $scope.Miktar,
                         '',
                         '',
+                        '',
+                        $scope.Barkod
                     ];
                     db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
                     { 
@@ -271,6 +276,7 @@ function SubeEmirKapatma ($scope,$window,db)
                             UserParam.Kullanici,
                             1,
                             2,
+                            $scope.Tarih,
                             $scope.Seri,
                             $scope.Sira,
                             $scope.PaletStok,
@@ -281,6 +287,8 @@ function SubeEmirKapatma ($scope,$window,db)
                             $scope.Miktar,
                             '',
                             $scope.SipStokUid,
+                            '',
+                            $scope.Barkod
                         ];
                         db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData2,function(InsertResult)
                         { 
@@ -304,8 +312,6 @@ function SubeEmirKapatma ($scope,$window,db)
                     });  
                 }         
             });   
-
-           
         }
     }
     InsertAfterRefesh = function()
@@ -314,6 +320,7 @@ function SubeEmirKapatma ($scope,$window,db)
         $scope.Miktar = 1
         $scope.StokAdi = ''
         $scope.BekleyenMiktar = ''
+        $scope.OzelUid = ''
         $scope.Urun = ''
         $scope.Raf = ''
         $scope.Sube = ''
@@ -322,7 +329,7 @@ function SubeEmirKapatma ($scope,$window,db)
         $scope.GirisSube = ''
         $scope.Birim = ''
         $scope.BirimAdi = ''
-        $scope.Katsayi = ''
+        $scope.Katsayi = 1
         $scope.PaletRafKodu = ''
         $scope.BtnSipSec()
         $scope.PaletGonder = false;
@@ -334,7 +341,7 @@ function SubeEmirKapatma ($scope,$window,db)
         $scope.Firma = "NTGDB";
         $scope.User = $window.sessionStorage.getItem('User');
         UserParam = Param[$window.sessionStorage.getItem('User')];
-        $scope.Seri = 'B'
+        $scope.Seri =  UserParam.SubeEmirKapama.Seri
         $scope.Urun = ''
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
         $scope.SipTarih =   new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
@@ -342,8 +349,12 @@ function SubeEmirKapatma ($scope,$window,db)
         $scope.PaletGonder = false;
         $scope.RafLock = true;
         $scope.PaletRafKodu = ''
+        $scope.RafTip = '01'
+        $scope.Barkod = ''
+        $scope.OzelUid = ''
+        $scope.Miktar = 1
         $scope.MainClick();
-        db.MaxSira($scope.Firma,'EmirlerMaxSira',[$scope.Seri,1,1],function(data)
+        db.MaxSira($scope.Firma,'EmirlerMaxSira',[$scope.Seri,1,2],function(data)
         {
             $scope.Sira = data
             console.log(data)
@@ -355,6 +366,15 @@ function SubeEmirKapatma ($scope,$window,db)
         SiparisListele()
         TblSiparisSecimGrid()
     }
+    $scope.BtnInit = function()
+    {
+        alertify.confirm('Dikkat !','Yeni Evrağa Geçmek istediğinize eminmisiniz ?', 
+        function()
+        { 
+            $scope.Init()
+        }
+        ,function(){}).set('labels',{ok: 'Evet',cancel: 'Hayır'});
+    }
     $scope.MainClick = function() 
     {
         $("#TbSiparisSecim").addClass('active');
@@ -364,21 +384,63 @@ function SubeEmirKapatma ($scope,$window,db)
     {
         SiparisListele()
     }
+    $scope.BtnSipSecClick = function()
+    {
+      
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "UPDATE EMIRLER SET DURUM = 1 WHERE SERI = @SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 2", 
+                param: ['SERI','SIRA'],
+                type: ['string|50','int'],
+                value:[$scope.SipSeri,$scope.SipSira]
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                console.log(1)
+                $scope.BtnSipSec();
+                $scope.Seri = $scope.SipSeri
+                $scope.Sira = $scope.SipSira
+            });
+       
+    }
     $scope.BtnSipSec = function()
     {
-        console.log(1)
-        db.GetData($scope.Firma,'EmirGetir',[$scope.SipSeri,$scope.SipSira,1,1],function(data)
-        {console.log(2)
+        db.GetData($scope.Firma,'EmirGetir',[$scope.SipSeri,$scope.SipSira,1,2],function(data)
+        {
+            console.log(data)
             $scope.SiparisStok = data;
             if($scope.SiparisStok == '')
             {
                 alertify.alert("<a style='color:#3e8ef7''>" + "Şube Emir Kapanmıştır !" + "</a>" );          
                 console.log("Stok Bulunamamıştır.");
+                let TmpQuery = 
+                    {
+                        db : $scope.Firma,
+                        query:  "UPDATE EMIRLER SET DURUM = 2 WHERE SERI = @SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 2", 
+                        param: ['SERI','SIRA'],
+                        type: ['string|50','int'],
+                        value:[$scope.SipSeri,$scope.SipSira]
+                    }
+                    db.GetDataQuery(TmpQuery,function(Data)
+                    {
+                        let TmpQuery = 
+                        {
+                            db : $scope.Firma,
+                            query:  "UPDATE EMIR_HAREKETLERI SET DURUM = 2 WHERE SERI = @SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 2", 
+                            param: ['SERI','SIRA'],
+                            type: ['string|50','int'],
+                            value:[$scope.Seri,$scope.Sira]
+                        }
+                        db.GetDataQuery(TmpQuery,function(Data)
+                        {
+                            console.log(1)
+                        });
+                    });
                 $scope.SipListesi();
             }
             else
             {
-                console.log($scope.SiparisStok)
                 $scope.Urun = $scope.SiparisStok[0].STOKADI;
                 $scope.Raf = $scope.SiparisStok[0].RAFKODU;
                 $scope.Sube = $scope.SiparisStok[0].SUBEADI;
@@ -387,8 +449,9 @@ function SubeEmirKapatma ($scope,$window,db)
                 $scope.GirisSube = $scope.SiparisStok[0].GIRISSUBE
                 $scope.Birim = $scope.SiparisStok[0].BIRIM
                 $scope.BirimAdi = $scope.SiparisStok[0].BIRIMADI
-                $scope.Katsayi = $scope.SiparisStok[0].KATSAYI
+                $scope.Katsayi = 1
                 $scope.RafLock = true;
+                $scope.OzelUid = $scope.SiparisStok[0].OZEL
 
                 let TmpQuery = 
                 {
@@ -429,29 +492,56 @@ function SubeEmirKapatma ($scope,$window,db)
     }
     $scope.BtnEkle = function()
     {
-            Insert()   
+        if($scope.Barkod == '')
+        {
+            alertify.alert("<a style='color:#3e8ef7''>" + "Barkod Okutmadan Ekleme Yapılamaz !" + "</a>" );   
+        }
+        else
+        {
+            if($scope.Miktar > $scope.BekleyenMiktar)
+            {
+                alertify.confirm('Dikkat !','Bekleyen Miktardan Fazla Ürün Girdiniz Devam Etmek İstiyorumsunuz ?', 
+                function()
+                { 
+                    Insert()
+                }
+                ,function(){}).set('labels',{ok: 'Evet',cancel: 'Hayır'});
+            }
+            else
+            {
+                Insert()
+            }
+            
+        }
+      
     }
     $scope.Kapat = function()
     {
-        let TmpQuery = 
-        {
-            db : $scope.Firma,
-            query:  "UPDATE EMIRLER SET KAPALI = 1 WHERE UID = @UID",
-            param : ['UID'],
-            type : ['string|50'],
-            value : [$scope.SipStokUid]
+        alertify.confirm('Dikkat !','Ürünü Kapatmak İstediğinize Eminmisiniz ?', 
+        function()
+        { 
+            let TmpQuery = 
+            {
+                db : $scope.Firma,
+                query:  "UPDATE EMIRLER SET KAPALI = 1 WHERE UID = @UID",
+                param : ['UID'],
+                type : ['string|50'],
+                value : [$scope.SipStokUid]
+            }
+            db.GetDataQuery(TmpQuery,function(Data)
+            {
+                InsertAfterRefesh()
+            });
         }
-        db.GetDataQuery(TmpQuery,function(Data)
-        {
-            InsertAfterRefesh()
-        });
+        ,function(){}).set('labels',{ok: 'Evet',cancel: 'Hayır'});
+        
     }
     $scope.SipListesi = function()
     {
         let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,MIKTAR,TESLIM_MIKTAR AS TESLIM,(SELECT ADI FROM STOKLAR WHERE EMIRLER.KODU = KODU) AS ADI FROM EMIRLER WHERE SERI =@SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 1  ",
+                query:  "SELECT KODU,MIKTAR,TESLIM_MIKTAR AS TESLIM,(SELECT ADI FROM STOKLAR WHERE EMIRLER.KODU = KODU) AS ADI FROM EMIRLER WHERE SERI =@SERI AND SIRA = @SIRA AND TIP = 1 AND CINS = 2  ",
                 param : ['SERI','SIRA'],
                 type : ['string|25','int'],
                 value : [$scope.SipSeri,$scope.SipSira]

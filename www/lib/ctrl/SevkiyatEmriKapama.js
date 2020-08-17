@@ -114,7 +114,7 @@ function SevkiyatEmriKapama ($scope,$window,db)
         SiparisSelectedRow = $row;
         SiparisSelectedRow.Item = pItem
         SiparisSelectedRow.Index = pIndex
-        $scope.SipEmirNo = SiparisSelectedRow.Item.EMIRNO;
+        $scope.SipEmirno = SiparisSelectedRow.Item.EMIRNO;
     }
     function StokBarkodGetir(pBarkod)
     {
@@ -151,113 +151,228 @@ function SevkiyatEmriKapama ($scope,$window,db)
     }
     async function Insert()
     {
-        let TmpUrunMiktar = ($scope.Miktar * $scope.Katsayi)
-        
-        if($scope.BekleyenMiktar >= TmpUrunMiktar)
+      
+        let TmpQuery = 
         {
-            if($scope.PalettekiMiktar >= TmpUrunMiktar)
-            {
-                for (let i = 0; i < $scope.SiparisStok.length; i++) 
-                {
-                    let TmpMiktar = 0;
+            db : $scope.Firma,
+            query:  "SELECT GIRIS AS CARI FROM EMIRLER WHERE KODU = @KODU AND EMIRNO = @EMIRNO AND MIKTAR > TESLIM_MIKTAR AND TIP = 1 AND CINS = 3 ORDER BY SIRA",
+            param : ['KODU','EMIRNO'],
+            type : ['string|50','int'],
+            value : [$scope.Stokkodu,$scope.SipEmirno]
+        }
+        await db.GetDataQuery(TmpQuery, async function(Data)
+        {
+            console.log(1)
+                    $scope.CariListeData = Data
 
-                    if(TmpUrunMiktar >= $scope.SiparisStok[i].MIKTAR)
-                    {
-                        TmpMiktar = $scope.SiparisStok[i].MIKTAR;
-                    }
-                    else
-                    {
-                        TmpMiktar = TmpUrunMiktar;
-                    }
-
-                    let InsertData =
-                    [
-                        UserParam.Kullanici,
-                        UserParam.Kullanici,
-                        1,
-                        3,
-                        $scope.Tarih,
-                        $scope.Seri,
-                        $scope.Sira,
-                        $scope.SiparisStok[i].STOKKOD,
-                        $scope.SiparisStok[i].PARTI,
-                        $scope.SiparisStok[i].CARI,
-                        $scope.SiparisStok[i].DEPO,
-                        $scope.Birim,
-                        TmpMiktar,
-                        '',
-                        $scope.SiparisStok[i].UID,
-                    ];
-
-                    let InsertResult = await db.ExecutePromiseTag($scope.Firma,'EmirHarInsert',InsertData);
-
-                    if(typeof(InsertResult.result.err) == 'undefined')
-                    {
+                    for(i = 0;i < $scope.CariListeData.length;i++)
+                   {
+                        $scope.EmirCari = $scope.CariListeData[i].CARI
+                        console.log($scope.EmirCari)
                         let TmpQuery = 
                         {
                             db : $scope.Firma,
-                            query:  "UPDATE RAFLAR SET MIKTAR = (MIKTAR - @MIKTAR) WHERE KODU = @RAF " +
-                                    "UPDATE PALETLER SET MIKTAR = (MIKTAR - @MIKTAR) WHERE KODU = @PALET " +
-                                    "UPDATE PARTILER SET MIKTAR = (MIKTAR - @MIKTAR) WHERE KODU = @PARTI " + 
-                                    "UPDATE EMIRLER SET TESLIM_MIKTAR = (TESLIM_MIKTAR + @MIKTAR) WHERE UID = @UID ",
-                            param : ['MIKTAR','RAF','PALET','PARTI','UID'],
-                            type : ['float','string|25','string|50','string|15','string|50'],
-                            value : [TmpMiktar,$scope.SiparisStok[0].RAFKODU,$scope.SiparisStok[0].PALET, $scope.SiparisStok[i].PARTI,$scope.SiparisStok[i].UID]
+                            query:  "SELECT (MIKTAR - TESLIM_MIKTAR) AS MIKTAR,UID AS UID FROM EMIRLER WHERE KODU = @KODU AND EMIRNO = @EMIRNO AND GIRIS = @GIRIS",
+                            param : ['KODU','EMIRNO','GIRIS'],
+                            type : ['string|50','int','string|50'],
+                            value : [$scope.Stokkodu,$scope.SipEmirno,$scope.EmirCari]
                         }
-
-                        let UpdateResult = await db.ExecutePromiseQuery(TmpQuery);
-
-                        if(typeof(UpdateResult.result.err) == 'undefined')
+                        await db.GetDataQuery(TmpQuery, async function(Data)
                         {
-                            let DataResult = await db.GetPromiseTag($scope.Firma,'SevkiyatEmriGetir',[1,3,$scope.SipEmirNo]);
-                            
-                            $scope.BekleyenMiktar = db.SumColumn($scope.SiparisStok,"BEKLEYEN","STOKKOD = " + $scope.SiparisStok[0].STOKKOD);
-                            TmpUrunMiktar = TmpUrunMiktar - TmpMiktar
-                            
-                            if(TmpUrunMiktar <= 0)
+
+                            if($scope.ToplamMiktar >= Data[0].MIKTAR)
                             {
-                                InsertAfterRefesh();
-                                return;
+                                console.log(2)
+                                $scope.EmirMiktar = Data[0].MIKTAR;
+                                $scope.EmirUid = Data[0].UID;
+                                
+                                console.log(3)
+        
+                                let InsertData =
+                                [
+                                    UserParam.Kullanici,
+                                    UserParam.Kullanici,
+                                    1,
+                                    3,
+                                    $scope.Tarih,
+                                    $scope.Seri,
+                                    $scope.Sira,
+                                    $scope.Stokkodu,
+                                    $scope.Parti,
+                                    $scope.EmirCari,
+                                    $scope.DepoNo,
+                                    $scope.Birim,
+                                    Data[0].MIKTAR,
+                                    '',
+                                    Data[0].UID,
+                                ];
+                                console.log(InsertData)
+                                await db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,async function(InsertResult)
+                                { 
+                                    if(typeof(InsertResult.result.err) == 'undefined')
+                                    {       
+                                        console.log(4)                   
+                                        let TmpQuery = 
+                                        {
+                                            db : $scope.Firma,
+                                            query:  "UPDATE EMIRLER SET TESLIM_MIKTAR = (MIKTAR + @TESLIM) WHERE UID = @UID",
+                                            param : ['TESLIM','UID'],
+                                            type : ['float','string|50'],
+                                            value : [$scope.EmirMiktar,$scope.EmirUid]
+                                        }
+                                        await db.GetDataQuery(TmpQuery, async function(Data)
+                                        {
+                                            console.log(5)
+                                            $scope.ToplamMiktar = $scope.ToplamMiktar - $scope.EmirMiktar
+                                            InsertAfterRefesh()
+                                        });
+                                    }
+                                });  
                             }
-                        }
-                        else
-                        {
-                            console.log(UpdateResult.result.err);    
-                        }
+                            else
+                            {
+                                console.log($scope.ToplamMiktar)
+                                Data[0].MIKTAR = $scope.ToplamMiktar
+                                $scope.EmirMiktar = Data[0].MIKTAR;
+                                $scope.EmirUid = Data[0].UID;
+                                console.log(33)
+                                let InsertData =
+                                [
+                                    UserParam.Kullanici,
+                                    UserParam.Kullanici,
+                                    1,
+                                    3,
+                                    $scope.Tarih,
+                                    $scope.Seri,
+                                    $scope.Sira,
+                                    $scope.Stokkodu,
+                                    $scope.Parti,
+                                    $scope.EmirCari,
+                                    $scope.DepoNo,
+                                    $scope.Birim,
+                                    Data[0].MIKTAR,
+                                    '',
+                                    Data[0].UID,
+                                ];
+                                await db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,async function(InsertResult)
+                                { 
+                                    if(typeof(InsertResult.result.err) == 'undefined')
+                                    {       
+                                        console.log(44)                   
+                                        let TmpQuery = 
+                                        {
+                                            db : $scope.Firma,
+                                            query:  "UPDATE EMIRLER SET TESLIM_MIKTAR = (MIKTAR + @TESLIM) WHERE UID = @UID",
+                                            param : ['TESLIM','UID'],
+                                            type : ['float','string|50'],
+                                            value : [$scope.EmirMiktar,$scope.EmirUid]
+                                        }
+                                        await db.GetDataQuery(TmpQuery, async function(Data)
+                                        {
+                                            console.log(55)
+                                            $scope.ToplamMiktar = $scope.ToplamMiktar - $scope.EmirMiktar
+                                            InsertAfterRefesh()
+                                        });
+                                    }
+                                });  
+                            }
+                                                   
+                        
+                        });
                     }
-                    else
-                    {
-                        console.log(InsertResult.result.err);
-                    }
+                
+
+                let TmpQuery = 
+                {
+                    db : $scope.Firma,
+                    query:  "UPDATE PARTILER SET MIKTAR = (MIKTAR - @TESLIM) WHERE KODU = @PARTI",
+                    param : ['TESLIM','PARTI'],
+                    type : ['float','string|50'],
+                    value : [$scope.Miktar * $scope.Katsayi,$scope.Parti]
                 }
-            }
-            else
-            {
-                alertify.alert("<a style='color:#3e8ef7''>" + "SKT Miktarı  Gönderdiğiniz Miktardan Düşüktür ! Lütfen Önce " + $scope.PalettekiMiktar+ " Adet Gönderiniz" + "</a>" );          
-            }
-        }
-        else
-        {
-            alertify.alert("<a style='color:#3e8ef7''>" + "Miktar Bekleyen Miktardan Büyük Olamaz !" + "</a>" ); 
-        }
+                await db.GetDataQuery(TmpQuery, async function(Data)
+                {
+                })    
+            
+
+           
+        });
+
+     //   if($scope.BekleyenMiktar >= $scope.Miktar * $scope.Katsayi)
+     //   {
+     //       if($scope.PalettekiMiktar >= $scope.Miktar * $scope.Katsayi)
+     //       {
+    //
+     //               let InsertData =
+     //           [
+     //               UserParam.Kullanici,
+     //               UserParam.Kullanici,
+     //               1,
+     //               3,
+     //               $scope.Tarih,
+     //               $scope.Seri,
+     //               $scope.Sira,
+     //               $scope.Stokkodu,
+     //               '',
+     //               $scope.GirisSube,
+     //               $scope.DepoNo,
+     //               $scope.Birim,
+     //               $scope.Katsayi * $scope.Miktar,
+     //               '',
+     //               $scope.SipStokUid,
+     //           ];
+     //           db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
+     //           { 
+     //               if(typeof(InsertResult.result.err) == 'undefined')
+     //               {                          
+     //                   let TmpQuery = 
+     //                   {
+     //                       db : $scope.Firma,
+     //                       query:  "UPDATE PARTILER SET MIKTAR = (MIKTAR - @TESLIM) WHERE KODU = @PARTI",
+     //                       param : ['TESLIM','PARTI'],
+     //                       type : ['float','string|50'],
+     //                       value : [$scope.Miktar * $scope.Katsayi,$scope.Parti]
+     //                   }
+     //                   db.GetDataQuery(TmpQuery,function(Data)
+     //                   {
+     //                       InsertAfterRefesh()
+     //                   });
+     //               }
+     //           });  
+     //       }
+     //       else
+     //       {
+     //           alertify.alert("<a style='color:#3e8ef7''>" + "SKT Miktarı  Gönderdiğiniz Miktardan Düşüktür ! Lütfen Önce " + $scope.PalettekiMiktar+ " Adet Gönderiniz" + "</a>" );          
+     //       }
+     //   }
+     //   else
+     //   {
+     //       alertify.alert("<a style='color:#3e8ef7''>" + "Miktar Bekleyen Miktardan Büyük Olamaz !" + "</a>" ); 
+     //   }
+
+       
+        
+    
+
     }
     InsertAfterRefesh = function()
     {
         $scope.Barkod = ''
         $scope.Miktar = 1
         $scope.StokAdi = ''
-        $scope.BekleyenMiktar = 0
+        $scope.BekleyenMiktar = ''
         $scope.Urun = ''
         $scope.Raf = ''
         $scope.RafOkut =''
         $scope.Cari = ''
+        $scope.SipStokUid = ''
         $scope.SipStokKodu = ''
         $scope.Birim = ''
         $scope.BirimAdi = ''
-        $scope.Katsayi = 1
-        $scope.PalettekiMiktar = 0
-        $scope.Parti = ''
-        $scope.RafKatı = ''
+        $scope.Katsayi = ''
+        $scope.PaletRafKodu = ''
+        $scope.PalettekiMiktar = ''
+        $scope.Parti
         $scope.BtnSipSec()
         $window.document.getElementById("RafOkut").focus();
         $window.document.getElementById("RafOkut").select();
@@ -269,12 +384,12 @@ function SevkiyatEmriKapama ($scope,$window,db)
         UserParam = Param[$window.sessionStorage.getItem('User')];
         $scope.Seri = 'MOP'
         $scope.Urun = ''
-        $scope.RafKatı = ''
         $scope.Tarih = moment(new Date()).format("DD.MM.YYYY");
         $scope.SipTarih =   new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
         $scope.SipTarih2 =  new Date().toLocaleDateString('tr-TR',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+        $scope.PaletRafKodu = ''
+        $scope.DepoNo = 1
         $scope.MainClick();
-        
         db.MaxSira($scope.Firma,'EmirlerMaxSira',[$scope.Seri,1,3],function(data)
         {
             $scope.Sira = data
@@ -297,8 +412,9 @@ function SevkiyatEmriKapama ($scope,$window,db)
     }
     $scope.BtnSipSec = function()
     {
-        db.GetData($scope.Firma,'SevkiyatEmriGetir',[1,3,$scope.SipEmirNo],function(data)
-        {
+        console.log(1)
+        db.GetData($scope.Firma,'SevkiyatEmriGetir',[1,3,$scope.SipEmirno],function(data)
+        {console.log(2)
             $scope.SiparisStok = data;
             if($scope.SiparisStok == '')
             {
@@ -308,15 +424,18 @@ function SevkiyatEmriKapama ($scope,$window,db)
             }
             else
             {
-                $scope.Urun = $scope.SiparisStok[TmpIndex].STOKADI;
-                $scope.Raf = $scope.SiparisStok[TmpIndex].RAFKODU;
-                $scope.PalettekiMiktar = $scope.SiparisStok[TmpIndex].PALETMIKTAR;
-                $scope.SipStokKodu = $scope.SiparisStok[TmpIndex].STOKKOD;
-                $scope.Birim = $scope.SiparisStok[TmpIndex].BIRIM
-                $scope.BirimAdi = $scope.SiparisStok[TmpIndex].BIRIMADI
-                $scope.Katsayi = $scope.SiparisStok[TmpIndex].KATSAYI
-                $scope.Parti =  $scope.SiparisStok[TmpIndex].PARTI
-                $scope.BekleyenMiktar = db.SumColumn($scope.SiparisStok,"BEKLEYEN","STOKKOD = " + $scope.SiparisStok[TmpIndex].STOKKOD);
+
+                $scope.Urun = $scope.SiparisStok[0].STOKADI;
+                $scope.Raf = $scope.SiparisStok[0].RAFKODU;
+                $scope.PalettekiMiktar = $scope.SiparisStok[0].PALETMIKTAR;
+                $scope.SipStokUid = $scope.SiparisStok[0].EMIRUID;
+                $scope.SipStokKodu = $scope.SiparisStok[0].STOKKOD;
+                $scope.Birim = $scope.SiparisStok[0].BIRIM
+                $scope.BirimAdi = $scope.SiparisStok[0].BIRIMADI
+                $scope.Katsayi = $scope.SiparisStok[0].KATSAYI
+                $scope.Parti =  $scope.SiparisStok[0].PARTI
+                $scope.BekleyenMiktar = $scope.SiparisStok[0].BEKLEYEN 
+
 
                 $scope.SipListesi();
     
@@ -337,7 +456,6 @@ function SevkiyatEmriKapama ($scope,$window,db)
     }
     $scope.BtnRafKoduOkut = function(keyEvent)
     {
-        $scope.RafKatı = $scope.RafOkut + '-0'
         if(keyEvent.which === 13)
         {
           if($scope.Raf == $scope.RafOkut)
@@ -353,6 +471,8 @@ function SevkiyatEmriKapama ($scope,$window,db)
 
 
         }
+       
+     
     }
     $scope.BtnEkleKey = function(keyEvent)
     {
@@ -363,8 +483,8 @@ function SevkiyatEmriKapama ($scope,$window,db)
     }
     $scope.BtnEkle = function()
     {
-        $scope.ToplamMiktar =  $scope.Katsayi * $scope.Miktar;
-        Insert();   
+        $scope.ToplamMiktar =  $scope.Katsayi * $scope.Miktar
+            Insert()   
     }
     $scope.Kapat = function()
     {
@@ -378,7 +498,7 @@ function SevkiyatEmriKapama ($scope,$window,db)
         }
         db.GetDataQuery(TmpQuery,function(Data)
         {
-            InsertAfterRefesh();
+            InsertAfterRefesh()
         });
     }
     $scope.SipListesi = function()
@@ -386,14 +506,13 @@ function SevkiyatEmriKapama ($scope,$window,db)
         let TmpQuery = 
             {
                 db : $scope.Firma,
-                query:  "SELECT KODU,MIKTAR,TESLIM_MIKTAR AS TESLIM,(SELECT ADI FROM STOKLAR WHERE EMIRLER.KODU = KODU) AS ADI FROM EMIRLER WHERE EMIRNO = @EMIRNO AND TIP = 1 AND CINS = 3 ",
+                query:  "SELECT KODU,MIKTAR,TESLIM_MIKTAR AS TESLIM,(SELECT ADI FROM STOKLAR WHERE EMIRLER.KODU = KODU) AS ADI FROM EMIRLER WHERE EMIRNO = @EMIRNO AND TIP = 1 AND CINS = 3  ",
                 param : ['EMIRNO'],
                 type : ['int'],
-                value : [$scope.SipEmirNo]
+                value : [$scope.SipEmirno]
             }
             db.GetDataQuery(TmpQuery,function(Data)
             {
-                $scope.SiparisListesi = Data
                 SipListeGrid(Data)
             });
     }

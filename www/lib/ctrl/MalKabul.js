@@ -17,6 +17,7 @@ function MalKabul ($scope,$window,db)
                         $scope.BirimAdi = $scope.BarkodData[0].BIRIMADI
                         $scope.Katsayi = $scope.BarkodData[0].KATSAYI
                         $scope.Miktar = 1;
+                        
                         if(UserParam.Sistem.OtomatikParti == 1)
                         {
                             $scope.BtnPartiGenerate()
@@ -150,6 +151,8 @@ function MalKabul ($scope,$window,db)
                 $scope.Miktar * $scope.Katsayi,
                 '',
                 '',
+                '',
+                $scope.Barkod
             ];
             db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
             {  
@@ -368,7 +371,7 @@ function MalKabul ($scope,$window,db)
     }
     $scope.DepoGetir = function()
     {
-        db.GetData($scope.Firma,'DepoGetir',[],function(data)
+        db.GetData($scope.Firma,'DepoGetir',[0],function(data)
         {
             $scope.DepoListe = data   
             $scope.DepoNo = UserParam.MalKabul.DepoNo
@@ -610,5 +613,18 @@ function MalKabul ($scope,$window,db)
 
         $scope.PartiKodu = KulStr + TarihStr + AutoStr;
     }
-    
+    $scope.Gonder = function()
+    {
+        let TmpQuery = 
+        {
+            db : $scope.Firma,
+            query:  "UPDATE EMIR_HAREKETLERI SET AKTARIM = 2 WHERE SERI=@SERI AND SIRA = @SIRA",
+            param: ['SERI:string|25','SIRA:int'],
+            value: [ $scope.Seri,$scope.Sira]
+        }
+        db.GetDataQuery(TmpQuery,function(Data)
+        {
+           
+        });
+    }
 }

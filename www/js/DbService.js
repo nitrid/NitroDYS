@@ -26,7 +26,7 @@ angular.module('app.db', []).service('db',function($rootScope)
     {
         if(_Socket == null || _Socket.connected == false)
         {
-            _Socket = io.connect(_Host,{autoConnect: false,reconnectionDelay:10});
+            _Socket = io.connect(_Host,{autoConnect: true,reconnectionDelay:10});
             _Socket.open();
     
             _Socket.on('MaxUserCounted',function(MenuData)
@@ -114,8 +114,24 @@ angular.module('app.db', []).service('db',function($rootScope)
                 TmpQuery = window["QuerySql"][pParam.tag];
                 TmpQuery.value = pParam.param;
                 TmpQuery.db = pParam.db;
+
+                //PARAMETRE UNDEFINED KONTROLÜ (17.07.2020 - ALI KEMAL KARACA)
+                if(typeof(TmpQuery.value) != 'undefined')
+                {
+                    for (let i = 0; i < TmpQuery.value.length; i++) 
+                    {
+                        if(typeof TmpQuery.value[i] == 'undefined')
+                        {
+                            $rootScope.MessageBox("Parametre değerlerinde problem oluştu ! " + pParam.tag); 
+                            return;
+                        }
+                    }
+                }
+                /********************************************************** */
+                $rootScope.LoadingShow();
                 _Socket.emit('QMikroDb', TmpQuery, function (data) 
                 {
+                    $rootScope.LoadingHide();
                     if(typeof(data.result.err) == 'undefined')
                     {
                         var args = arguments;
@@ -129,6 +145,7 @@ angular.module('app.db', []).service('db',function($rootScope)
                     }
                     else
                     {                        
+                        $rootScope.MessageBox(data.result.err); 
                         console.log("Mikro Sql Query Çalıştırma Hatası : " + data.result.err);
                     }
                 });
@@ -170,8 +187,10 @@ angular.module('app.db', []).service('db',function($rootScope)
         {
             if(_Socket.connected)
             {
+                $rootScope.LoadingShow();
                 _Socket.emit('QMikroDb', pQuery, function(data) 
                 {     
+                    $rootScope.LoadingHide();
                     if(typeof(data.result.err) == 'undefined')
                     {
                         var args = arguments;

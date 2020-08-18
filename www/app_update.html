@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Nitrogen Depo Yönetim Otomasyonu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="img/logo-mini.png">
+    <!-- App css -->
+    <link href="theme/vertical/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="theme/vertical/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="theme/vertical/assets/css/metismenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="theme/vertical/assets/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="theme/vertical/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    
+    <link href="theme/vertical/assets/libs/select2/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="theme/vertical/assets/libs/bootstrap-select/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="theme/vertical/assets/js/modernizr.min.js"></script>
+</head>
+
+<body class="account-pages">
+    <div class="accountbg" style="background: url('img/img.jpg');background-size: cover;background-position: center;"></div>
+    <div class="wrapper-page account-page-full">
+        <div class="card">
+            <div class="card-block">
+                <div class="account-box" >
+                    <div class="card-box py-2 my-0">
+                        <div class="brand">
+                            <img class="brand-img col-xl-10 offset-xl-1 py-10" src="img/logo.png" alt="..."> 
+                            <h2 class="brand-text font-size-18 col-xl-5 offset-xl-5" id="status"></h2>   
+                            <div class="progress" style="visibility: hidden" id="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressbar">
+                                    <!-- <span class="sr-only">90% Complete</span> -->
+                                </div>
+                            </div>  
+                        </div>
+                        <form>
+                            <div class="form-group form-material">
+                                <input type="text" class="form-control" name="host" id="host" placeholder="Host">
+                            </div>
+                            <div class="form-group form-material">
+                                <input type="text" class="form-control" name="port" id="port" placeholder="Port">
+                            </div>
+                            <div class="form-group form-material">
+                                <input type="text" class="form-control" name="socketport" id="socketport" placeholder="Socket Port">
+                            </div>
+                            <div class="form-group clearfix">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg mt-40" onclick="BtnKaydet()">Kaydet ve Güncelle</button>
+                            </div>  
+                            <div class="form-group clearfix">
+                            </div> 
+                            <div class="form-group clearfix">
+                                <button type="submit" class="btn btn-primary btn-block btn-lg mt-40" onclick="BtnCikis()">Çıkış</button>
+                            </div>                       
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!--Page-->
+    <script src="js/moment.min.js"></script>
+    <script src="js/moment-with-locales.min.js"></script>
+    <script src="theme/vertical/alertify/alertify.js"></script>
+
+    <!-- jQuery  -->
+    <script src="theme/vertical/assets/js/jquery.min.js"></script>
+    <script src="theme/vertical/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="theme/vertical/assets/js/metisMenu.min.js"></script>
+    <script src="theme/vertical/assets/js/waves.js"></script>
+    <script src="theme/vertical/assets/js/jquery.slimscroll.js"></script>
+    <script src="theme/vertical/assets/libs/select2/select2.min.js"></script>
+    <script src="theme/vertical/assets/libs/bootstrap-select/bootstrap-select.min.js"></script>
+    <!-- App js -->
+    <script src="theme/vertical/assets/js/jquery.core.js"></script>
+    <script src="theme/vertical/assets/js/app.min.js"></script>
+
+    <script>
+      (function(document, window, $){
+        'use strict';
+    
+        var Site = window.Site;
+        $(document).ready(function(){
+          Site.run();
+        });
+      })(document, window, jQuery);
+    </script>
+    <!--TONE-->
+    <script src="js/angular.js"></script>
+    <script src="js/angular-route.js"></script>
+    <script src="js/socket.io.js"></script>
+
+    <script type="text/javascript" src="cordova.js"></script>
+
+    <script>
+    document.getElementById('host').value = localStorage.host;
+    document.getElementById('port').value = localStorage.port;
+    document.getElementById('socketport').value = localStorage.socketport;
+
+    angular.module("app",['ngRoute']);    
+    var app = 
+    {
+        initialize: function() {
+            this.bindEvents();
+        },
+        bindEvents: function() {
+            document.addEventListener('deviceready', this.onDeviceReady, false);
+        },
+        onDeviceReady: function() 
+        {
+            app.receivedEvent('deviceready');
+        },
+        receivedEvent: function(id) 
+        {
+            document.getElementById('page-update').style.visibility = "visible";     
+        },
+        setProgress: function(progress) 
+        {
+            if(progress.status) 
+            {
+                switch(progress.status) 
+                {
+                    case 1:
+                        document.getElementById('status').innerHTML = "Dosyalar Sunucudan İndiriliyor...";
+                        break;
+                    case 2:
+                        document.getElementById('status').innerHTML = "Dosyalar Açılıyor...";
+                        break;
+                    case 3:
+                        document.getElementById('status').innerHTML = "İşlem Tamamlandı !";
+                        break;
+                    default:
+                        document.getElementById('status').innerHTML = "";
+                }
+            }
+            if(progress.progress) 
+            {            
+                var progressBar = document.getElementById('progressbar');
+                document.getElementById('progress').style.visibility = "visible";
+                progressBar.style.width = progress.progress + '%';
+            }
+        },
+        sync: function(Host,Port,Callback)
+        {
+            var TmpHost = Host;
+
+            if (Port !== '') 
+            {
+                TmpHost = Host + ':' + Port;
+            }
+            
+            var url = "http://" + TmpHost + "/www.zip";
+            var sync = ContentSync.sync({ src: url, id: 'nitro', copyCordovaAssets: true, type: 'merge' });
+
+            var setProgress = this.setProgress; 
+
+            sync.on('progress', function(progress) 
+            {
+                console.log("Progress event", progress.status);
+                app.setProgress(progress);
+            });
+
+            sync.on('complete', function(data) 
+            {
+                window.resolveLocalFileSystemURL("file://" + data.localPath + "/www/index.html", 
+                function()
+                {
+                    //ContentSync.loadUrl("file://" + data.localPath + "/www/_terminal/index.html");
+                    //document.location = data.localPath + "/www/_terminal/index.html";    
+                },
+                function()
+                {
+                    if(Callback)
+                    {
+                        Callback(false);
+                    }
+                });
+                
+                if(Callback)
+                {
+                    Callback(true);
+                }
+            });
+
+            sync.on('error', function(e) 
+            {
+                document.getElementById('page-update').style.visibility = "visible";
+
+                if(Callback)
+                {
+                    Callback(false);
+                }
+            });
+        },
+        update : function(Host,Port,Callback)
+        {
+            downloader.init({folder: "../lib"});
+            downloader.get("http://" + Host + ':' + Port + "/lib/Param.js");
+            document.addEventListener('DOWNLOADER_downloadSuccess', function(event)
+            {
+                var data = event.data;
+
+                window.resolveLocalFileSystemURL("file:///data/user/0/com.tone.nitro/files/files/lib/Param.js", 
+                function(fileEntry)
+                {
+                    window.resolveLocalFileSystemURL("file:///data/user/0/com.tone.nitro/files/nitro/www/lib",
+                    function(targetEntry)
+                    {
+                        fileEntry.moveTo(targetEntry, "Param.js", 
+                        function() 
+                        {
+                            Callback(true);
+                        }, 
+                        function()
+                        {
+                            Callback(false);
+                        });
+                    },
+                    function()
+                    {
+                        Callback(false);
+                    });
+                },
+                function()
+                {
+                    if(Callback)
+                    {
+                        Callback(false);
+                    }
+                });
+            });
+        }
+    };
+    app.initialize();
+    function BtnKaydet()
+    {
+        var host = document.getElementById('host').value;
+        var sockethost = document.getElementById('host').value;
+
+        if (document.getElementById('port').value !== '') 
+        {
+            host = document.getElementById('host').value + ':' + document.getElementById('port').value;
+        }
+        
+        if (document.getElementById('socketport').value !== '') 
+        {
+            sockethost = document.getElementById('host').value + ':' + document.getElementById('socketport').value;
+        }
+
+        var socket = io.connect('http://' + sockethost,{reconnection: false});
+        socket.on('connect',function()
+        {           
+            app.sync(document.getElementById('host').value,document.getElementById('port').value,function(status)
+            {
+               if(!status)
+               {
+                    document.getElementById('status').innerText = "Kaynak Dosyaya Erişim Hatası !";
+               }
+               else
+               {
+                    localStorage.host = document.getElementById('host').value;
+                    localStorage.port = document.getElementById('port').value;
+                    localStorage.socketport = document.getElementById('socketport').value;
+               }
+            });
+        });
+
+        socket.on('connect_error', (error) => 
+        {
+            document.getElementById('status').innerText = "Sunucuya Erişim Sağlanamadı !"
+        });
+    }
+    function BtnCikis()
+    {
+        document.location = "index.html";
+    } 
+    </script>
+</body>
+
+</html>

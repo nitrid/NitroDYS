@@ -68,4 +68,8 @@ app.config(function($routeProvider)
     {
         templateUrl : "html/PersonelTanimlari.html"
     })
+    .when("/KullaniciParametre", 
+    {
+        templateUrl : "html/KullaniciParametre.html"
+    })
 });

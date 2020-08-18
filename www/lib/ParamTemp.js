@@ -20,5 +20,9 @@ var ParamTemp =
 			"Seri" : {"Title" : "Seri","DefaultValue" : "A"},
 			"DepoNo" : {"Title" : "DepoNo","DefaultValue" : "1"}
 			
+		},
+		"SubeEmirKapama": {
+			"Seri" : {"Title" : "Seri","DefaultValue" : "S94"},
+			"DepoNo" : {"Title" : "DepoNo","DefaultValue" : "1"}
 		}
 	}

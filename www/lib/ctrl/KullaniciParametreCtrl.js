@@ -87,7 +87,7 @@ function KullaniciParametreCtrl($scope,$window,db)
     }
     $scope.BtnParametre = function()
     {
-        $("#Modal1").modal('show');
+        $("#ParamModal").modal('show');
         
         $scope.CmbParamList = [];
 

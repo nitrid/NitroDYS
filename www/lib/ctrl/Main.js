@@ -1,5 +1,17 @@
-function Main ($scope,$window,db)
+function Main ($scope,$rootScope,$window,db)
 {
+    $rootScope.LoadingShow = function() 
+    {
+        $("#loading").show();
+    }
+    $rootScope.LoadingHide = function() 
+    {
+        $("#loading").hide();
+    }
+    $rootScope.MessageBox = function(pMsg)
+    {
+        alertify.alert(pMsg);
+    }
     $scope.Init = function()
     {
         $scope.Firma = $window.sessionStorage.getItem('Firma');

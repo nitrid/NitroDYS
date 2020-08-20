@@ -71,5 +71,8 @@ app.config(function($routeProvider)
     .when("/StokVeRafTanitim", 
     {
         templateUrl : "html/StokVeRafTanitim.html"
+    .when("/KullaniciParametre", 
+    {
+        templateUrl : "html/KullaniciParametre.html"
     })
 });

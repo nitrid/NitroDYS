@@ -1,6 +1,6 @@
 angular.module('app.controller', [])
 .controller('Login',['$scope','$window','db',Login])
-.controller('Main',['$scope','$window','db',Main])
+.controller('Main',['$scope','$rootScope','$window','db',Main])
 .controller('RafTanimlari',['$scope','$window','db',RafTanimlari])
 .controller('RafKategoriTanimlari',['$scope','$window','db',RafKategoriTanimlari])
 .controller('PaletTanimlari',['$scope','$window','db',PaletTanimlari])
@@ -16,3 +16,5 @@ angular.module('app.controller', [])
 .controller('StokDurumRapor',['$scope','$window','db',StokDurumRapor])
 .controller('PersonelTanimlari',['$scope','$window','db',PersonelTanimlari])
 .controller('StokVeRafTanitim',['$scope','$window','db',StokVeRafTanitim])
+.controller('KullaniciParametreCtrl',['$scope','$window','db',KullaniciParametreCtrl])
+

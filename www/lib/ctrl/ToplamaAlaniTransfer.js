@@ -257,7 +257,7 @@ function ToplamaAlaniTransfer ($scope,$window,db)
         }
     }
     $scope.Insert = function()
-    {console.log(1)
+    {
         if($scope.RafTip == 0 && $scope.CmbEvrakTip == 0)
         {
             alertify.alert("Seçtiğini Raf Toplama Rafıdır... Kayıt Yapılmadı!!");

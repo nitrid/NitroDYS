@@ -14,7 +14,6 @@ function KullaniciParametreCtrl($scope,$window,db)
 
         $scope.Kullanici = "";
         $scope.Sifre = "";
-        $scope.MikroId = "";
 
         InitKullaniciGrid();
 
@@ -54,7 +53,7 @@ function KullaniciParametreCtrl($scope,$window,db)
 
         $scope.Kullanici = "";
         $scope.Sifre = "";
-        $scope.MikroId = "";
+      
     }
     $scope.BtnDuzenle = function()
     {
@@ -62,7 +61,6 @@ function KullaniciParametreCtrl($scope,$window,db)
 
         $scope.Kullanici = $scope.KullaniciListe[$scope.KullaniciListeSelectedIndex].Kullanici;
         $scope.Sifre = $scope.KullaniciListe[$scope.KullaniciListeSelectedIndex].Sifre;
-        $scope.MikroId = $scope.KullaniciListe[$scope.KullaniciListeSelectedIndex].MikroId;
     }
     $scope.BtnSil = function()
     {
@@ -277,26 +275,23 @@ function KullaniciParametreCtrl($scope,$window,db)
             data : $scope.KullaniciListe,
             
             fields: 
-            [{
-                name: "Kullanici",
-                title: "KULLANICI",
-                type: "text",
-                align: "center",
-                width: 150
-                
-            }, {
-                name: "Sifre",
-                title: "ŞİFRE",
-                type: "text",
-                align: "center",
-                width: 100
-            }, {
-                name: "MikroId",
-                title: "MIKROID",
-                type: "number",
-                align: "center",
-                width: 75
-            }],
+            [
+                {
+                    name: "Kullanici",
+                    title: "KULLANICI",
+                    type: "text",
+                    align: "center",
+                    width: 150
+                    
+                }, 
+                {
+                    name: "Sifre",
+                    title: "ŞİFRE",
+                    type: "text",
+                    align: "center",
+                    width: 100
+                },
+            ],
             rowClick: function(args)
             {
                 $scope.KullaniciListeRowClick(args.itemIndex,args.item,this);

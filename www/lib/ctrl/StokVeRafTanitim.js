@@ -155,8 +155,9 @@ function StokVeRafTanitim ($scope,$window,db)
             console.log(Data)
             $scope.PaletListe = Data;
             $scope.PaletKodu = $scope.PaletKodu;
-            $scope.Stok = $scope.PaletListe[0].STOK;
-            $scope.Miktar = $scope.PaletListe[0].MIKTAR
+            $scope.StokKodu = $scope.PaletListe[0].STOK;
+            $scope.Miktar = $scope.PaletListe[0].MIKTAR;
+
         });
     }
     function RafGetir(pKodu)
@@ -170,14 +171,7 @@ function StokVeRafTanitim ($scope,$window,db)
                 $scope.RafTip = $scope.RafListe[0].TIP
                 $scope.RafStok = $scope.RafListe[0].STOK
     
-                if($scope.RafTip == 0)
-                {
-                    $scope.CmbEvrakTip = 1
-                }
-                else
-                {
-                    $scope.CmbEvrakTip = 0
-                }
+                
             }
             else
             {
@@ -337,6 +331,25 @@ function StokVeRafTanitim ($scope,$window,db)
                             {            
                                     if(typeof(InsertResult.result.err) == 'undefined')
                                     {            
+                                        let InsertData =
+                                        [
+                                            UserParam.Kullanici,
+                                            UserParam.Kullanici,
+                                            0,
+                                            $scope.RafTip,
+                                            $scope.Tarih,
+                                            '',
+                                            0,
+                                            $scope.StokKodu,
+                                            $scope.PaletKodu,
+                                            $scope.RafKodu,
+                                            $scope.RafKodu,
+                                            1,
+                                            $scope.Miktar,
+                                            '',
+                                            '',
+                                            '',
+                                        ];
                                         db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
                                         { 
                                             if(typeof(InsertResult.result.err) == 'undefined')
@@ -371,7 +384,49 @@ function StokVeRafTanitim ($scope,$window,db)
         }
         else
         {
-            
+            let InsertData =
+            [
+                UserParam.Kullanici,
+                UserParam.Kullanici,
+                0,
+                $scope.RafTip,
+                $scope.Tarih,
+                '',
+                0,
+                $scope.StokKodu,
+                $scope.PaletKodu,
+                $scope.RafKodu,
+                $scope.RafKodu,
+                1,
+                $scope.Miktar,
+                '',
+                '',
+                '',
+            ];
+            db.ExecuteTag($scope.Firma,'EmirHarInsert',InsertData,function(InsertResult)
+            { 
+                if(typeof(InsertResult.result.err) == 'undefined')
+                {                          
+                        let TmpQuery = 
+                        {
+                            db : $scope.Firma,
+                            query:  "UPDATE RAFLAR SET MIKTAR = MIKTAR + @MIKTAR WHERE KODU = @KODU",
+                            param : ['MIKTAR','KODU'],
+                            type : ['float','string|50'],
+                            value : [$scope.Miktar,$scope.RafKodu]
+                        }
+                        db.GetDataQuery(TmpQuery,function(Data)
+                        {
+                            db.ExecuteTag($scope.Firma,'PaletRafıUpdate',[$scope.RafKodu,$scope.PaletKodu],function(InsertResult)
+                            { 
+                                console.log(InsertResult)
+                            });
+                            InsertAfterRefresh();
+                            pCallback(true);
+                        });
+                }
+            });
+        
         }
         
     }
